@@ -1,28 +1,28 @@
-# Project Name #
+# Sphero #
  
 ## Heading ##
-  > Name the product in a way the reader (i.e. your target customers) will understand.
+  > A multiplayer, competitive strategy Bejeweled-Go hybrid game.
 
 ## Sub-Heading ##
-  > Describe who the market for the product is and what benefit they get. One sentence only underneath the title.
+  > This game appeals to any lover of strategy, and it provides endless amounts of fun with friends.
 
 ## Summary ##
-  > Give a summary of the product and the benefit. Assume the reader will not read anything else so make this paragraph good.
+  > Sphero is simple to play but difficult to master.  It is a fast-paced game of strategy where players compete to fill the board with spheres of their color.  
 
 ## Problem ##
-  > Describe the problem your product solves.
+  > Boredom
 
 ## Solution ##
-  > Describe how your product elegantly solves the problem.
+  > Instead of being bored, play Sphero, which will melt your boredom away and sharpen your mind.
 
 ## Quote from You ##
-  > A quote from a spokesperson in your company.
+  > "This is the most captivating game I have played since Bejeweled.  The added elements of strategy and competition keeps me coming back for more."
 
 ## How to Get Started ##
-  > Describe how easy it is to get started.
+  > Download from the App Store or Google Play!
 
 ## Customer Quote ##
-  > Provide a quote from a hypothetical customer that describes how they experienced the benefit.
+  > "Conventional strategy games alienate me and become monotonous. The fast-paced, frenetic action of Sphero peps me up."
 
 ## Closing and Call to Action ##
-  > Wrap it up and give pointers where the reader should go next.
+  > Download from the App Store or Google Play today.
