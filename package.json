@@ -1,0 +1,15 @@
+{
+  "name": "euphonious_trapezoid",
+  "version": "1.0.0",
+  "description": "a dynamic, puzzle/strategy game for iOS",
+  //"main": "",
+  "scripts": {
+    //"test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/EuphoniousTrapezoid/euphonious_trapezoid"
+  },
+  "author": "Anton, Jordan, Rodrigo, Zach",
+  //"license": ""
+}
