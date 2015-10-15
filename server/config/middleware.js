@@ -8,7 +8,7 @@ module.exports = function(app, express) {
   //app.use(express.static(__dirname + 'client'));
 
 //set up express router instances
-  var userRouter = express.Router();
+  var playerRouter = express.Router();
 
 
   app.use(function(req, res, next){
@@ -19,6 +19,6 @@ module.exports = function(app, express) {
 
 //route request to specific router and inject into specific route file
 
-  app.use('/api/users', userRouter);
-  require('../routes/userRoutes')(userRouter);
+  app.use('/api/players', userRouter);
+  require('../routes/playerRoutes')(userRouter);
 };
