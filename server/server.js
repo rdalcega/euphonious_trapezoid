@@ -6,4 +6,4 @@ var port = process.env.PORT || 8080;
 app.listen(port);
 
 //pass app, exress to middleware
-require('.config/middleware.js')(app, express);
+require('./config/middleware.js')(app, express);
