@@ -1,7 +1,7 @@
 # Server-Side Unit Tests
 
 This folder is for server-side unit tests only! If you need to
-write a unit test, go to server/tests/integration.
+write an integration test, go to server/tests/integration.
 
 Any file in this folder that is that fulfills the pattern *-test.js
 will be run as a mocha test on call to the gulp 'test' task.
