@@ -4,9 +4,6 @@
   "description": "a dynamic, puzzle/strategy game for iOS",
   "scripts": {},
   "main": "",
-  "scripts": {
-    "test": "npm test"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/EuphoniousTrapezoid/euphonious_trapezoid"
