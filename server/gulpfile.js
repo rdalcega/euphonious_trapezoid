@@ -25,8 +25,8 @@ gulp.task( 'rebase', [ 'test', 'lint' ], function( ) {
   });
 });
 
-gulp.task( 'commit', [ 'test', 'lint' ], function( ) {
+gulp.task( 'add', [ 'test', 'lint' ], function( ) {
   return gulp.src( './*' )
-             .pipe( gitignore( ) )
+             .pipe( gitignore( '../.gitignore', ['node_modules'] ) )
              .pipe( git.add( ) );
 });
