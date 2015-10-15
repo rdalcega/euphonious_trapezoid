@@ -11,7 +11,7 @@ module.exports = function(app, express) {
   var userRouter = express.Router();
 
 
-  router.use(function(req, res, next){
+  app.use(function(req, res, next){
     console.log('=========='); //to sep dev logs in terminal
     next();
   });
