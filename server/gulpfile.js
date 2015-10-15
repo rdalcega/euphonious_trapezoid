@@ -4,7 +4,7 @@ var gulp = require( 'gulp' );
 var mocha = require( 'gulp-mocha' );
 var jshint = require( 'gulp-jshint' );
 var stylish = require( 'jshint-stylish' );
-var git = require( 'git-gulp' );
+var git = require( 'gulp-git' );
 
 gulp.task( 'test', function( ) {
   return gulp.src( './tests/unit/*-test.js' )
@@ -20,4 +20,4 @@ gulp.task( 'lint', function( ) {
 gulp.task( 'add', [ 'test', 'lint' ], function( ) {
   return gulp.src( './*' )
              .pipe( git.add( ) );
-})
+});
