@@ -19,6 +19,6 @@ module.exports = function(app, express) {
 
 //route request to specific router and inject into specific route file
 
-  app.use('/api/players', playerRouter);
-  require('../routes/playerRoutes')(playerRouter);
+  app.use('/api/player', playerRouter);
+  require('../player/playerRoutes')(playerRouter);
 };
