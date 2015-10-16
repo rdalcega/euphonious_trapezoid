@@ -5,7 +5,7 @@ module.exports = function(app, express) {
   //Serve up static files in client folder and other middleware
   app.use(morgan('dev'));
   app.use(bodyParser.json());
-  //app.use(express.static(__dirname + 'client'));
+  app.use(express.static(__dirname + 'static'));
 
   //set up express router instances
   var playerRouter = express.Router();
