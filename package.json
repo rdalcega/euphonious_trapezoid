@@ -8,7 +8,7 @@
     "type": "git",
     "url": "https://github.com/EuphoniousTrapezoid/euphonious_trapezoid"
   },
-  "author": "Anton, Jordan, Rodrigo, Zach",
+  "author": "Anton Solomonik, Jordan Olthoff, Rodrigo Delgado, Zachary Castellanos-Smith",
   "devDependencies": {
     "chai": "^3.3.0",
     "jshint-stylish": "^2.0.1",
