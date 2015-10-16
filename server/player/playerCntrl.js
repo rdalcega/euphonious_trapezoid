@@ -5,3 +5,7 @@ module.exports.signup = function(req, res) {
 
 
 };
+
+module.exports.signin = function(req, res) {
+
+};
