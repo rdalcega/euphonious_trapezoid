@@ -1,9 +1,14 @@
 var gulp = require( 'gulp' );
+var gutil = require('gulp-util');
 var mocha = require( 'gulp-mocha' );
 var jshint = require( 'gulp-jshint' );
 var stylish = require( 'jshint-stylish' );
 var git = require( 'gulp-git' );
 var gitignore = require( 'gulp-gitignore' );
+
+gulp.task('default', function() {
+  return gutil.log('Gulp is running ==========');
+});
 
 gulp.task( 'test', function( ) {
   return gulp.src( './tests/unit/*-test.js' )
@@ -29,4 +34,12 @@ gulp.task( 'add', [ 'test', 'lint' ], function( ) {
   return gulp.src( './*' )
              .pipe( gitignore( '../.gitignore', ['node_modules'] ) )
              .pipe( git.add( ) );
+});
+
+gulp.task( 'deploy', [ 'test', 'lint' ], function() {
+  git.push('heroku', 'master', function (err) {
+    if (err) {
+      throw err;
+    }
+  });
 });
