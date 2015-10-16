@@ -12,4 +12,4 @@ app.listen(port);
 require('./config/middleware.js')(app, express);
 
 //pass io to socket module
-requre('./config/socketconnection.js')(io);
+require('./config/socketconnection.js')(io);
