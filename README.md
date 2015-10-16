@@ -1,12 +1,12 @@
-# Project Name
+# SPHERO
 
-> Pithy project description
+> A fun, real-time strategy game with friends
 
 ## Team
 
-  - __Product Owner__: teamMember
-  - __Scrum Master__: teamMember
-  - __Development Team Members__: teamMember, teamMember
+  - __Product Owner__: Jordan Olthoff
+  - __Scrum Master__: Rodrigo Delgado
+  - __Development Team Members__: Zachary Castellanos-Smith, Anton Solomonik
 
 ## Table of Contents
 
@@ -20,15 +20,13 @@
 
 ## Usage
 
-> Some usage instructions
+> Available on the App Store: TBD
 
 ## Requirements
 
 - Node 0.10.x
-- Redis 2.6.x
-- Postgresql 9.1.x
-- etc
-- etc
+- 
+- 
 
 ## Development
 
