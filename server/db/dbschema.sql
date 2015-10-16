@@ -15,6 +15,6 @@ CREATE TABLE IF NOT EXISTS `Friends` (
   `Friend_ID` INT NOT NULL
 );
 
-ALTER TABLE `Friends` ADD CONSTRAINT `Friends_fk0` FOREIGN KEY (`Player_ID`) REFERENCES `Users`(`Player_ID`);
+ALTER TABLE `Friends` ADD CONSTRAINT `Friends_fk0` FOREIGN KEY (`Player_ID`) REFERENCES `Players`(`Player_ID`);
 
-ALTER TABLE `Friends` ADD CONSTRAINT `Friends_fk1` FOREIGN KEY (`Friend_ID`) REFERENCES `Users`(`Player_ID`);
+ALTER TABLE `Friends` ADD CONSTRAINT `Friends_fk1` FOREIGN KEY (`Friend_ID`) REFERENCES `Players`(`Player_ID`);
