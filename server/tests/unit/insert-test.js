@@ -4,7 +4,7 @@ var expect = chai.expect;
 // var sinon = require( '../../node_modules/sinon/pkg/sinon.js' );
 var Game = require('../../game/game.js');
 
-describe( 'insertNode function on game object', function( ) { // A standard describe block
+describe( 'insert function on game object', function( ) { // A standard describe block
   var game = new Game();
 
   it( 'should not insert into 0:0', function( ) {
@@ -139,44 +139,6 @@ describe( 'insertNode function on game object', function( ) { // A standard desc
   it( 'should adjust valence recursively', function( ) {
 
     game = new Game( );
-
-    // expect( game.insert('0:1', '1') ).to.be.true;
-    // expect( game.insert('-1:0', '3') ).to.be.true;
-    // expect( game.insert('0:-1', '3') ).to.be.true;
-    // expect( game.insert('1:0', '3') ).to.be.true;
-    // expect( game.insert('-2:0', '1') ).to.be.true;
-    // expect( game.insert('-3:0', '2') ).to.be.true;
-    // expect( game.insert('0:-2', '1') ).to.be.true;
-    // expect( game.insert('0:-3', '2') ).to.be.true;
-    // expect( game.insert('2:0', '1') ).to.be.true;
-    // expect( game.insert('3:0', '2') ).to.be.true;
-    // expect( game.leaves ).to.deep.equal( [0, 1, 0, 3] );
-    // game.insert('0:2', '2');
-    // game.insert('0:3', '3');
-    // game.insert('-1:-3', '1');
-    // game.insert('-2:-3', '2');
-    // game.insert('-2:-4', '3');
-    // game.insert('-1:-3', '1');
-    // game.insert('-1:-4', '3');
-    // game.insert('-2:-4', '1');
-    // game.insert('3:-1', '1');
-    // game.insert('4:-1', '3');
-    // game.insert('4:-2', '2');
-    // game.insert('0:4', '2');
-    // game.insert('1:4', '1' );
-    // game.insert('2:4', '3');
-    // game.insert('2:3', '2');
-    // game.insert('2:2', '1');
-    // game.insert('1:2', '3');
-
-    // expect( game.leaves ).to.deep.equal( [0, 0, 0, 0, 0, 0, 4] );
-    // expect( game.minimumValence ).to.equal( 6 );
-    // expect( game.maximumValence ).to.equal( 6 );
-    // expect( game.board[ '1:2' ].valence ).to.equal( 3 );
-    // expect( game.board[ '2:2' ].valence ).to.equal( 4 );
-    // expect( game.board[ '2:3' ].valence ).to.equal( 5 );
-    // expect( game.board[ '2:4' ].valence ).to.equal( 6 );
-    // expect( game.board[ '1:3' ].valence ).to.equal( 4 );
 
     expect( game.insert('0:1', '1') ).to.be.true;
     expect( game.insert('-1:0', '3') ).to.be.true;
