@@ -1,7 +1,11 @@
 var Node = require('./node.js');
-var insertNode = require('./insertNode.js');
+var insert = require('./insert.js');
+var remove = require( './remove.js');
 var adjust = require('./adjust.js');
 var leafiness = require( './leafiness.js' );
+var print = require( './print.js' );
+var anchored = require( './anchored.js' );
+var detectChain = require( './detectChain.js' );
 
 var Game = function ( ) {
 
@@ -23,10 +27,18 @@ var Game = function ( ) {
 
 };
 
-Game.prototype.insert = insertNode;
+Game.prototype.insert = insert;
+
+Game.prototype.remove = remove;
 
 Game.prototype.adjust = adjust;
 
 Game.prototype.leafiness = leafiness;
+
+Game.prototype.print = print;
+
+Game.prototype.anchored = anchored;
+
+Game.prototype.detectChain = detectChain;
 
 module.exports = Game;
