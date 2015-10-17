@@ -4,5 +4,5 @@ var playerController = require('./playerCntrl');
 module.exports = function(router) {
 
   router.post('/signup', playerController.signup);
-  router.get('/signin', playerController.signin);
+
 };
