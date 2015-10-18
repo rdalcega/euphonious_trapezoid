@@ -26,7 +26,7 @@ var remove = function( coordinates ) {
 
     }
 
-    this.insert( destination, state );
+    this.insert( destination, state, true, true );
 
     var keys = adjacentKeys( origin );
 
@@ -42,11 +42,11 @@ var remove = function( coordinates ) {
 
         var sphere = this.board[ keys[ i ] ];
 
-        if( sphere.state === 'L' ) {
+        if( sphere && sphere.state === 'L' ) {
 
           delete this.board[ keys[ i ] ];
 
-        } else {
+        } else if( sphere ) {
 
           replace.call( this, hook, keys[ i ] );
 
@@ -62,12 +62,6 @@ var remove = function( coordinates ) {
 
   itself.state = 'L';
 
-  if( itself.valence === 1 ) {
-
-    this.leaves[ 0 ] += 1;
-
-  }
-
   if( itself.leafy ) {
 
     this.leaves[ itself.valence ] -= 1;
@@ -82,11 +76,17 @@ var remove = function( coordinates ) {
 
   }
 
+  if( itself.valence === 1 ) {
+
+    this.leaves[ 0 ] += 1;
+
+  }
+
   var keys = adjacentKeys( coordinates );
 
   reanchor.call( this, coordinates, keys );
 
-
+  this.searchAndDestroy( coordinates );
 
 };
 

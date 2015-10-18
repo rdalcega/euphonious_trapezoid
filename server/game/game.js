@@ -6,6 +6,9 @@ var leafiness = require( './leafiness.js' );
 var print = require( './print.js' );
 var anchored = require( './anchored.js' );
 var detectChain = require( './detectChain.js' );
+var searchAndDestroy = require( './searchAndDestroy.js' );
+var pop = require( './pop.js' );
+var rebalance = require( './rebalance.js' );
 
 var Game = function ( ) {
 
@@ -21,11 +24,25 @@ var Game = function ( ) {
 
 	this.leaves = [4];
 
-	this.maximumValence = 0;
-
 	this.minimumValence = 0;
 
 };
+
+Object.defineProperty( Game.prototype, "maximumValence",{
+	get: function( ) {
+		return this.leaves.length - 1;
+	}
+});
+
+Object.defineProperty( Game.prototype, "minimumValence", {
+	get: function( ) {
+		for( var i = 0; i < this.leaves.length; i++ ) {
+			if( this.leaves[ i ] !== 0 ) {
+				return i;
+			}
+		}
+	}
+});
 
 Game.prototype.insert = insert;
 
@@ -40,5 +57,11 @@ Game.prototype.print = print;
 Game.prototype.anchored = anchored;
 
 Game.prototype.detectChain = detectChain;
+
+Game.prototype.searchAndDestroy = searchAndDestroy;
+
+Game.prototype.pop = pop;
+
+Game.prototype.rebalance = rebalance;
 
 module.exports = Game;

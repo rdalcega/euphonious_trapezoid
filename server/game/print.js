@@ -54,11 +54,11 @@ var print = function( liberties ) {
 
   var matrix = [];
 
-  for( var row = 0; row < bounds[ 1 ][ 1 ] - bounds[ 1 ][ 0 ] + 1; row++ ) {
+  for( var row = 0; row <= bounds[ 1 ][ 1 ] - bounds[ 1 ][ 0 ]; row++ ) {
 
     matrix[ row ] = [];
 
-    for( var column = 0; column < bounds[ 0 ][ 1 ] - bounds[ 0 ][ 0 ] + 1; column++ ) {
+    for( var column = 0; column <= bounds[ 0 ][ 1 ] - bounds[ 0 ][ 0 ]; column++ ) {
 
       matrix[ row ][ column ] = " ";
 
@@ -72,13 +72,13 @@ var print = function( liberties ) {
 
     if( liberties ) {
 
-      matrix[ coordinates[0] - bounds[ 0 ][ 0 ] ][ coordinates[ 1 ] - bounds[ 1 ][ 0 ] ] = this.board[ key ].state;
+      matrix[ bounds[ 1 ][ 1 ] - coordinates[ 1 ] ][ coordinates[0] - bounds[ 0 ][ 0 ] ] = this.board[ key ].state;
 
     } else {
 
       if( this.board[ key ].state !== 'L' ) {
 
-        matrix[ coordinates[0] - bounds[ 0 ][ 0 ] ][ coordinates[ 1 ] - bounds[ 1 ][ 0 ] ] = this.board[ key ].state;
+        matrix[ bounds[ 1 ][ 1 ] - coordinates[ 1 ] ][ coordinates[0] - bounds[ 0 ][ 0 ] ] = this.board[ key ].state;
 
       }
 

@@ -1,4 +1,4 @@
-var chai = require( '../../node_modules/chai/chai.js' );
+var chai = require( '../../../node_modules/chai/chai.js' );
 // var assert = chai.assert;
 var expect = chai.expect;
 // var sinon = require( '../../node_modules/sinon/pkg/sinon.js' );
@@ -55,7 +55,6 @@ describe( 'a game\'s detect chain method', function( ) { // A standard describe 
     game.insert( '0:4', '1' );
     game.insert( '1:4', '0' );
     game.insert( '-1:4', '1' );
-    game.insert( '-2:4', '3' );
     game.insert( '0:5', '1' );
 
     var chain = game.detectChain( '0:3' );
