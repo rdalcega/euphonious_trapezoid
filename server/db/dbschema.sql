@@ -4,9 +4,10 @@ USE Sphero;
 
 CREATE TABLE IF NOT EXISTS `Players` (
   `Player_ID` INT NOT NULL AUTO_INCREMENT,
-  `Player_Name` varchar(25) NOT NULL,
-  `Password` varchar(25) NOT NULL,
-  `Ranking` INT NOT NULL,
+  `Player_Username` varchar(25) NOT NULL,
+  `Hash` varchar(100) NOT NULL,
+  `Email` varchar(50) NOT NULL,
+  -- `Ranking` INT NOT NULL,
   PRIMARY KEY (`Player_ID`)
 );
 
