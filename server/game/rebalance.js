@@ -42,11 +42,11 @@ var rebalance = function( ) {
 
   }
 
-  this.print( );
-
-  var findClosestLiberty = function( coordinates, valence ) {
+  var findClosestLiberty = function( coordinates, valence, ignore ) {
 
     valence = valence || fallers[ coordinates ].valence;
+
+    ignore = ignore || [];
 
     var keys = adjacentKeys( coordinates );
 
@@ -54,7 +54,7 @@ var rebalance = function( ) {
 
       var sphere = this.board[ keys[ i ] ];
 
-      if( sphere && sphere.state === 'L' && sphere.valence < valence ) {
+      if( sphere && sphere.state === 'L' && sphere.valence <= valence && ignore.indexOf( keys[ i ] ) < 0 ) {
 
         return keys[ i ];
 
@@ -85,13 +85,25 @@ var rebalance = function( ) {
 
     }
 
-    return findClosestLiberty.call( this, towardCenter, valence );
+    ignore.push( coordinates );
+
+    return findClosestLiberty.call( this, towardCenter, valence, ignore );
 
   };
 
+  var dontDestroy = true;
+
+  var dontRebalance = true;
+
   for( var i = fallers.keys.length - 1; i >= 0; i-- ) {
 
-    this.insert( findClosestLiberty.call( this, fallers.keys[ i ] ), fallers[ fallers.keys[ i ] ].state );
+    if( i === 0 ) {
+
+      dontDestroy = dontRebalance = false;
+
+    }
+
+    this.insert( findClosestLiberty.call( this, fallers.keys[ i ] ), fallers[ fallers.keys[ i ] ].state, dontDestroy, dontRebalance );
 
   }
 

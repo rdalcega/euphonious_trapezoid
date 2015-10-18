@@ -9,7 +9,7 @@ describe( 'A game\'s rebalance method', function( ) { // A standard describe blo
   var game;
   it( 'should rebalance an unbalanced board', function( ) {
 
-    game = new Game;
+    game = new Game( );
 
     game.insert( '-1:0', '1' );
     game.insert( '1:0', '1' );
@@ -33,7 +33,7 @@ describe( 'A game\'s rebalance method', function( ) { // A standard describe blo
 
   it( 'should rebalance an unbalanced board', function( ) {
 
-    game = new Game;
+    game = new Game( );
 
     game.insert( '0:1', '0' );
     game.insert( '0:2', '1' );
@@ -53,7 +53,7 @@ describe( 'A game\'s rebalance method', function( ) { // A standard describe blo
 
   it( 'should rebalance an unbalanced board', function( ) {
 
-    game = new Game;
+    game = new Game( );
 
     game.insert( '0:1', '0' );
     game.insert( '0:2', '1' );
@@ -71,41 +71,20 @@ describe( 'A game\'s rebalance method', function( ) { // A standard describe blo
 
   });
 
-  it( 'should rebalance after destroying a chain', function( ) {
+  it( 'should rebalance an unbalanced board', function( ) {
 
-    game = new Game;
+    game = new Game( );
 
-    game.insert( '0:-1', '0' );
-    game.insert( '0:-2', '1' );
     game.insert( '0:1', '0' );
     game.insert( '0:2', '1' );
+    game.insert( '0:3', '2' );
     game.insert( '1:0', '0' );
-    game.insert( '1:1', '1' );
-    game.insert( '1:-1', '0' );
     game.insert( '2:0', '1' );
-    game.insert( '-1:0', '0' );
-    game.insert( '-2:0', '1' );
-    game.insert( '2:1', '0' );
-    game.insert( '3:1', '1' );
-    game.insert( '1:2', '0' );
-    game.insert( '4:1', '1' );
-    game.insert( '2:2', '0' );
-    game.insert( '5:1', '1' );
-    game.insert( '2:1', '0' );
-    game.insert( '0:-3', '1' );
-    game.insert( '-2:3', '0' );
-    game.insert( '0:3', '1' );
-    game.insert( '-1:-1', '0' );
-    game.insert( '-3:0', '1' );
-    game.insert( '-2:-1', '0' );
-    game.insert( '-2:4', '1' );
-    game.insert( '3:-1', '0' );
-    game.insert( '-4:0', '1' );
-    game.insert( '-4:-1', '0' );
-    game.print( );
-    //game.insert( '0:5', '1' );
-    //game.insert( '0:-5', '1' );
+    game.insert( '3:0', '2');
+    game.insert( '0:4', '3' );
+
+    expect( game.leaves ).to.deep.equal( [1,1,1,2]);
+
 
   });
-
 });

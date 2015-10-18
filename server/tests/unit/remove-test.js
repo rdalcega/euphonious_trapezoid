@@ -31,17 +31,6 @@ describe( 'should remove a piece from the board', function( ) { // A standard de
 
   });
 
-  // it( 'should remove the piece at 0:5', function( ) {
-
-  //   game.remove( '0:5' );
-
-  //   expect( game.board[ '0:5' ].state ).to.equal( 'L' );
-  //   expect( game.board[ '0:6' ] ).to.be.undefined;
-  //   expect( game.leaves ).to.deep.equal( [0, 0, 3, 0, 0, 1, 1 ] );
-
-
-  // });
-
   it( 'should remove the piece at 0:4', function( ) {
 
     game.remove( '0:4' );
