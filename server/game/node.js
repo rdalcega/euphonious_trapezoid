@@ -41,4 +41,10 @@ Object.defineProperty(Node.prototype, "state", {
   }
 });
 
+Node.prototype.copy = function( ) {
+
+  return new Node( this.state, this.valence, this.leafy );
+
+};
+
 module.exports = Node;

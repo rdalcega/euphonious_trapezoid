@@ -1,4 +1,4 @@
-var insert = function( coordinates, state ) {
+var insert = function( coordinates, state, dontSearchChains, dontRebalance ) {
 
   var node = this.board[ coordinates ];
 
@@ -18,37 +18,17 @@ var insert = function( coordinates, state ) {
 
     this.adjust( coordinates );
 
-    this.maximumValence = this.leaves.length - 1;
+    // Check for chains!
 
-    for( var i = 0; i < this.leaves.length; i++ ) {
+    if( !dontSearchChains ) {
 
-      if( this.leaves[ i ] !== 0 ) {
-
-        this.minimumValence = i;
-
-        break;
-
-      }
+      this.searchAndDestroy( coordinates );
 
     }
 
-    // Check for chains!
+    if( !dontRebalance && this.maximumValence > this.minimumValence + 3 ) {
 
-    var chain = this.detectChain( coordinates );
-
-    if( chain.destroy ) {
-
-      chain.chain = chain.chain.sort( function( key1, key2 ) {
-
-        return this.board[ key2 ].valence - this.board[ key1 ].valence;
-
-      }.bind( this ));
-
-      for( var i = 0; i < chain.chain.length; i++ ) {
-
-        this.remove( chain.chain[ i ] );
-
-      }
+      this.rebalance( );
 
     }
 
