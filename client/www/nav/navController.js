@@ -1,0 +1,3 @@
+sphero.controller('navController',[ function() {
+
+}]);

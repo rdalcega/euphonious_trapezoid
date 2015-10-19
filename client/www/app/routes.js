@@ -1,4 +1,4 @@
-angular.module('app.routes', [])
+angular.module('sphero.routes', [])
 
 .config(function($stateProvider, $urlRouterProvider) {
 
@@ -8,17 +8,16 @@ angular.module('app.routes', [])
   // Each state's controller can be found in controllers.js
   $stateProvider
       
-    
-      
-        
     .state('nav', {
       url: '/nav',
       templateUrl: '../nav/nav.html',
       controller: 'navController'
     })
-        
-      
-    ;
+    .state('launch', {
+      url: '/launch',
+      templateUrl: '../launch/launch.html',
+      controller: 'launchController'
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/nav');
