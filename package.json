@@ -4,7 +4,7 @@
   "description": "a dynamic, puzzle/strategy game for iOS",
   "scripts": {
     "start": "node server/server.js"
-  },
+    },
   "main": "",
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "mocha": "^2.3.3",
     "morgan": "^1.6.1",
     "mysql": "^2.9.0",
-    "socket.io": "^1.3.7"
+    "socket.io": "^1.3.7",
+    "socketio-jwt": "^4.3.2"
   }
 }
