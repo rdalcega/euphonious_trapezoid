@@ -29,3 +29,5 @@ node_modules/
 client/node_modules/
 server/bower_components/
 client/bower_components/
+
+client/www/lib/
