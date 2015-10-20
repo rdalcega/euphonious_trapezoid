@@ -1,12 +1,4 @@
-sphero.controller('gameController', function(game) {
-  // the gameController requires sockets. we initialize them here
-   var socket;
-   if (window.__karma__) { 
-    // in case we do testing with karma and phantom
-     socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
-   } else {
-     socket = io.connect();
-   }
+sphero.controller('gameController', function(game, socket) {
 
   var element = document.getElementById('game');
 

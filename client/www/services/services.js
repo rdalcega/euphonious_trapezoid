@@ -39,7 +39,7 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 }]);
 
 
-/* This factory sets up a socket connection and gives you .on and .emit methods to use. It will ensure that when a callback function is called in response to a socket event (or after a socket event is emitted), that the angular $digest function is called on the $rootScope and the two-way data binding is kept in sync.
+/* This factory sets up a socket connection and gives you .on and .emit methods to use.
 */
 sphero.factory('socket', function () {
    var socket;
