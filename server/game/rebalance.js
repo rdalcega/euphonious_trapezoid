@@ -62,6 +62,7 @@ var rebalance = function( ) {
   }.bind( this );
   var fallers = [];
   var rotators = [];
+  var event = [];
   var threshold = this.maximumValence - 2;
   this.board.forEach( function( sphere ) {
     if( sphere.state !== 'L' && sphere.valence > threshold ) {
@@ -82,6 +83,18 @@ var rebalance = function( ) {
       var sphere = rotators[ i ];
       if( sphere.state !== 'L' && sphere.state !== 'A' ) {
         if( this.put( -sphere.coordinates.y, sphere.coordinates.x, sphere.state ) ) {
+          event.push({
+            to: {
+              x: -sphere.coordinates.y,
+              y: sphere.coordinates.x
+            },
+            from: {
+              x: sphere.coordinates.x,
+              y: sphere.coordinates.y
+            },
+            state: sphere.state,
+            success: true
+          });
           rotators.splice( i, 1 );
         }
       } else {
@@ -89,9 +102,23 @@ var rebalance = function( ) {
       }
     }
   }
+  this.emit( 'rotated', event );
   fallers.forEach( function( sphere ) {
     var liberty = findClosestLiberty( sphere.coordinates, sphere.valence );
     this.put( liberty.coordinates.x, liberty.coordinates.y, sphere.state );
+    event = {
+      to: {
+        x: liberty.coordinates.x,
+        y: liberty.coordinates.y
+      },
+      from: {
+        x: sphere.coordinates.x,
+        y: sphere.coordinates.y
+      },
+      state: sphere.state,
+      success: true
+    }
+    this.emit( 'moved', event );
     var chain = this.detectChain( liberty.coordinates.x, liberty.coordinates.y );
     if( chain.remove ) {
       this.removeChain( chain.chain );
