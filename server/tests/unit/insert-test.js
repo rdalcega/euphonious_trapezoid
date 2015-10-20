@@ -84,4 +84,38 @@ describe( 'A game\'s insert method', function( ) { // A standard describe block
     expect( game.get( -1, 0 ).state ).to.equal( '0' );
     expect( game.get( -2, 0 ).state ).to.equal( '1' );
   });
+  it( 'should emit a put event on succesful insertion', function( done ) {
+    var game = new Game( );
+    game.on( 'put', function( event ) {
+      expect( event.coordinates.x ).to.equal( 0 );
+      expect( event.coordinates.y ).to.equal( 1 );
+      expect( event.state ).to.equal( '0' );
+      expect( event.success ).to.equal( true );
+      done( );
+    });
+    game.insert({
+      coordinates: {
+        x: 0,
+        y: 1
+      },
+      state: '0'
+    });
+  });
+  it( 'should emit a put event on unsuccesful insertion', function( done ) {
+    var game = new Game( );
+    game.on( 'put', function( event ) {
+      expect( event.coordinates.x ).to.equal( 1 );
+      expect( event.coordinates.y ).to.equal( 1 );
+      expect( event.state ).to.equal( '0' );
+      expect( event.success ).to.equal( false );
+      done( );
+    });
+    game.insert({
+      coordinates: {
+        x: 1,
+        y: 1
+      },
+      state: '0'
+    });
+  });
 });

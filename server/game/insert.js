@@ -2,8 +2,9 @@ var insert = function( event ) {
   // We expect event to have the following form
   var coordinates = event.coordinates;
   var state = event.state;
-  var emit = true;
-  if( this.put( coordinates.x, coordinates.y, state, emit ) ) {
+  if( this.put( coordinates.x, coordinates.y, state ) ) {
+    event.success = true;
+    this.emit( 'put', event );
     var chain = this.detectChain( coordinates.x, coordinates.y );
     if( chain.remove ) {
       this.removeChain( chain.chain );
@@ -11,6 +12,9 @@ var insert = function( event ) {
     if( !this.balanced ) {
       this.rebalance( );
     }
+  } else {
+    event.success = false;
+    this.emit( 'put', event );
   }
 };
 module.exports = insert;

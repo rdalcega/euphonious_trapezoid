@@ -12,28 +12,6 @@ describe( 'A game\'s put method', function( ) { // A standard describe block
     expect( game.put( 10, 10, '0' ) ).to.be.false;
     expect( game.put( 0, 0, '0' ) ).to.be.false;
   });
-  it( 'should emit an event named put after succesful execution', function( done ) {
-    var game = new Game( );
-    game.on( 'put', function( event ) {
-        expect( event.success ).to.be.true;
-        expect( event.coordinates.x ).to.equal( 0 );
-        expect( event.coordinates.y ).to.equal( 1 );
-        expect( event.state ).to.equal( '0' );
-        done( );
-    });
-    game.put( 0, 1, '0', true );
-  });
-  it( 'should emit an event named put after failed execution', function( done ) {
-    var game = new Game( );
-    game.on( 'put', function( event ) {
-        expect( event.success ).to.be.false;
-        expect( event.coordinates.x ).to.equal( 10 );
-        expect( event.coordinates.y ).to.equal( 10 );
-        expect( event.state ).to.equal( '0' );
-        done( );
-    });
-    game.put( 10, 10, '0', true );
-  });
   it( 'should update the leaves array', function( ) {
     var game = new Game( );
     expect( game.put( 0, 1, '0' ) ).to.be.true;
