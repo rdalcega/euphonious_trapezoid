@@ -5,7 +5,7 @@ sphero.factory('Auth', ['$http', function($http) {
   request.signUp = function(username, password, email) {
     console.log(username, password, email);
     return $http({
-      method:'POST',
+      method: 'POST',
       url: SpheroApiUrl + '/player/signup',
       data: {
         username: username,
@@ -13,8 +13,7 @@ sphero.factory('Auth', ['$http', function($http) {
         email: email
       }
     }).then(function(resp) {
-      console.log(resp.data);
-      return resp.data;// will add immediate login to server
+      return resp.data; // will add immediate login to server
     });
 
   };
@@ -22,14 +21,13 @@ sphero.factory('Auth', ['$http', function($http) {
   request.login = function(username, password) {
     console.log(username, password);
     return $http({
-      method:'POST',
+      method: 'POST',
       url: SpheroApiUrl + '/auth/login',
       data: {
         username: username,
         password: password
       }
     }).then(function(resp) {
-      console.log(resp.data);
       return resp.data;
     });
 
@@ -38,15 +36,19 @@ sphero.factory('Auth', ['$http', function($http) {
 
 }]);
 
+
 sphero.factory('Player', [ function() {
 
-  var player = {};
+// sphero.service('Player', [function() {
 
-  player.username;
+//   var player = {};
 
-  player.id;
+//   player.username;
 
-  player.token;
+//   player.id;
+
+//   player.token;
+
 
 }]);
 
@@ -77,4 +79,6 @@ sphero.factory('socket', function () {
       });
     }
   };
+
 });
+

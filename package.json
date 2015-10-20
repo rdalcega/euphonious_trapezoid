@@ -4,7 +4,7 @@
   "description": "a dynamic, puzzle/strategy game for iOS",
   "scripts": {
     "start": "node server/server.js"
-    },
+  },
   "main": "",
   "repository": {
     "type": "git",
@@ -17,6 +17,7 @@
     "sinon": "^1.17.1"
   },
   "dependencies": {
+    "angular-jwt": "0.0.9",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
