@@ -1,6 +1,12 @@
-angular.module('sphero.routes', [])
+var router = angular.module('sphero.routes', []);
 
-.config(function($stateProvider, $urlRouterProvider) {
+// router.config(['$httpProvider', function($httpProvider) {
+//   $httpProvider.interceptors.push('middlewareAPI');
+//   $httpProvider.defaults.withCredentials = true;
+// }]);
+
+
+router.config(function($stateProvider, $urlRouterProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -22,22 +28,41 @@ angular.module('sphero.routes', [])
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/nav');
 
-})
-.factory('AttachTokens', function ($window) {
-  //this factory stops all outgoing requests, then looks in local storage
-  //for the user's JWT and adds the token to the request header
-  var attach = {
-    request: function (object) {
-      var jwt = $window.localStorage.getItem('sphero').token;
-      if (jwt) {
-        object.headers['x-access-token'] = jwt;
-      }
-      object.headers['Allow-Control-Allow-Origin'] = '*';
-      return object;
-    }
-  };
-  return attach;
 });
-//.run(function($rootScope, $location, $state, Auth, Player){
 
-//});
+
+// router.factory('middlewareAPI', function() {
+//     return {
+//         request: function(config) {
+//             var url = config.url.url;
+//             console.log(url);
+//             if(url){
+//               var pathArray = url.split('/');
+//               var firstPath = pathArray[1];
+//               if ((firstPath === 'spheroAPI') || (firstPath === 'auth') || (firstPath === 'player')){
+//                 config.url.url = 'https://evening-tor-8962.herokuapp.com/' + config.url.url;
+//               }
+//             }
+//             return config;
+//         }
+//     };
+// });
+
+// .factory('AttachTokens', function ($window) {
+//   //this factory stops all outgoing requests, then looks in local storage
+//   //for the user's JWT and adds the token to the request header
+//   var attach = {
+//     request: function (object) {
+//       var jwt = $window.localStorage.getItem('sphero').token;
+//       if (jwt) {
+//         object.headers['x-access-token'] = jwt;
+//       }
+//       object.headers['Allow-Control-Allow-Origin'] = '*';
+//       return object;
+//     }
+//   };
+//   return attach;
+// });
+// //.run(function($rootScope, $location, $state, Auth, Player){
+
+// //});

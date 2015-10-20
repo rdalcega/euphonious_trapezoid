@@ -17,3 +17,5 @@ var sphero = angular.module('sphero', ['ionic', 'sphero.routes'])
     }
   });
 })
+
+.constant('SpheroApiUrl','https://evening-tor-8962.herokuapp.com');
