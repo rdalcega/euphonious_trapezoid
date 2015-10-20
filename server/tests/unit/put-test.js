@@ -21,7 +21,7 @@ describe( 'A game\'s put method', function( ) { // A standard describe block
         expect( event.state ).to.equal( '0' );
         done( );
     });
-    game.put( 0, 1, '0' );
+    game.put( 0, 1, '0', true );
   });
   it( 'should emit an event named put after failed execution', function( done ) {
     var game = new Game( );
@@ -32,7 +32,7 @@ describe( 'A game\'s put method', function( ) { // A standard describe block
         expect( event.state ).to.equal( '0' );
         done( );
     });
-    game.put( 10, 10, '0' );
+    game.put( 10, 10, '0', true );
   });
   it( 'should update the leaves array', function( ) {
     var game = new Game( );

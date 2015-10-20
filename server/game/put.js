@@ -1,4 +1,4 @@
-var put = function( x, y, state ) {
+var put = function( x, y, state, emit ) {
   var sphere = this.get( x, y );
   var event = {
     coordinates: {
@@ -15,12 +15,16 @@ var put = function( x, y, state ) {
       sphere.state = state;
       this.restore( x, y );
       event.success = true;
-      this.emit( 'put', event );
+      if( emit ) {
+        this.emit( 'put', event );
+      }
       return true;
     }
   }
   event.success = false;
-  this.emit( 'put', event );
+  if( emit ) {
+    this.emit( 'put', event );
+  }
   return false;
 };
 module.exports = put;
