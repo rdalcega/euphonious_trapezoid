@@ -23,7 +23,12 @@ router.config(function($stateProvider, $urlRouterProvider) {
       url: '/launch',
       templateUrl: '../launch/launch.html',
       controller: 'launchController'
-    });
+    })
+    .state('game', {
+      url: '/game',
+      templateUrl: '../game/game.html',
+      controller: 'gameController'
+    })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/nav');
