@@ -1,4 +1,4 @@
-sphero.service('Auth', ['$http', function($http) {
+sphero.service('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 
   var request = {};
 
@@ -6,13 +6,14 @@ sphero.service('Auth', ['$http', function($http) {
     console.log(username, password, email);
     return $http({
       method:'POST',
-      url: '/player/signup',
+      url: SpheroApiUrl + '/player/signup',
       data: {
         username: username,
         password: password,
         email: email
       }
     }).then(function(resp) {
+      console.log(resp.data);
       return resp.data;// will add immediate login to server
     });
 
@@ -22,12 +23,13 @@ sphero.service('Auth', ['$http', function($http) {
     console.log(username, password);
     return $http({
       method:'POST',
-      url: '/auth/login',
+      url: SpheroApiUrl + '/auth/login',
       data: {
         username: username,
         password: password
       }
     }).then(function(resp) {
+      console.log(resp.data);
       return resp.data;
     });
 

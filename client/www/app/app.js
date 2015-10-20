@@ -18,6 +18,4 @@ var sphero = angular.module('sphero', ['ionic', 'sphero.routes'])
   });
 })
 
-.constant('SERVER', {
-    url: 'http://localhost:8080/'
-})
+.constant('SpheroApiUrl','https://evening-tor-8962.herokuapp.com');
