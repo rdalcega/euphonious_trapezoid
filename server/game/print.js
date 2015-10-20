@@ -53,5 +53,4 @@ var print = function( liberties ) {
   matrix = matrix.join('\n');
   console.log( matrix );
 };
-
 module.exports = print;
