@@ -4,7 +4,7 @@ sphero.service('Auth', ['$http', function($http) {
 
   request.signUp = function(username, password, email) {
 
-    $http.post({
+    return $http.post({
 
       url: '/player/signup',
 
@@ -20,7 +20,7 @@ sphero.service('Auth', ['$http', function($http) {
 
   request.login = function(username, password) {
 
-    $http.post({
+    return $http.post({
 
       url: '/auth/login',
 
@@ -32,6 +32,8 @@ sphero.service('Auth', ['$http', function($http) {
     });
 
   }
+
+  return request;
 
 }]);
 
