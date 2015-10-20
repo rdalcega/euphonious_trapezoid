@@ -1,8 +1,8 @@
 var router = angular.module('sphero.routes', []);
 
 // router.config(['$httpProvider', function($httpProvider) {
-//     $httpProvider.interceptors.push('middlewareAPI');
-//     $httpProvider.defaults.withCredentials = true;
+//   $httpProvider.interceptors.push('middlewareAPI');
+//   $httpProvider.defaults.withCredentials = true;
 // }]);
 
 
@@ -40,7 +40,7 @@ router.config(function($stateProvider, $urlRouterProvider) {
 //               var pathArray = url.split('/');
 //               var firstPath = pathArray[1];
 //               if ((firstPath === 'spheroAPI') || (firstPath === 'auth') || (firstPath === 'player')){
-//                 config.url.url = 'http://localhost:8080' + config.url.url;
+//                 config.url.url = 'https://evening-tor-8962.herokuapp.com/' + config.url.url;
 //               }
 //             }
 //             return config;
