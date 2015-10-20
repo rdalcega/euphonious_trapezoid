@@ -1,4 +1,5 @@
 var Board = require( './board.js' );
+var EventEmitter = require( 'events' );
 var get = require( './get.js' );
 var deletion = require( './delete.js' );
 var forNeighbors = require( './forNeighbors.js' );
@@ -13,6 +14,8 @@ var removeChain = require( './removeChain.js' );
 var rebalance = require( './rebalance.js' );
 var print = require( './print.js' );
 var Game = function( ) {
+  // Inherit from node's event emitter
+  EventEmitter.call( this );
   // We use a board instead of a simple
   // collection of spheres to take advantage
   // of the board's get and place methods.
@@ -90,6 +93,7 @@ var Game = function( ) {
   // will get removed.
   this.chainThreshold = 4;
 };
+Game.prototype = Object.create( EventEmitter.prototype );
 Game.prototype.get = get;
 Game.prototype.delete = deletion;
 Game.prototype.forNeighbors = forNeighbors;
