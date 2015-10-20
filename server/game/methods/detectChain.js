@@ -1,4 +1,4 @@
-var parse = require( './parse.js' );
+var parse = require( '../helpers/parse.js' );
 var detectChain = function( x, y, chain ) {
   var sphere = this.get( x, y );
   chain = chain || [];

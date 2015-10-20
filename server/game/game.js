@@ -1,19 +1,20 @@
 var Board = require( './board.js' );
 var EventEmitter = require( 'events' );
-var get = require( './get.js' );
-var deletion = require( './delete.js' );
-var forNeighbors = require( './forNeighbors.js' );
-var place = require( './place.js' );
-var leafiness = require( './leafiness.js' );
-var updateLeaves = require( './updateLeaves.js' );
-var restore = require( './restore.js' );
-var put = require( './put.js' );
-var anchored = require( './anchored.js' );
-var detectChain = require( './detectChain.js' );
-var removeChain = require( './removeChain.js' );
-var rebalance = require( './rebalance.js' );
-var print = require( './print.js' );
-var insert = require( './insert.js' );
+var get = require( './methods/get.js' );
+var deletion = require( './methods/delete.js' );
+var forNeighbors = require( './methods/forNeighbors.js' );
+var place = require( './methods/place.js' );
+var leafiness = require( './methods/leafiness.js' );
+var updateLeaves = require( './methods/updateLeaves.js' );
+var restore = require( './methods/restore.js' );
+var put = require( './methods/put.js' );
+var anchored = require( './methods/anchored.js' );
+var detectChain = require( './methods/detectChain.js' );
+var removeChain = require( './methods/removeChain.js' );
+var rebalance = require( './methods/rebalance.js' );
+var print = require( './methods/print.js' );
+var insert = require( './methods/insert.js' );
+var rank = require( './methods/rank.js' );
 var Game = function( ) {
   // Inherit from node's event emitter
   EventEmitter.call( this );
@@ -88,6 +89,15 @@ var Game = function( ) {
       }
     }
   );
+  Object.defineProperty(
+    this,
+    'ended',
+    {
+      get: function( ) {
+        return this.maximumValence >= 15;
+      }
+    }
+  );
   // Change the chainThreshold to fine tune
   // chain removal behavior. If the chainThreshold
   // is 4, then chains of 5 spheres with the same state
@@ -109,4 +119,5 @@ Game.prototype.removeChain = removeChain;
 Game.prototype.rebalance = rebalance;
 Game.prototype.print = print;
 Game.prototype.insert = insert;
+Game.prototype.rank = rank;
 module.exports = Game;
