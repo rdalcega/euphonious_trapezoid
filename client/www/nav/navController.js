@@ -1,27 +1,19 @@
-sphero.controller('navController',['$scope', '$window', 'Auth', 'Player', function($scope, http, player) {
+sphero.controller('navController',['$scope', '$window', 'Auth', 'Player', function($scope, $window, Auth, player) {
 
-  $scope.signUp = function() {
+  $scope.signUp = function(username, password, email) {
 
-    http.signUp($scope.username, $scope.password, $scope.email)
+    Auth.signUp(username, password, email)
       .then(function(error, success) {
-
-        if (success) {
-
-          $scope.username = '';
-          $scope.password = '';
-          $scope.email = '';
-
-        }
 
       });
 
-  }
+  };
 
 
 
-  $scope.login = function() {
+  $scope.login = function(username, password) {
 
-    http.login($scope.username, $scope.password)
+    Auth.login(username, password)
       .then(function(error, user) {
 
         $window.setItem('sphero.username', user.profile.userName);
@@ -30,6 +22,6 @@ sphero.controller('navController',['$scope', '$window', 'Auth', 'Player', functi
 
       });
 
-  }
+  };
 
 }]);
