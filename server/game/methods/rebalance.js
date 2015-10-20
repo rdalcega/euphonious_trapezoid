@@ -1,4 +1,4 @@
-var Board = require( './board.js' );
+var Board = require( '../board.js' );
 var rebalance = function( ) {
   var remove = function( x, y ) {
     var sphere = this.get( x,  y );
