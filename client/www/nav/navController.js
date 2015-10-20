@@ -20,9 +20,9 @@ sphero.controller('navController',['$scope', '$window', 'Auth', 'Player', functi
           throw error;
         }
 
-        $window.setItem('sphero.username', user.profile.userName);
+        $window.localStorage.setItem('sphero.username', user.profile.userName);
 
-        $window.setItem('sphere.token', user.token);
+        $window.localStorage.setItem('sphero.token', user.token);
 
       });
 
