@@ -5,41 +5,49 @@
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
     <title></title>
 
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
+    <link href="../lib/ionic/css/ionic.css" rel="stylesheet">
+    <link href="../css/style.css" rel="stylesheet">
 
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
 
     <!-- ionic/angularjs js -->
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <!-- threejs -->
-    <script src='./lib/three.js/build/three.min.js'></script>
-    <!-- threejs orbit controller for 3d rotation -->
-    <script src='./lib/three.js/examples/js/controls/OrbitControls.js'></script>
+    <script src="../lib/ionic/js/ionic.bundle.js"></script>
 
+    <!-- socket-client -->
+    <script src="../lib/socket.io-client/socket.io.js"></script>
+    <!-- threejs -->
+    <script src='../lib/three.js/build/three.min.js'></script>
+    <!-- threejs orbit controller for 3d rotation -->
+    <script src='../lib/three.js/examples/js/controls/OrbitControls.js'></script>
 
     <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
+    <script src="../cordova.js"></script>
 
-    <!-- your app's js -->
 
+    <!-- scripts for the app -->
     <script src="../app/app.js"></script>
     <script src="../app/routes.js"></script>
     <script src="../nav/navController.js"></script>
     <script src="../launch/launchController.js"></script>
+
+    <!-- scripts for the actual game  -->
+    <script src="game.js"></script>
+    <script src="../game/gameController.js"></script>
+
+
+
   </head>
-  <body ng-app="sphero" animation="slide-left-right-ios7">
+  <body ng-app="sphero">
 
     <ion-pane>
       <ion-header-bar class="bar-stable">
         <h1 class="title">SPHERO</h1>
       </ion-header-bar>
 
-      <ion-content scroll="false" id="game">
+      <ion-content scroll="false" id="game" ng-controller="gameController">
       </ion-content>
     </ion-pane>
   </body>
-  <script src="../js/game.js"></script>
 </html>
