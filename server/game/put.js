@@ -1,5 +1,12 @@
 var put = function( x, y, state ) {
   var sphere = this.get( x, y );
+  var event = {
+    coordinates: {
+      x: x,
+      y: y
+    },
+    state: state
+  };
   if( sphere ) {
     if( sphere.state === 'L' ) {
       if( sphere.valence === 1 ) {
@@ -7,12 +14,13 @@ var put = function( x, y, state ) {
       }
       sphere.state = state;
       this.restore( x, y );
+      event.success = true;
+      this.emit( 'put', event );
       return true;
-    } else {
-      return false;
     }
-  } else {
-    return false;
   }
+  event.success = false;
+  this.emit( 'put', event );
+  return false;
 };
 module.exports = put;
