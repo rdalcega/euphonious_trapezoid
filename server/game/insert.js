@@ -8,7 +8,7 @@ var insert = function( event ) {
       this.removeChain( chain.chain );
     }
     if( !this.balanced ) {
-      this.rebalanced( );
+      this.rebalance( );
     }
   }
 };
