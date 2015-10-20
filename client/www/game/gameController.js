@@ -1,4 +1,4 @@
-sphero.controller('gameController', function($element, game) {
+sphero.controller('gameController', function(game) {
   // the gameController requires sockets. we initialize them here
    var socket;
    if (window.__karma__) { 
@@ -8,7 +8,7 @@ sphero.controller('gameController', function($element, game) {
      socket = io.connect();
    }
 
-  var element = $element[0];
+  var element = document.getElementById('game');
 
   game.init(element, 2000, 20);
 
