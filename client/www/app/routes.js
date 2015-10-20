@@ -22,4 +22,22 @@ angular.module('sphero.routes', [])
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/nav');
 
+})
+.factory('AttachTokens', function ($window) {
+  //this factory stops all outgoing requests, then looks in local storage
+  //for the user's JWT and adds the token to the request header
+  var attach = {
+    request: function (object) {
+      var jwt = $window.localStorage.getItem('sphero').token;
+      if (jwt) {
+        object.headers['x-access-token'] = jwt;
+      }
+      object.headers['Allow-Control-Allow-Origin'] = '*';
+      return object;
+    }
+  };
+  return attach;
 });
+//.run(function($rootScope, $location, $state, Auth, Player){
+
+//});
