@@ -13,6 +13,7 @@ var detectChain = require( './detectChain.js' );
 var removeChain = require( './removeChain.js' );
 var rebalance = require( './rebalance.js' );
 var print = require( './print.js' );
+var insert = require( './insert.js' );
 var Game = function( ) {
   // Inherit from node's event emitter
   EventEmitter.call( this );
@@ -107,4 +108,5 @@ Game.prototype.detectChain = detectChain;
 Game.prototype.removeChain = removeChain;
 Game.prototype.rebalance = rebalance;
 Game.prototype.print = print;
+Game.prototype.insert = insert;
 module.exports = Game;
