@@ -17,3 +17,7 @@ var sphero = angular.module('sphero', ['ionic', 'sphero.routes'])
     }
   });
 })
+
+.constant('SERVER', {
+    url: 'http://localhost:8080/'
+})

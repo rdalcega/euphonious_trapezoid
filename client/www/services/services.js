@@ -3,35 +3,36 @@ sphero.service('Auth', ['$http', function($http) {
   var request = {};
 
   request.signUp = function(username, password, email) {
-
-    $http.post({
-
+    console.log(username, password, email);
+    return $http({
+      method:'POST',
       url: '/player/signup',
-
-      username: username,
-
-      password: password,
-
-      email: email
-
+      data: {
+        username: username,
+        password: password,
+        email: email
+      }
+    }).then(function(resp) {
+      return resp.data;// will add immediate login to server
     });
 
-  }
+  };
 
   request.login = function(username, password) {
-
-    $http.post({
-
+    console.log(username, password);
+    return $http({
+      method:'POST',
       url: '/auth/login',
-
-      username: username,
-
-      password: password
-
-
+      data: {
+        username: username,
+        password: password
+      }
+    }).then(function(resp) {
+      return resp.data;
     });
 
-  }
+  };
+  return request;
 
 }]);
 
