@@ -1,67 +1,77 @@
-var Node = require('./node.js');
-var insert = require('./insert.js');
-var remove = require( './remove.js');
-var adjust = require('./adjust.js');
+var Board = require( './board.js' );
+var get = require( './get.js' );
+var deletion = require( './delete.js' );
+var forNeighbors = require( './forNeighbors.js' );
+var place = require( './place.js' );
 var leafiness = require( './leafiness.js' );
-var print = require( './print.js' );
+var updateLeaves = require( './updateLeaves.js' );
+var restore = require( './restore.js' );
+var put = require( './put.js' );
 var anchored = require( './anchored.js' );
 var detectChain = require( './detectChain.js' );
-var searchAndDestroy = require( './searchAndDestroy.js' );
-var pop = require( './pop.js' );
+var removeChain = require( './removeChain.js' );
 var rebalance = require( './rebalance.js' );
-
-var Game = function ( ) {
-
-	this.board = {
-
-		'0:0': new Node('A', 0, false),
-		'0:1': new Node('L', 1),
-		'0:-1': new Node('L', 1),
-		'1:0': new Node('L', 1),
-		'-1:0': new Node('L', 1)
-
-	};
-
-	this.leaves = [4];
-
-	this.minimumValence = 0;
-
+var print = require( './print.js' );
+var Game = function( ) {
+  this.board = new Board( );
+  this._leaves = [4];
+  Object.defineProperty(
+    this,
+    'leaves',
+    {
+      get: function( ) {
+        while( this._leaves[ this._leaves.length - 1 ] === 0 ) {
+          this._leaves.pop( );
+        }
+        return this._leaves;
+      }
+    }
+  );
+  Object.defineProperty(
+    this,
+    'maximumValence',
+    {
+      get: function( ) {
+        return this.leaves.length - 1;
+      }
+    }
+  );
+  Object.defineProperty(
+    this,
+    'minimumValence',
+    {
+      get: function( ) {
+        var leaves = this.leaves;
+        for( var i = 0; i < leaves.length; i++ ) {
+          if( leaves[ i ] !== 0 ) {
+            return i;
+          }
+        }
+      }
+    }
+  );
+  Object.defineProperty(
+    this,
+    'balanced',
+    {
+      get: function( ) {
+        return this.maximumValence <= this.minimumValence + 3;
+      }
+    }
+  );
+  this.chainThreshold = 4;
 };
-
-Object.defineProperty( Game.prototype, "maximumValence",{
-	get: function( ) {
-		return this.leaves.length - 1;
-	}
-});
-
-Object.defineProperty( Game.prototype, "minimumValence", {
-	get: function( ) {
-		for( var i = 0; i < this.leaves.length; i++ ) {
-			if( this.leaves[ i ] !== 0 ) {
-				return i;
-			}
-		}
-	}
-});
-
-Game.prototype.insert = insert;
-
-Game.prototype.remove = remove;
-
-Game.prototype.adjust = adjust;
-
+Game.prototype.get = get;
+Game.prototype.delete = deletion;
+Game.prototype.forNeighbors = forNeighbors;
+Game.prototype.place = place;
 Game.prototype.leafiness = leafiness;
-
-Game.prototype.print = print;
-
+Game.prototype.updateLeaves = updateLeaves;
+Game.prototype.restore = restore;
+Game.prototype.put = put;
 Game.prototype.anchored = anchored;
-
 Game.prototype.detectChain = detectChain;
-
-Game.prototype.searchAndDestroy = searchAndDestroy;
-
-Game.prototype.pop = pop;
-
+Game.prototype.removeChain = removeChain;
 Game.prototype.rebalance = rebalance;
-
+Game.prototype.print = print;
 module.exports = Game;

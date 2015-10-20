@@ -1,112 +1,104 @@
-var rotate = require( './rotate.js' );
-var adjacentKeys = require( './adjacentKeys.js' );
-var parse = require( './parse.js' );
-
+var Board = require( './board.js' );
 var rebalance = function( ) {
-
-  var fallers = {};
-
-  var rotators = {};
-
-  var threshold = this.maximumValence - 2;
-
-  for( var key in this.board ) {
-
-    if( this.board[ key ].state !== 'L' && this.board[ key ].valence > threshold ) {
-
-      fallers[ key ] = this.pop( key );
-
-    }
-
-  }
-
-  fallers.keys = Object.keys( fallers ).sort( function( a, b ) {
-
-    return fallers[ b ].valence - fallers[ a ].valence;
-
-  });
-
-  for( var key in this.board ) {
-
-    rotators[ key ] = this.board[ key ].copy( );
-
-    delete this.board[ key ];
-
-  }
-
-  for( var key in rotators ) {
-
-    var coordinates = rotate( key );
-
-    this.board[ coordinates ] = rotators[ key ];
-
-  }
-
-  var findClosestLiberty = function( coordinates, valence, ignore ) {
-
-    valence = valence || fallers[ coordinates ].valence;
-
-    ignore = ignore || [];
-
-    var keys = adjacentKeys( coordinates );
-
-    for( var i = 0; i < keys.length; i++ ) {
-
-      var sphere = this.board[ keys[ i ] ];
-
-      if( sphere && sphere.state === 'L' && sphere.valence <= valence && ignore.indexOf( keys[ i ] ) < 0 ) {
-
-        return keys[ i ];
-
-      }
-
-    }
-
-    var towardCenter;
-
-    for( var i = 0; i < keys.length; i++ ) {
-
-      if( !towardCenter ) {
-
-        towardCenter = keys[ i ];
-
-      } else {
-
-        var towardCenterAbs = Math.abs( parse( towardCenter )[ 0 ] ) + Math.abs( parse( towardCenter )[ 1 ] );
-        var keysAbs = Math.abs( parse( keys[ i ] )[ 0 ] ) + Math.abs( parse( keys[ i ] )[ 1 ] );
-
-        if( keysAbs < towardCenterAbs ) {
-
-          towardCenter = keys[ i ];
-
+  var remove = function( x, y ) {
+    var sphere = this.get( x,  y );
+    var copy = sphere.copy( );
+    sphere.state = 'L';
+    this.updateLeaves( x, y );
+    this.forNeighbors( x, y, function( neighbor, coordinates ) {
+      var anchored = this.anchored( coordinates.x, coordinates.y );
+      if( neighbor ) {
+        if( neighbor.state === 'L' ) {
+          if( !anchored ) {
+            this.delete( coordinates.x, coordinates.y );
+          }
+        } else if( anchored ) {
+          if( neighbor.state === 'A' ) {
+            this.leaves[ 0 ] += 1;
+          } else {
+            this.updateLeaves( coordinates.x, coordinates.y );
+          }
         }
-
       }
-
+    }.bind( this ));
+    if( !this.anchored( x, y ) ) {
+      this.delete( x, y );
     }
-
-    ignore.push( coordinates );
-
-    return findClosestLiberty.call( this, towardCenter, valence, ignore );
-
-  };
-
-  var dontDestroy = true;
-
-  var dontRebalance = true;
-
-  for( var i = fallers.keys.length - 1; i >= 0; i-- ) {
-
-    if( i === 0 ) {
-
-      dontDestroy = dontRebalance = false;
-
+    return copy;
+  }.bind( this );
+  var findClosestLiberty = function( coordinates, valence, ignore ) {
+    if( coordinates.x === 0 && coordinates.y === 0 ) {
+      return false;
     }
-
-    this.insert( findClosestLiberty.call( this, fallers.keys[ i ] ), fallers[ fallers.keys[ i ] ].state, dontDestroy, dontRebalance );
-
+    ignore = ignore || [];
+    var liberty;
+    this.forNeighbors( coordinates.x, coordinates.y, function( neighbor ) {
+      if( neighbor && neighbor.state === 'L' && neighbor.valence <= valence ) {
+        if( ignore.indexOf( coordinates.x + ':' + coordinates.y ) < 0 ) {
+          liberty = neighbor;
+        }
+      }
+    }.bind( this ));
+    if( liberty ) {
+      return liberty;
+    }
+    var paths = [];
+    this.forNeighbors( coordinates.x, coordinates.y, function( neighbor, coordinates ) {
+      paths.push( coordinates );
+    });
+    paths.sort( function( aCoordinates, theCoordinates ) {
+      return Math.abs( aCoordinates.x ) + Math.abs( aCoordinates.y ) -
+        Math.abs( theCoordinates.x ) - Math.abs( theCoordinates.y );
+    });
+    for( var i = 0; i < paths.length; i++ ) {
+      var path = paths[ i ];
+      ignore.push( coordinates );
+      liberty = findClosestLiberty( path, valence, ignore );
+      if( liberty ) {
+        return liberty;
+      }
+      ignore.pop( );
+    }
+  }.bind( this );
+  var fallers = [];
+  var rotators = [];
+  var threshold = this.maximumValence - 2;
+  this.board.forEach( function( sphere ) {
+    if( sphere.state !== 'L' && sphere.valence > threshold ) {
+      fallers.push( remove( sphere.coordinates.x, sphere.coordinates.y ) );
+    }
+  }.bind( this ));
+  fallers = fallers.sort( function( aSphere, theSphere ) {
+    return aSphere.valence - theSphere.valence;
+  });
+  this.board.forEach( function( sphere, coordinates ) {
+    rotators.push( sphere.copy( ) );
+    this.delete( coordinates.x, coordinates.y );
+  }.bind( this ));
+  this.board = new Board( );
+  this._leaves = [4];
+  while( rotators.length > 0 ) {
+    for( var i = 0; i < rotators.length; i++ ) {
+      var sphere = rotators[ i ];
+      if( sphere.state !== 'L' && sphere.state !== 'A' ) {
+        if( this.put( -sphere.coordinates.y, sphere.coordinates.x, sphere.state ) ) {
+          rotators.splice( i, 1 );
+        }
+      } else {
+        rotators.splice( i, 1 );
+      }
+    }
   }
-
+  fallers.forEach( function( sphere ) {
+    var liberty = findClosestLiberty( sphere.coordinates, sphere.valence );
+    this.put( liberty.coordinates.x, liberty.coordinates.y, sphere.state );
+    var chain = this.detectChain( liberty.coordinates.x, liberty.coordinates.y );
+    if( chain.remove ) {
+      this.removeChain( chain.chain );
+    }
+  }.bind( this ));
+  if( !this.balanced ) {
+    this.rebalance( );
+  }
 };
-
 module.exports = rebalance;

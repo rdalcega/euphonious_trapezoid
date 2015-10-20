@@ -1,32 +1,19 @@
-var adjacentKeys = require('./adjacentKeys.js');
-
-
-var anchored = function(coordinates, ignore) {
-
-  if (coordinates === '0:0') {
-
+var anchored = function( x, y, ignore ) {
+  var sphere = this.get( x, y );
+  ignore = ignore || { x: x, y: y };
+  if( sphere && sphere.state === 'A' ) {
     return true;
-
   }
-
-  var keys = adjacentKeys( coordinates );
-
-  for (var i = 0; i < keys.length; i++) {
-
-    if ( keys[i] !== ignore && this.board[keys[i]] && this.board[keys[i]].state !== 'L') {
-
-      if (this.anchored(keys[i], coordinates)) {
-
-        return true;
-
+  var anchor = false;
+  this.forNeighbors( x, y, function( neighbor, coordinates ) {
+    if( coordinates.x !== ignore.x || coordinates.y !== ignore.y ) {
+      if( neighbor && neighbor.state !== 'L' ) {
+        if( this.anchored( coordinates.x, coordinates.y, { x: x, y: y } ) ) {
+          anchor = true;
+        }
       }
-
     }
-
-  }
-
-  return false;
-
+  }.bind( this ));
+  return anchor;
 };
-
 module.exports = anchored;

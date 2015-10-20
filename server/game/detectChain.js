@@ -1,33 +1,26 @@
-var adjacentKeys = require( './adjacentKeys.js' );
-
-var detectChain = function( coordinates, chain ) {
-
+var parse = require( './parse.js' );
+var detectChain = function( x, y, chain ) {
+  var sphere = this.get( x, y );
   chain = chain || [];
-
-  chain.push( coordinates );
-
-  var keys = adjacentKeys( coordinates );
-
-  for( var i = 0; i < keys.length; i++ ) {
-
-    var sphere = this.board[ keys[ i ] ];
-
-    if( chain.indexOf( keys[ i ] ) < 0 && sphere.state === this.board[ coordinates ].state ) {
-
-      this.detectChain( keys[ i ], chain );
-
+  chain.push( x + ':' + y );
+  this.forNeighbors( x, y, function( neighbor, coordinates ) {
+    if( neighbor && neighbor.state === sphere.state ) {
+      if( chain.indexOf( coordinates.x + ':' + coordinates.y ) < 0 ) {
+        this.detectChain( coordinates.x, coordinates.y, chain );
+      }
     }
-
-  }
-
+  }.bind( this ));
   return {
-
-    destroy: chain.length >= 5,
-
-    chain: chain
-
+    remove: chain.length > this.chainThreshold,
+    chain: chain.map( function( coordinates ) {
+      coordinates = parse( coordinates );
+      return {
+        x: coordinates.x,
+        y: coordinates.y
+      };
+    }).sort( function( a, the ) {
+      return this.get( the.x, the.y ).valence - this.get( a.x, a.y ).valence;
+    }.bind( this ))
   };
-
 };
-
 module.exports = detectChain;

@@ -1,101 +1,57 @@
-var parse = require( './parse.js' );
-
 var print = function( liberties ) {
-
-  var bounds = [[],[]]; // [[lowx, highx], [lowy, highy]]
-
-  var coordinates;
-
-  for( var key in this.board ) {
-
-    coordinates = parse( key );
-
-    if( bounds[ 0 ][ 0 ] ) {
-
-      bounds[ 0 ][ 0 ] = Math.min( bounds[ 0 ][ 0 ], coordinates[ 0 ] );
-
-    } else {
-
-      bounds[ 0 ][ 0 ] = coordinates[ 0 ];
-
+  var bounds = {
+    x: {
+      low: undefined,
+      high: undefined
+    },
+    y: {
+      low: undefined,
+      high: undefined
     }
-
-    if( bounds[ 0 ][ 1 ] ) {
-
-      bounds[ 0 ][ 1 ] = Math.max( bounds[ 0 ][ 1 ], coordinates[ 0 ] );
-
+  };
+  this.board.forEach( function( sphere, coordinates ) {
+    if( bounds.x.low ) {
+      bounds.x.low = Math.min( bounds.x.low, coordinates.x );
     } else {
-
-      bounds[ 0 ][ 1 ] = coordinates[ 0 ];
-
+      bounds.x.low = coordinates.x;
     }
-
-    if( bounds[ 1 ][ 0 ] ) {
-
-      bounds[ 1 ][ 0 ] = Math.min( bounds[ 1 ][ 0 ], coordinates[ 1 ] );
-
+    if( bounds.x.high ) {
+      bounds.x.high = Math.max( bounds.x.high, coordinates.x );
     } else {
-
-      bounds[ 1 ][ 0 ] = coordinates[ 1 ];
-
+      bounds.x.high = coordinates.x;
     }
-
-    if( bounds[ 1 ][ 1 ] ) {
-
-      bounds[ 1 ][ 1 ] = Math.max( bounds[ 1 ][ 1 ], coordinates[ 1 ] );
-
+    if( bounds.y.low ) {
+      bounds.y.low = Math.min( bounds.y.low, coordinates.y );
     } else {
-
-      bounds[ 1 ][ 1 ] = coordinates[ 1 ];
-
+      bounds.y.low = coordinates.y;
     }
-
-  }
-
+    if( bounds.y.high ) {
+      bounds.y.high = Math.max( bounds.y.high, coordinates.y );
+    } else {
+      bounds.y.high = coordinates.y;
+    }
+  });
   var matrix = [];
-
-  for( var row = 0; row <= bounds[ 1 ][ 1 ] - bounds[ 1 ][ 0 ]; row++ ) {
-
+  for( var row = 0; row <= bounds.y.high - bounds.y.low; row++ ) {
     matrix[ row ] = [];
-
-    for( var column = 0; column <= bounds[ 0 ][ 1 ] - bounds[ 0 ][ 0 ]; column++ ) {
-
-      matrix[ row ][ column ] = " ";
-
+    for( var column = 0; column <= bounds.x.high - bounds.y.low; column++ ) {
+      matrix[ row ][ column ] = ' ';
     }
-
   }
-
-  for( var key in this.board ) {
-
-    coordinates = parse( key );
-
+  this.board.forEach( function( sphere, coordinates ) {
     if( liberties ) {
-
-      matrix[ bounds[ 1 ][ 1 ] - coordinates[ 1 ] ][ coordinates[0] - bounds[ 0 ][ 0 ] ] = this.board[ key ].state;
-
+      matrix[ bounds.y.high - coordinates.y ][ coordinates.x - bounds.x.low ] = sphere.state;
     } else {
-
-      if( this.board[ key ].state !== 'L' ) {
-
-        matrix[ bounds[ 1 ][ 1 ] - coordinates[ 1 ] ][ coordinates[0] - bounds[ 0 ][ 0 ] ] = this.board[ key ].state;
-
+      if( sphere.state !== 'L' ) {
+        matrix[ bounds.y.high - coordinates.y ][ coordinates.x - bounds.x.low ] = sphere.state;
       }
-
     }
-
-  }
-
+  });
   for( var i = 0; i < matrix.length; i++ ) {
-
     matrix[ i ] = matrix[ i ].join(' ');
-
   }
-
   matrix = matrix.join('\n');
-
   console.log( matrix );
-
 };
 
 module.exports = print;

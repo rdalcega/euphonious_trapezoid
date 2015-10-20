@@ -1,25 +1,14 @@
-var adjacentKeys = require( './adjacentKeys' );
-
-var leafiness = function( coordinates ) {
-
-  var keys = adjacentKeys( coordinates );
-
-  var center = this.board[ coordinates ];
-
-  for( var i = 0; i < keys.length; i++ ) {
-
-    var adjacent = this.board[ keys[ i ] ];
-
-    if( adjacent.state !== 'L' && adjacent.valence > center.valence ) {
-
-      return false;
-
-    }
-
+var leafiness = function( x, y ) {
+  var sphere = this.get( x, y );
+  var leafy = true;
+  if( sphere.state === 'L' ) {
+    return false;
   }
-
-  return true;
-
+  this.forNeighbors( x, y, function( neighbor ) {
+    if( neighbor && neighbor.state !== 'L' && neighbor.valence > sphere.valence ) {
+      leafy = false;
+    }
+  });
+  return leafy;
 };
-
 module.exports = leafiness;
