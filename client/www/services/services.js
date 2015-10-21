@@ -1,4 +1,4 @@
-sphero.factory('Auth', ['$http', function($http) {
+sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 
   var request = {};
 
@@ -32,23 +32,8 @@ sphero.factory('Auth', ['$http', function($http) {
     });
 
   };
+
   return request;
-
-}]);
-
-
-sphero.factory('Player', [ function() {
-
-// sphero.service('Player', [function() {
-
-//   var player = {};
-
-//   player.username;
-
-//   player.id;
-
-//   player.token;
-
 
 }]);
 
