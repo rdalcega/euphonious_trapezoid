@@ -51,10 +51,7 @@ sphero.factory('socket', function (SpheroApiUrl) {
 
   return {
     on: function (eventName, callback) {
-      socket.on(eventName, function () {
-        var args = arguments;
-        callback.apply(socket, args);
-      });
+      socket.on(eventName, callback);
     },
     emit: function (eventName, data, callback) {
       console.log('emitting...')

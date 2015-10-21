@@ -13,7 +13,7 @@ sphero.controller('launchController', ['$scope', 'socket','$window', function($s
 	}
 
 	socket.on('started', function() {
-		$window.console.log("the server has started a game!");
+		console.log("the server has started a game!");
 
 	});
 
