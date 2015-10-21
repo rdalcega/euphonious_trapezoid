@@ -38,7 +38,7 @@ var join = function() {
 
 var startGame = function(gameId) {
 
-  var sockets = io.sockets.clients(gameId);
+  var sockets = io.clients(gameId);
   var game = new Game();
 
   for (var i = 0; i < sockets.length; i++) {
