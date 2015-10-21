@@ -1,16 +1,10 @@
-sphero.controller('gameController', function(game) {
-  // the gameController requires sockets. we initialize them here
-   var socket;
-   if (window.__karma__) { 
-    // in case we do testing with karma and phantom
-     socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
-   } else {
-     socket = io.connect();
-   }
+sphero.controller('gameController', function(game, socket) {
 
   var element = document.getElementById('game');
+  
+  var playerNum = 1;
 
-  game.init(element, 2000, 20);
+  game.init(element, playerNum, 2000, 20);
 
   window.addEventListener('resize', function() {
     game.resize();
@@ -18,13 +12,16 @@ sphero.controller('gameController', function(game) {
 
   window.addEventListener('mousedown', function (mouseDownEvent) {
     game.getGridPosition(mouseDownEvent, function (position2d) {
-      socket.emit('addPiece', position2d);
-      console.log('emitted: ', position2d);
+      socket.emit('insert', {coordinates: position2d, state:playerNum }, function () {
+        console.log('emitted: ', {coordinates: position2d, state:playerNum });
+      } );
     });
   }, false);
 
-  socket.on('addPiece', function (pieceData) {
-    game.addPiece(pieceData.x, pieceData.y, pieceData.state);
-  })
+  socket.on('put', function (data) {
+    if (data.success) {
+      game.addPiece(data.x, data.y, data.state);
+    }
+  });
 
 });
