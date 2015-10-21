@@ -38,11 +38,10 @@ var join = function(io) {
 
 var startGame = function(gameId, io) {
 
-  var sockets = io.nsps['/'].adapter.rooms[gameId].map(function(socketId) {
+  var sockets = Object.keys(io.nsps['/'].adapter.rooms[gameId]).map(function(socketId) {
     return io.sockets.connected(socketId);
   });
 
-  console.log("SOCKETS ARRAY IS " + io.nsps['/'].adapter.rooms[gameId]);
   var game = new Game();
   console.log("GAME MADE - IT IS " + game);
   for (var i = 0; i < sockets.length; i++) {
