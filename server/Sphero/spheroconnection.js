@@ -39,7 +39,7 @@ var join = function(io) {
 var startGame = function(gameId, io) {
 
   var sockets = Object.keys(io.nsps['/'].adapter.rooms[gameId]).map(function(socketId) {
-    return io.sockets.connected(socketId);
+    return io.sockets.connected[socketId];
   });
 
   var game = new Game();
