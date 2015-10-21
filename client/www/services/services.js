@@ -48,8 +48,10 @@ sphero.factory('socket', ['SpheroApiUrl', function (SpheroApiUrl) {
    // } else {
      socket = io.connect(SpheroApiUrl);
    // }
-    socket.on('*', function() {
-      console.log("An event was triggered by the server.");
+    socket.on('started', function(data) {
+      socket.emit('something');
+      console.log('Im starting ', data);
+
     });
 
   return {

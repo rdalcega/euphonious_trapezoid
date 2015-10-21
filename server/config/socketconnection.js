@@ -14,6 +14,10 @@ module.exports = function(io) {
     // io.emit('started', null, function() {
     //   console.log("I've emitted started");
     // });
+  socket.emit('started', {'message':'i heard you'});
+  socket.on('started', function() {
+    console.log("CLIENT EMITTED STARTED");
+  })
     Sphero.init(io, socket);
     socket.on('disconnect', function(){
       console.log('a user disconnected');
