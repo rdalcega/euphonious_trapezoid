@@ -41,13 +41,16 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 
 /* This factory sets up a socket connection and gives you .on and .emit methods to use.
 */
-sphero.factory('socket', function (SpheroApiUrl) {
+sphero.factory('socket', ['SpheroApiUrl', function (SpheroApiUrl) {
    var socket;
    // if (window.__karma__) { //in case we do testing with karma and phantom
    //   socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
    // } else {
      socket = io.connect(SpheroApiUrl);
    // }
+    socket.on('started', function() {
+      console.log("I'm here!");
+    });
 
   return {
     on: function (eventName, callback) {
@@ -64,5 +67,5 @@ sphero.factory('socket', function (SpheroApiUrl) {
     }
   };
 
-});
+}]);
 
