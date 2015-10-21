@@ -3,7 +3,7 @@ var Game = require('../game/game.js');
 
 var gameQueue = [];
 
-var host = function(socket) {
+var host = function() {
   // Create a unique Socket.IO Room
   var gameId = (Math.random() * 100000) || 0;
   // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
@@ -14,9 +14,9 @@ var host = function(socket) {
 
   
   // Join the Room and wait for the players
-  socket.join(gameId.toString());
+  this.join(gameId.toString());
   gameQueue.push(gameId);
-  console.log('the game queue is ' + gameQueue);
+  console.log('THE GAME QUEUE IS CURRENTLY!!! ' + gameQueue);
 };
 
 var join = function(socket) {
