@@ -15,7 +15,7 @@ var host = function(io) {
   
   // Join the Room and wait for the players
   this.join(gameId.toString());
-  gameQueue.push(gameId);
+  gameQueue.push(gameId.toString());
   console.log('THE GAME QUEUE IS CURRENTLY!!! ' + gameQueue);
 };
 
@@ -59,7 +59,7 @@ var startGame = function(gameId, io) {
 
     game.on(events[i], function(event) {
 
-      io.sockets.in(gameId).emit(events[i], event);
+      io.to(gameId).emit(events[i], event);
 
     });
 
@@ -71,7 +71,7 @@ var startGame = function(gameId, io) {
 
   });
 
-  io.sockets.in(gameId).emit('started');
+  io.to(gameId).emit('started');
 
 
   console.log("ALL LISTENERS ATTACHED");
