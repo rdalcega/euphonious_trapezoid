@@ -1,12 +1,12 @@
 // hook into core game logic
 
-module.exports.init = function(io, game) {
-  //game.emit('connected', can emit when connected to game)
+module.exports.init = function(io, socket) {
+  //socket.emit('connected', can emit when connected to game)
 
   //Game Events ==========
   
   //host events
-  game.on('hostCreateNewGame', module.exports.hostCreateNewGame);
+  socket.on('hostCreateNewGame', module.exports.hostCreateNewGame);
 
   //other events
 };
