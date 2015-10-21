@@ -2,6 +2,14 @@ var insert = function( event ) {
   // We expect event to have the following form
   var coordinates = event.coordinates;
   var state = event.state;
+  // Insert, unlike put or place, emits events, removes chains,
+  // and rebalances each time it puts a piece on the board.
+  // 'put' events are triggered here instead of inside
+  // the put method so that the put method can be
+  // used in other methods where it's not desirable
+  // to trigger a 'put' event.
+  // For all practical purposes, insert is the method
+  // through which the client will manipulate the board's state.
   if( this.put( coordinates.x, coordinates.y, state ) ) {
     event.success = true;
     this.emit( 'put', event );

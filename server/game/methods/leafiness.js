@@ -1,6 +1,14 @@
 var leafiness = function( x, y ) {
+  // A sphere is leafy if it is
+  // surrounded by sphere's whose valence
+  // are less than its own. That is to say,
+  // a sphere is not leafy if at least
+  // one of it's neighbors has a valence
+  // greater than it's own.
   var sphere = this.get( x, y );
   var leafy = true;
+  // Sphere's that are liberties
+  // cannot be leafy.
   if( sphere.state === 'L' ) {
     return false;
   }

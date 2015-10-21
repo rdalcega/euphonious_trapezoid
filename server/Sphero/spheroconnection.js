@@ -4,7 +4,7 @@ module.exports.init = function(io, game) {
   //game.emit('connected', can emit when connected to game)
 
   //Game Events ==========
-
+  
   //host events
   game.on('hostCreateNewGame', module.exports.hostCreateNewGame);
 

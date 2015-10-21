@@ -1,108 +1,144 @@
 var Board = require( '../board.js' );
 var rebalance = function( ) {
   var remove = function( x, y ) {
+    // This remove is intentionally different to
+    // the remove inside of removeChain.
+    // This remove does not reanchor or replace
+    // pieces, it only saves a copy of the piece
+    // and toggles the state of the piece on the board
+    // to 'L' so that it is ignored by the rotator
+    // screening further down in the algorithm.
     var sphere = this.get( x,  y );
     var copy = sphere.copy( );
     sphere.state = 'L';
-    this.updateLeaves( x, y );
-    this.forNeighbors( x, y, function( neighbor, coordinates ) {
-      var anchored = this.anchored( coordinates.x, coordinates.y );
-      if( neighbor ) {
-        if( neighbor.state === 'L' ) {
-          if( !anchored ) {
-            this.delete( coordinates.x, coordinates.y );
-          }
-        } else if( anchored ) {
-          if( neighbor.state === 'A' ) {
-            this.leaves[ 0 ] += 1;
-          } else {
-            this.updateLeaves( coordinates.x, coordinates.y );
-          }
-        }
-      }
-    }.bind( this ));
-    if( !this.anchored( x, y ) ) {
-      this.delete( x, y );
-    }
     return copy;
   }.bind( this );
   var findClosestLiberty = function( coordinates, valence, ignore ) {
+    // This is for the fallers. It is the function
+    // used to figure out where the pieces that did
+    // not rotate with the rest of the board because
+    // their valence was too large will fall.
     if( coordinates.x === 0 && coordinates.y === 0 ) {
+      // This is the base case. If the function reached
+      // the anchor in search of a closest liberty toward
+      // the center, this means that said branch
+      // of the search algorithm did not yield a plausible
+      // solution. We return false so that the algorithm knows
+      // to explore other branches.
       return false;
     }
+    // Ignore is the array of coordinates, as x:y strings, that holds
+    // all of the visited coordinates in this branch of the algorithm.
     ignore = ignore || [];
     var liberty;
     this.forNeighbors( coordinates.x, coordinates.y, function( neighbor ) {
+      // In case one of the neighbors is a liberty with a valence smaller
+      // than the valence of the piece that is falling, then that neighbor
+      // is the closest liberty only if it should not be ignored.
       if( neighbor && neighbor.state === 'L' && neighbor.valence <= valence ) {
         if( ignore.indexOf( coordinates.x + ':' + coordinates.y ) < 0 ) {
           liberty = neighbor;
         }
       }
     }.bind( this ));
+    // In the case that one of the neighbors
+    // was the closest liberty, we simply return
+    // that liberty.
     if( liberty ) {
       return liberty;
     }
+    // Paths is an array of all the coordinates
+    // through which the function can continue
+    // searching for a liberty.
     var paths = [];
     this.forNeighbors( coordinates.x, coordinates.y, function( neighbor, coordinates ) {
       paths.push( coordinates );
     });
+    // Paths is sorted in order of distance from
+    // the anchor so as to prefer paths that yield
+    // liberties closer to the center.
     paths.sort( function( aCoordinates, theCoordinates ) {
       return Math.abs( aCoordinates.x ) + Math.abs( aCoordinates.y ) -
         Math.abs( theCoordinates.x ) - Math.abs( theCoordinates.y );
     });
+    // Because we didn't find a liberty above, we search
+    // for liberties in paths starting at each of
+    // the coordinates in paths.
+    // The loop is broken and a liberty
+    // is returned only if a liberty is found.
+    ignore.push( coordinates );
     for( var i = 0; i < paths.length; i++ ) {
       var path = paths[ i ];
-      ignore.push( coordinates );
       liberty = findClosestLiberty( path, valence, ignore );
       if( liberty ) {
         return liberty;
       }
-      ignore.pop( );
     }
+    ignore.pop( );
+    // If no paths were found, this is
+    // because for every possible path
+    // starting at the coordinates in paths,
+    // there is no available liberty.
+    // Presumably, liberty is false.
+    return liberty;
   }.bind( this );
+  // There are two types of spheres on an unbalanced
+  // board. Fallers are the pieces with a valence
+  // greater than the threshold, and rotators are
+  // the pieces with a valence less than the threshold.
   var fallers = [];
   var rotators = [];
   var event = [];
   var threshold = this.maximumValence - 2;
+  // We find all of the fallers and remove them from the board.
   this.board.forEach( function( sphere ) {
     if( sphere.state !== 'L' && sphere.valence > threshold ) {
       fallers.push( remove( sphere.coordinates.x, sphere.coordinates.y ) );
     }
   }.bind( this ));
+  // We sort the fallers by ascending valence.
   fallers = fallers.sort( function( aSphere, theSphere ) {
     return aSphere.valence - theSphere.valence;
   });
-  this.board.forEach( function( sphere, coordinates ) {
-    rotators.push( sphere.copy( ) );
-    this.delete( coordinates.x, coordinates.y );
+  // All pieces left on the board that are not
+  // liberties are rotators.
+  this.board.forEach( function( sphere ) {
+    if( sphere.state !== 'L' && sphere.state !== 'A' ) {
+      rotators.push( sphere.copy( ) );
+    }
   }.bind( this ));
+  // We sort the rotators by ascending valence
+  rotators = rotators.sort( function( aSphere, theSphere ) {
+    return aSphere.valence - theSphere.valence;
+  });
+  // We get rid of the old board and create a blank slate.
   this.board = new Board( );
   this._leaves = [4];
-  while( rotators.length > 0 ) {
-    for( var i = 0; i < rotators.length; i++ ) {
-      var sphere = rotators[ i ];
-      if( sphere.state !== 'L' && sphere.state !== 'A' ) {
-        if( this.put( -sphere.coordinates.y, sphere.coordinates.x, sphere.state ) ) {
-          event.push({
-            to: {
-              x: -sphere.coordinates.y,
-              y: sphere.coordinates.x
-            },
-            from: {
-              x: sphere.coordinates.x,
-              y: sphere.coordinates.y
-            },
-            state: sphere.state,
-            success: true
-          });
-          rotators.splice( i, 1 );
-        }
-      } else {
-        rotators.splice( i, 1 );
-      }
+  // Because the rotators are sorted by ascending valence,
+  // it's safe to put them on the new board using the game's
+  // put method.
+  for( var i = 0; i < rotators.length; i++ ) {
+    var sphere = rotators[ i ];
+    if( this.put( -sphere.coordinates.y, sphere.coordinates.x, sphere.state ) ) {
+      event.push({
+        to: {
+          x: -sphere.coordinates.y,
+          y: sphere.coordinates.x
+        },
+        from: {
+          x: sphere.coordinates.x,
+          y: sphere.coordinates.y
+        },
+        state: sphere.state,
+        success: true
+      });
     }
   }
   this.emit( 'rotated', event );
+  // We use find closest liberty to replace all of the
+  // fallers on the new, rotated board. In case that on
+  // any of these movements a chain is created, that chain
+  // is destroyed before the rest of the fallers fall.
   fallers.forEach( function( sphere ) {
     var liberty = findClosestLiberty( sphere.coordinates, sphere.valence );
     this.put( liberty.coordinates.x, liberty.coordinates.y, sphere.state );
@@ -117,13 +153,20 @@ var rebalance = function( ) {
       },
       state: sphere.state,
       success: true
-    }
+    };
     this.emit( 'moved', event );
     var chain = this.detectChain( liberty.coordinates.x, liberty.coordinates.y );
     if( chain.remove ) {
       this.removeChain( chain.chain );
     }
   }.bind( this ));
+  // In case that, by chain removal, 
+  // the board resulting from the rebalance
+  // is still not balanced, we rebalance.
+  // This process will not cause for an infinite
+  // recursive loop because the board that
+  // contains the anchor and its four liberties
+  // is balanced.
   if( !this.balanced ) {
     this.rebalance( );
   }
