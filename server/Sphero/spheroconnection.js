@@ -59,7 +59,7 @@ var startGame = function(gameId, io) {
 
     game.on(events[i], function(event) {
 
-      io.to(gameId).emit(events[i], event);
+      io.emit(events[i], event);
 
     });
 
@@ -71,7 +71,7 @@ var startGame = function(gameId, io) {
 
   });
 
-  io.to(gameId).emit('started');
+  io.emit('started', {'for': 'everyone'});
 
 
   console.log("ALL LISTENERS ATTACHED");
