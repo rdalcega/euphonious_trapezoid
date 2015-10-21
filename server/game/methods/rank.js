@@ -1,4 +1,9 @@
 var rank = function( ) {
+  // Returns an array that indicates
+  // which player is winning the game.
+  // This array contains the player
+  // ids in descending order from
+  // winner to loser.
   var scores = {
     '0': 0,
     '1': 0,

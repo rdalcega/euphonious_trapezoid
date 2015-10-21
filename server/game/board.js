@@ -1,7 +1,7 @@
 var Sphere = require( './sphere.js' );
 var Board = function( ) {
   var spheres = {
-    '0:0': new Sphere({ //Anchor
+    '0:0': new Sphere({ // Anchor
       state: 'A',
       valence: 0,
       coordinates: {
@@ -9,7 +9,7 @@ var Board = function( ) {
         y: 0
       }
     }),
-    '0:1': new Sphere({ //Liberty
+    '0:1': new Sphere({ // Liberty
       state: 'L',
       valence: 1,
       coordinates: {
@@ -17,7 +17,7 @@ var Board = function( ) {
         y: 1
       }
     }),
-    '1:0': new Sphere({ //Liberty
+    '1:0': new Sphere({ // Liberty
       state: 'L',
       valence: 1,
       coordinates: {
@@ -25,7 +25,7 @@ var Board = function( ) {
         y: 0
       }
     }),
-    '0:-1': new Sphere({ //Liberty
+    '0:-1': new Sphere({ // Liberty
       state: 'L',
       valence: 1,
       coordinates: {
@@ -33,7 +33,7 @@ var Board = function( ) {
         y: -1
       }
     }),
-    '-1:0': new Sphere({ //Anchor
+    '-1:0': new Sphere({ // Liberty
       state: 'L',
       valence: 1,
       coordinates: {
