@@ -2,7 +2,7 @@ var chai = require( '../../../node_modules/chai/chai.js' );
 // var assert = chai.assert;
 var expect = chai.expect;
 // var sinon = require( '../../node_modules/sinon/pkg/sinon.js' );
-var parse = require('../../game/parse.js');
+var parse = require('../../game/helpers/parse.js');
 
 describe( 'parse', function( ) { // A standard describe block
 

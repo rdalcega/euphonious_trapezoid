@@ -13,10 +13,19 @@
     </style>
 
     <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
 
+    
+
+    <script src="lib/ionic/js/ionic.bundle.js"></script>
     <link href="http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css" rel="stylesheet">
 
+    
+    <script src="lib/socket.io-client/socket.io.js"></script>
+    <script src="lib/three.js/build/three.min.js"></script>
+    
+    <!-- script for controlling the camera with mouse, probably unnecessary in production version -->
+    <script src="lib/three.js/examples/js/controls/OrbitControls.js"></script>
+    <script type="text/javascript" src="lib/angular-jwt/dist/angular-jwt.js"></script>
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above -->
 <!--     <link href="css/ionic.app.css" rel="stylesheet">
  -->   
@@ -26,7 +35,11 @@
     <script src="nav/navController.js"></script>
     <script src="launch/launchController.js"></script>
 
+    <script src="game/gameController.js"></script>
+    <script src="game/game.js"></script>
     <script src="services/services.js"></script>
+
+   <!-- scripts for the actual game  -->
 
   </head>
   <body ng-app="sphero" animation="slide-left-right-ios7">
