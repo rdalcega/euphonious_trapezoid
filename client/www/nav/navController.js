@@ -4,7 +4,8 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', function($scope
 
     Auth.signUp(username, password, email)
       .then(function(success) {
-        console.log(signedup);
+
+
       });
 
   };
@@ -14,12 +15,16 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', function($scope
 
     Auth.login(username, password)
       .then(function(user) {
-        console.log(user);
-        $window.localStorage.setItem('sphero.user', user.profile);
 
         $window.localStorage.setItem('id_token', user.token);
 
       });
+
+  };
+
+  $scope.logout = function() {
+
+    $window.localStorage.removeItem('id_token');
 
   };
 

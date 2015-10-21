@@ -1,9 +1,9 @@
-sphero.factory('Auth', ['$http', function($http) {
+sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 
   var request = {};
 
   request.signUp = function(username, password, email) {
-    console.log(username, password, email);
+
     return $http({
       method: 'POST',
       url: SpheroApiUrl + '/player/signup',
@@ -19,7 +19,7 @@ sphero.factory('Auth', ['$http', function($http) {
   };
 
   request.login = function(username, password) {
-    console.log(username, password);
+
     return $http({
       method: 'POST',
       url: SpheroApiUrl + '/auth/login',
@@ -29,26 +29,12 @@ sphero.factory('Auth', ['$http', function($http) {
       }
     }).then(function(resp) {
       return resp.data;
+
     });
 
   };
+
   return request;
-
-}]);
-
-
-sphero.factory('Player', [ function() {
-
-// sphero.service('Player', [function() {
-
-//   var player = {};
-
-//   player.username;
-
-//   player.id;
-
-//   player.token;
-
 
 }]);
 

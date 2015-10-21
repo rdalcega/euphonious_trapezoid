@@ -14,7 +14,7 @@ module.exports.signup = function(req, res) {
 
   db.query(sqlQueryAsk, function(err, results) {
     if (err) {
-      console.log(err);
+      console.log("ask" + err);
     } else {
       console.log(results);
       if (results.length !== 0) { // if entry exists then kick back and ask for new input
