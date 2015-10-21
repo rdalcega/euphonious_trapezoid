@@ -24,8 +24,8 @@ var join = function(io) {
   
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
-
-      if(io.nsps['/'].adapter.rooms[gameQueue[0]].length === 4) {
+      console.log("gameQueue AFTER JOIN IS " + gameQueue);
+      if(io.nsps['/'].adapter.rooms[gameQueue[0]].length === 2) {
         startGame(gameQueue.shift(), io);
       }
 
@@ -40,6 +40,8 @@ var startGame = function(gameId, io) {
   var sockets = io.nsps['/'].adapter.rooms[gameId].map(function(socketId) {
     return io.sockets.connected(socketId);
   });
+
+  console.log("SOCKETS ARRAY IS " + io.nsps['/'].adapter.rooms[gameId]);
   var game = new Game();
 
   for (var i = 0; i < sockets.length; i++) {
@@ -77,7 +79,7 @@ module.exports.init = function(io, socket) {
   //socket.emit('connected', can emit when connected to game)
 
   //Game Events ==========
-  
+
   //host events
   socket.on('host', host.bind(socket, io));
 
