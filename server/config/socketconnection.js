@@ -10,6 +10,8 @@ module.exports = function(io) {
 
   io.on('connection', function(socket) {
     console.log('a user connected');
+    socket.emit('started');
+    // io.emit('started');
     Sphero.init(io, socket);
     socket.on('disconnect', function(){
       console.log('a user disconnected');
