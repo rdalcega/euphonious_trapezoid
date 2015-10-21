@@ -41,13 +41,13 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 
 /* This factory sets up a socket connection and gives you .on and .emit methods to use.
 */
-sphero.factory('socket', function () {
+sphero.factory('socket', function (SpheroApiUrl) {
    var socket;
-   if (window.__karma__) { //in case we do testing with karma and phantom
-     socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
-   } else {
-     socket = io.connect('https://evening-tor-8962.herokuapp.com/');
-   }
+   // if (window.__karma__) { //in case we do testing with karma and phantom
+   //   socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
+   // } else {
+     socket = io.connect(SpheroApiUrl);
+   // }
 
   return {
     on: function (eventName, callback) {
@@ -57,6 +57,7 @@ sphero.factory('socket', function () {
       });
     },
     emit: function (eventName, data, callback) {
+      console.log('emitting...')
       socket.emit(eventName, data, function () {
         var args = arguments;
         if (callback) {
