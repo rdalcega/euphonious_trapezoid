@@ -26,7 +26,7 @@ var join = function() {
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
 
-      if(io.sockets.clients(gameQueue[0]).length === 4) {
+      if(io.clients(gameQueue[0]).length === 4) {
         startGame(gameQueue.shift());
       }
 
