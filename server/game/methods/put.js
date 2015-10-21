@@ -8,11 +8,8 @@ var put = function( x, y, state ) {
       sphere.state = state;
       this.restore( x, y );
       return true;
-    } else {
-      return false;
     }
-  } else {
-    return false;
   }
+  return false;
 };
 module.exports = put;

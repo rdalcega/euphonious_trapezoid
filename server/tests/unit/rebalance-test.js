@@ -38,6 +38,45 @@ describe( 'A game\'s rebalance method', function( ) { // A standard describe blo
     expect( game.get(-2, 0).state ).to.equal( '1' );
     expect( game.leaves ).to.deep.equal( [2, 0, 2] );
   });
+  it( 'should emit a rotated event on rebalance', function( done ) {
+    var game = new Game( );
+    game.on( 'rotated', function( event ) {
+      expect( event.length ).to.equal( 2 );
+      expect( event[ 0 ].to.x ).to.not.be.undefined;
+      expect( event[ 0 ].to.y ).to.not.be.undefined;
+      expect( event[ 0 ].from.x ).to.not.be.undefined;
+      expect( event[ 0 ].from.y ).to.not.be.undefined;
+      expect( event[ 0 ].state ).to.not.be.undefined;
+      expect( event[ 0 ].success ).to.be.true;
+      expect( event[ 1 ].to.x ).to.not.be.undefined;
+      expect( event[ 1 ].to.y ).to.not.be.undefined;
+      expect( event[ 1 ].from.x ).to.not.be.undefined;
+      expect( event[ 1 ].from.y ).to.not.be.undefined;
+      expect( event[ 1 ].state ).to.not.be.undefined;
+      expect( event[ 1 ].success ).to.be.true;
+      done( );
+    });
+    game.put( 0, 1, '0' );
+    game.put( 0, 2, '1' );
+    game.put( 0, 3, '2' );
+    game.put( 0, 4, '3' );
+    game.rebalance( );
+  });
+  it( 'should emit a moved event on rebalance for every piece that falls', function( done ) {
+    var game = new Game( );
+    var count = 0;
+    game.on( 'moved', function( ) {
+      count++;
+      if( count === 2 ) {
+        done( );
+      }
+    });
+    game.put( 0, 1, '0' );
+    game.put( 0, 2, '1' );
+    game.put( 0, 3, '2' );
+    game.put( 0, 4, '3' );
+    game.rebalance( );
+  });
   it( 'should rebalance an unbalanced board', function( ) {
     var game = new Game( );
     game.put( 0, 1, '0' );

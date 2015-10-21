@@ -1,9 +1,4 @@
-var router = angular.module('sphero.routes', []);
-
-// router.config(['$httpProvider', function($httpProvider) {
-//   $httpProvider.interceptors.push('middlewareAPI');
-//   $httpProvider.defaults.withCredentials = true;
-// }]);
+var router = angular.module('sphero.routes', ['angular-jwt']);
 
 
 router.config(function($stateProvider, $urlRouterProvider) {
@@ -23,30 +18,26 @@ router.config(function($stateProvider, $urlRouterProvider) {
       url: '/launch',
       templateUrl: '../launch/launch.html',
       controller: 'launchController'
-    });
+    })
+    .state('game', {
+      url: '/game',
+      templateUrl: '../game/game.html',
+      controller: 'gameController'
+    })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/nav');
 
 });
 
+router.config(function Config($httpProvider, jwtInterceptorProvider) {
+  jwtInterceptorProvider.tokenGetter = function(){  //refactor to service for minification
+    console.log(localStorage);
+    return localStorage.getItem('id_token');
+  };
 
-// router.factory('middlewareAPI', function() {
-//     return {
-//         request: function(config) {
-//             var url = config.url.url;
-//             console.log(url);
-//             if(url){
-//               var pathArray = url.split('/');
-//               var firstPath = pathArray[1];
-//               if ((firstPath === 'spheroAPI') || (firstPath === 'auth') || (firstPath === 'player')){
-//                 config.url.url = 'https://evening-tor-8962.herokuapp.com/' + config.url.url;
-//               }
-//             }
-//             return config;
-//         }
-//     };
-// });
+  $httpProvider.interceptors.push('jwtInterceptor');
+});
 
 // .factory('AttachTokens', function ($window) {
 //   //this factory stops all outgoing requests, then looks in local storage
@@ -63,6 +54,6 @@ router.config(function($stateProvider, $urlRouterProvider) {
 //   };
 //   return attach;
 // });
-// //.run(function($rootScope, $location, $state, Auth, Player){
+//.run(function($rootScope, $location, $state, Auth, Player){
 
-// //});
+//});
