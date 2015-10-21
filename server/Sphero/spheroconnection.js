@@ -2,9 +2,8 @@
 var Game = require('../game/game.js');
 
 var gameQueue = [];
-var io;
 
-var host = function() {
+var host = function(io) {
   // Create a unique Socket.IO Room
   var gameId = (Math.random() * 100000) || 0;
   // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
@@ -20,14 +19,14 @@ var host = function() {
   console.log('THE GAME QUEUE IS CURRENTLY!!! ' + gameQueue);
 };
 
-var join = function() {
+var join = function(io) {
 
   
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
 
       if(io.clients(gameQueue[0]).length === 4) {
-        startGame(gameQueue.shift());
+        startGame(gameQueue.shift(), io);
       }
 
     } else { 
@@ -36,7 +35,7 @@ var join = function() {
 
 };
 
-var startGame = function(gameId) {
+var startGame = function(gameId, io) {
 
   var sockets = io.clients(gameId);
   var game = new Game();
@@ -72,15 +71,15 @@ var startGame = function(gameId) {
 
 };
 
-module.exports.init = function(otherIo, socket) {
+module.exports.init = function(io, socket) {
   //socket.emit('connected', can emit when connected to game)
-  io = otherIo;
-  //Game Events ==========
-  
-  //host events
-  socket.on('host', host);
 
-  socket.on('join', join);
+  //Game Events ==========
+  console.log(io);
+  //host events
+  socket.on('host', host.bind(socket, io));
+
+  socket.on('join', join.bind(socket, io));
 
   //other events
 };
