@@ -19,18 +19,18 @@ var host = function() {
   console.log('THE GAME QUEUE IS CURRENTLY!!! ' + gameQueue);
 };
 
-var join = function(socket) {
+var join = function() {
 
   
     if (gameQueue[0]) { 
-      socket.join(gameQueue[0])
+      this.join(gameQueue[0])
 
       if(io.sockets.clients(gameQueue[0]).length === 4) {
         startGame(gameQueue.shift());
       }
 
     } else { 
-      host(socket);
+      host.call(this);
     }
 
 };
