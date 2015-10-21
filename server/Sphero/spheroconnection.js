@@ -2,6 +2,7 @@
 var Game = require('../game/game.js');
 
 var gameQueue = [];
+var io;
 
 var host = function() {
   // Create a unique Socket.IO Room
@@ -71,9 +72,9 @@ var startGame = function(gameId) {
 
 };
 
-module.exports.init = function(io, socket) {
+module.exports.init = function(otherIo, socket) {
   //socket.emit('connected', can emit when connected to game)
-
+  io = otherIo;
   //Game Events ==========
   
   //host events
