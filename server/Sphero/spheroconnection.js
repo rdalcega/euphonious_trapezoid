@@ -72,7 +72,7 @@ var startGame = function(gameId, io) {
   });
 
   // io.sockets.in(gameId).emit('started');
-  io.emit('started');
+  socket.emit('started');
 
   console.log("ALL LISTENERS ATTACHED");
 };
