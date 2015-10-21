@@ -25,8 +25,8 @@ var join = function(io) {
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
       console.log("gameQueue AFTER JOIN IS " + gameQueue);
-      console.log("I THINK THIS IS AN ARRAY " + io.nsps['/'].adapter.rooms[gameQueue[0]]);
-      if(io.nsps['/'].adapter.rooms[gameQueue[0]].length === 2) {
+      console.log("I THINK THIS IS AN OBJECT " + Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]));
+      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
       }
 
