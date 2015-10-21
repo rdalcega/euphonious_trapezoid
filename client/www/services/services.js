@@ -46,7 +46,7 @@ sphero.factory('socket', function () {
    if (window.__karma__) { //in case we do testing with karma and phantom
      socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
    } else {
-     socket = io.connect();
+     socket = io.connect('https://evening-tor-8962.herokuapp.com/');
    }
 
   return {

@@ -1,5 +1,5 @@
 sphero.factory('game', function () {
-  // declare game globals
+  // Declare global variables
   var SCREEN_WIDTH = window.innerWidth;
   var SCREEN_HEIGHT = window.innerHeight;
   var GAME_WIDTH;
@@ -16,12 +16,14 @@ sphero.factory('game', function () {
 
   // the board
   var board;
+  var playerNum;
+  
   //controls to rotate the camera with mouse, will probably be disabled in actual game
   var controls;
 
-  var init = function (element, gridSize, gridStepIncrement) {
+  var init = function (element, player, gridSize, gridStepIncrement) {
 
-    // initialize variables
+    // Set the dimensions
     gameDomElement = element;
     GAME_WIDTH = element.offsetWidth;
     GAME_HEIGHT = element.offsetHeight;
@@ -29,7 +31,11 @@ sphero.factory('game', function () {
     gridStepIncrement = gridStepIncrement || 10;
     gridStep = gridSize/gridStepIncrement;
 
-    // create the scene
+    // Create the board representation
+    board = {};
+    playerNum = player;
+
+    // Create the scene
     scene = new THREE.Scene();
 
     // create and position camera
@@ -57,18 +63,15 @@ sphero.factory('game', function () {
     light.position.set(0,0,500);
     scene.add(light);
 
-    // Board
-    board = {};
-
-    // optional orbit controls
+    // Create orbit controls (development only?)
     controls = new THREE.OrbitControls(camera, RENDERER.domElement);
 
-    // start adding 3d objects to the scene
+    // Create the materials and geometry that will be used
     objects = [];
     ballMaterial = new THREE.MeshPhongMaterial({color: 0xF47333});
     ballGeometry = new THREE.SphereGeometry(50, 8, 8);
 
-    // Add our grid
+    // Create the grid
     var gridGeometry = new THREE.Geometry();
     for ( var i = - gridSize/2; i <= gridSize/2; i += gridStep ) {
 
@@ -84,15 +87,16 @@ sphero.factory('game', function () {
 
     scene.add( line );  
    
-    // Add our helper plane
+    // Create the helper plane
     var geometry = new THREE.PlaneBufferGeometry( gridSize, gridSize );
     gridPlane = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial( { color: 0xFF0000, visible: false } ) );
     objects.push(gridPlane);
     scene.add( gridPlane );
-  // Add our anchor
+
+    // Place the anchor
     addPiece(0, 0, 'A', new THREE.Vector3( 0, 0, 1));
 
-  // Start the render sequence
+    // Start the render sequence
     render();
   };
 
