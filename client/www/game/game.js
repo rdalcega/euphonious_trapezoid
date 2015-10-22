@@ -218,10 +218,25 @@ sphero.factory('game', function () {
   };
 
   var rotateBoard = function (data) {
+    var spheres = {};
+    var from;
+    var to;
     data.forEach(function (move) {
-      movePiece(move);
+      from = move.from.x + '_' + move.from.y;
+      spheres[ from ] = board[ from ];
+      delete board[ from ];
+
     });
-  }
+    data.forEach(function (move) {
+      from = move.from.x + '_' + move.from.y;
+      to = move.to.x + '_' + move.to.y;
+      spheres[ from ].model.position.set( move.to.x * gridStep, move.to.y * gridStep, 0 );
+      board[ to ] = {
+        state: spheres[ from ].state,
+        model: spheres[ from ].model
+      };
+    });
+  };
 
 //   var rotateBoard = function (moves) {
 // //      anchor.position.set(100,233,0);
