@@ -61,6 +61,8 @@ var startGame = function(gameId, io) {
 
     game.on(events[i], function(event) {
 
+      console.log('this is the event!!!!!!!', events[i])
+
       io.to(gameId).emit(events[i], event);
 
     });
