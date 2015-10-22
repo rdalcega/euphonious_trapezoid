@@ -49,15 +49,6 @@ sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function (SpheroApiUrl, 
      socket = io.connect(SpheroApiUrl);
    // }
 
-    socket.on('connect', function() {
-
-      socket.on('started', function(data) {
-        socket.emit('something');
-        console.log('Im starting ', data);
-
-      });
-
-    });
 
   return {
     on: function (eventName, callback) {
