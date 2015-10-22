@@ -26,7 +26,7 @@ var join = function(io) {
       this.join(gameQueue[0])
       console.log("gameQueue AFTER JOIN IS " + gameQueue);
       console.log("I THINK THIS IS AN OBJECT " + Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]));
-      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 4) {
+      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
       }
 
@@ -51,6 +51,8 @@ var startGame = function(gameId, io) {
       game.insert(event);
     });
 
+    socket.emit('started', {playerNum: i})
+
   }
 
   var events = ['put', 'removed', 'moved', 'rotated', 'ended'];
@@ -71,7 +73,6 @@ var startGame = function(gameId, io) {
 
   });
 
-  io.to(gameId).emit('started', {"test":"test"});
 
 
   console.log("ALL LISTENERS ATTACHED");

@@ -1,4 +1,4 @@
-sphero.controller('launchController', ['$scope', 'socket','$window', function($scope, socket, $window) {
+sphero.controller('launchController', ['$scope', '$state', 'socket','player', function($scope, $state, socket, player) {
 
 	$scope.join = function() {
     	console.log('joined');
@@ -11,5 +11,10 @@ sphero.controller('launchController', ['$scope', 'socket','$window', function($s
 		socket.emit('host');
 
 	}
+
+  socket.on('started', function(data) {
+    $state.go('game');
+    player.playerNum = data.playerNum;
+  });
 
 }]);
