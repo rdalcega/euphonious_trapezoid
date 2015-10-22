@@ -41,7 +41,7 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 
 /* This factory sets up a socket connection and gives you .on and .emit methods to use.
 */
-sphero.factory('socket', function (SpheroApiUrl) {
+sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function (SpheroApiUrl, $rootScope) {
    var socket;
    // if (window.__karma__) { //in case we do testing with karma and phantom
    //   socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
@@ -49,23 +49,34 @@ sphero.factory('socket', function (SpheroApiUrl) {
      socket = io.connect(SpheroApiUrl);
    // }
 
+
   return {
     on: function (eventName, callback) {
       socket.on(eventName, function () {
         var args = arguments;
-        callback.apply(socket, args);
+        $rootScope.$apply(function () {
+          callback.apply(socket, args);
+        });
       });
     },
     emit: function (eventName, data, callback) {
       console.log('emitting...')
       socket.emit(eventName, data, function () {
         var args = arguments;
-        if (callback) {
-          callback.apply(socket, args);
-        }
+        $rootScope.$apply(function () {
+          if (callback) {
+            callback.apply(socket, args);
+          }
+        });
       });
     }
   };
 
-});
+}]);
+
+sphero.factory('player', function () {
+  var playerNum = null;
+  
+  return { playerNum: playerNum };
+})
 
