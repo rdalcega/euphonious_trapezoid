@@ -34,8 +34,8 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
 
   }, false);
 
-  socket.on('put', function (data) {
-    console.log('got some put data: ', data);    
+  socket.on('put', function (data) {  
+    console.log( 'Put: ', data );
     if (data.success) {
       game.addPiece(data);
     } else {
@@ -44,6 +44,7 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
   });
 
   socket.on('removed', function (data) {
+    console.log( 'Removed: ', data );
     if (data.success) {
       game.removePiece(data);
     } else {
@@ -52,6 +53,7 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
   });
 
   socket.on('moved', function (data) {
+    console.log( 'Moved: ', data );
     if (data.success) {
       game.movePiece(data);
     } else {
@@ -60,6 +62,7 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
   });
 
   socket.on('rotated', function (data) {
+    console.log( 'Rotated: ', data );
     game.rotateBoard(data);
   });
 
