@@ -13,15 +13,21 @@ sphero.factory('game', function () {
   var gridSize;
   var gridStep;
   var gridPlane;
+  var anchor;
 
-  // the board
+  // geometry and materials
+  var ballGeometry;
+  var ballMaterial;
+  var anchorMaterial;
+
+  // the board and the player
   var board;
-  var playerNum;
+  var playerNum; //this is assigned in controller
   
   //controls to rotate the camera with mouse, will probably be disabled in actual game
   var controls;
 
-  var init = function (element, player, gridSize, gridStepIncrement) {
+  var init = function (element, gridSize, gridStepIncrement) {
 
     // Set the dimensions
     gameDomElement = element;
@@ -33,7 +39,6 @@ sphero.factory('game', function () {
 
     // Create the board representation
     board = {};
-    playerNum = player;
 
     // Create the scene
     scene = new THREE.Scene();
@@ -69,6 +74,8 @@ sphero.factory('game', function () {
     // Create the materials and geometry that will be used
     objects = [];
     ballMaterial = new THREE.MeshPhongMaterial({color: 0xF47333});
+    anchorMaterial = new THREE.MeshPhongMaterial({color: 0xffffff});
+
     ballGeometry = new THREE.SphereGeometry(50, 8, 8);
 
     // Create the grid
@@ -94,7 +101,7 @@ sphero.factory('game', function () {
     scene.add( gridPlane );
 
     // Place the anchor
-    addPiece(0, 0, 'A', new THREE.Vector3( 0, 0, 1));
+    addPiece({coordinates: {x:0, y:0}, state:'A'}, new THREE.Vector3( 0, 0, 1));
 
     // Start the render sequence
     render();
@@ -131,36 +138,107 @@ sphero.factory('game', function () {
       if (callback) {
         callback(position2d);
       }
+      return position2d;
     }
   };
 
 
 
-  var addPiece = function (x, y, state, normal) {
+  var addPiece = function (data, normal) {
+    var x = data.coordinates.x;
+    var y = data.coordinates.y;
+    var state = data.state;
+    var material = {
+      A: anchorMaterial,
+      1: ballMaterial
+    }
     // create the 3d piece
-    var ball = new THREE.Mesh(ballGeometry.clone(), ballMaterial);
-
+    var ball = new THREE.Mesh(ballGeometry.clone(), material[state]);
     // if there are any other 3d objects at that position, remove them
-    if (board[x + "_" + y] !== undefined) scene.remove(board[x + "_" + y].piece)
-    board[x + "_" + y] = {state: state, valence: 'calculate this', leafy: 'calculate this', piece: ball };
+    if (board[x + "_" + y] !== undefined){
+      scene.remove(board[x + "_" + y].piece)
+    }
+
+    board[x + "_" + y] = {state: state, model: ball };
 
     // position the ball
     ball.position.set(x * gridStep, y * gridStep, 0);
     // set the position vector to be pointing up (may not be necessary)
-    normal = normal || new THREE.Vector3( ball.position.x, ball.position.y, 1000)
-    ball.position.add(normal);
+    normal = normal || new THREE.Vector3( ball.position.x, ball.position.y, 1)
+//    ball.position.add(normal);
     
-    // add the ball to scene
-    scene.add(ball);
+    // If the piece being added is the anchor, set the anchor. Otherwise make the piece a child of the anchor.
+    if (state === 'A') {
+      scene.add(ball);
+      anchor = ball;
+    } else {
+      anchor.add(ball);
+    }
+
     console.log(board);
   };
 
+  var removePiece = function (data) {
+    var x = data.coordinates.x;
+    var y = data.coordinates.y;
+    if (board[data.from.x + "_" + data.from.y] && board[x + "_" + y].model !== undefined) {
+      scene.remove(board[x + "_" + y].model);
+      delete board[x + "_" + y];
+
+      console.log('board after deletion: ', board);
+    }
+  };
+
+  var movePiece = function (data) {
+    if (!(data.from.x === data.to.x && data.from.y === data.to.y) && board[data.from.x + "_" + data.from.y] && board[data.from.x + "_" + data.from.y].model !== undefined) {
+
+      board[data.from.x + "_" + data.from.y].model.position.set(data.to.x * gridStep, data.to.y * gridStep, 0);
+      board[data.to.x + "_" + data.to.y] = {};
+      board[data.to.x + "_" + data.to.y].state = board[data.from.x + "_" + data.from.y].state;
+      board[data.to.x + "_" + data.to.y].model = board[data.from.x + "_" + data.from.y].model;
+
+      delete board[data.from.x + "_" + data.from.y];
+      console.log("board after move: ", board);
+    }
+  };
+
+  var moveModel = function (data) {
+     board[data.from.x + "_" + data.from.y].model.position.set(data.to.x * gridStep, data.to.y * gridStep, 0);
+  }
+
+  var rotateBoard = function (moves) {
+//      anchor.position.set(100,233,0);
+   anchor.rotation.z -= Math.PI/2;
+   console.log('moves: ', moves);
+   moves.forEach(function (data) {
+      if (data.success) {
+        board[data.to.x + "_" + data.to.y] = {};
+        board[data.to.x + "_" + data.to.y].state = board[data.from.x + "_" + data.from.y].state;
+        board[data.to.x + "_" + data.to.y].model = board[data.from.x + "_" + data.from.y].model;
+        delete board[data.from.x + "_" + data.from.y];
+      }
+
+   });
+
+   console.log('board after rotation: ', board);
+  };
+
+  var endGame = function (data) {
+
+  };
 
   return {
+    playerNum: playerNum,
+
     init: init,
     resize: resize,
     getGridPosition: getGridPosition,
-    addPiece: addPiece
+    addPiece: addPiece,
+    removePiece: removePiece,
+    movePiece: movePiece,
+    rotateBoard: rotateBoard,
+    endGame: endGame
+
   };
 });
 
