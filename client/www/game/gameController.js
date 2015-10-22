@@ -1,8 +1,8 @@
-sphero.controller('gameController', function(game, socket) {
+sphero.controller('gameController', ['game', 'socket', 'player', function(game, socket, player) {
 
   var element = document.getElementById('game');
   
-  game.playerNum = 1;
+  game.playerNum = String(player.playerNum);
 
   game.init(element, 2000, 20);
 
@@ -11,8 +11,8 @@ sphero.controller('gameController', function(game, socket) {
     game.resize();
   });
 
-  game.addPiece({coordinates: {x: 3, y: 2}, state: game.playerNum});
-  game.addPiece({coordinates: {x: 0, y: -1}, state: game.playerNum});
+  // game.addPiece({coordinates: {x: 3, y: 2}, state: game.playerNum});
+  // game.addPiece({coordinates: {x: 0, y: -1}, state: game.playerNum});
 
 
   window.addEventListener('mousedown', function (mouseDownEvent) {
@@ -23,11 +23,11 @@ sphero.controller('gameController', function(game, socket) {
     });
 
     //testing
-    console.log("pos, game.playerNum: ", pos, game.playerNum);
-    game.rotateBoard([
-      {from: {x: 3, y: 2}, to: {x: 2, y:-3}, state: game.playerNum, success:true},
-      {from: {x: 0, y: -1}, to: {x: -1, y:0}, state: game.playerNum, success:true}
-    ]);
+    // console.log("pos, game.playerNum: ", pos, game.playerNum);
+    // game.rotateBoard([
+    //   {from: {x: 3, y: 2}, to: {x: 2, y:-3}, state: game.playerNum, success:true},
+    //   {from: {x: 0, y: -1}, to: {x: -1, y:0}, state: game.playerNum, success:true}
+    // ]);
 //    game.movePiece({from: {x: pos.x, y: pos.y}, to: {x: 1, y:1}, state: game.playerNum, success:true});
 
   }, false);
@@ -65,4 +65,4 @@ sphero.controller('gameController', function(game, socket) {
     console.log('Game has ended.');
   });
 
-});
+}]);

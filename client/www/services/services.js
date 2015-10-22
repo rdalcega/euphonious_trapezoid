@@ -74,3 +74,9 @@ sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function (SpheroApiUrl, 
 
 }]);
 
+sphero.factory('player', function () {
+  var playerNum = null;
+  
+  return { playerNum: playerNum };
+})
+
