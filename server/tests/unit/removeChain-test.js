@@ -121,4 +121,24 @@ describe( 'a game\'s removeChain method', function( ) { // A standard describe b
     var chain = game.detectChain( 0, 5 );
     game.removeChain( chain.chain );
   });
+  it( 'should remove a chain in which the first removed piece separates the chain', function( ) {
+    var game = new Game( );
+
+    game.put(1,0, '1');
+    game.put(1,1, '1');
+    game.put(0,1, '2');
+    game.put(0,2, '2');
+    game.put(2,0, '2');
+    game.put(2,1, '2');
+    game.put(1,2, '2');
+    game.put(2,2, '2');
+
+    var chain = game.detectChain(2,2);
+
+    game.removeChain(chain.chain);
+
+    expect(game.get(1,0).state).to.equal('1');
+    expect(game.get(0,1).state).to.equal('L');
+    expect(game.get(1,1).state).to.equal('1');
+  });
 });
