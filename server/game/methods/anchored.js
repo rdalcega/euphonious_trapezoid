@@ -5,7 +5,8 @@ var anchored = function( x, y, ignore ) {
   // This functions determines whether or
   // not such a path exists.
   var sphere = this.get( x, y );
-  ignore = ignore || { x: x, y: y };
+  ignore = ignore || [];
+  ignore.push( x + ':' + y );
   // Baduh, the anchor is anchored.
   if( sphere && sphere.state === 'A' ) {
     return true;
@@ -15,9 +16,9 @@ var anchored = function( x, y, ignore ) {
   // that is not a liberty is anchored.
   var anchor = false;
   this.forNeighbors( x, y, function( neighbor, coordinates ) {
-    if( coordinates.x !== ignore.x || coordinates.y !== ignore.y ) {
+    if( ignore.indexOf(coordinates.x + ':' + coordinates.y) < 0) {
       if( neighbor && neighbor.state !== 'L' ) {
-        if( this.anchored( coordinates.x, coordinates.y, { x: x, y: y } ) ) {
+        if( this.anchored( coordinates.x, coordinates.y, ignore ) ) {
           anchor = true;
         }
       }

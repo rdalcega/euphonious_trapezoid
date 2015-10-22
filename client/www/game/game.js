@@ -221,6 +221,7 @@ sphero.factory('game', function () {
     var spheres = {};
     var from;
     var to;
+    debugger;
     data.forEach(function (move) {
       from = move.from.x + '_' + move.from.y;
       spheres[ from ] = board[ from ];
@@ -230,6 +231,7 @@ sphero.factory('game', function () {
     data.forEach(function (move) {
       from = move.from.x + '_' + move.from.y;
       to = move.to.x + '_' + move.to.y;
+      console.log("FROM IS ", from);
       spheres[ from ].model.position.set( move.to.x * gridStep, move.to.y * gridStep, 0 );
       board[ to ] = {
         state: spheres[ from ].state,
