@@ -1,4 +1,5 @@
-sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', function($scope, $window, Auth, socket) {
+sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$state',
+ function($scope, $window, Auth, socket, $state) {
 
   $scope.single = function() {
 
@@ -33,5 +34,10 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', funct
     $window.localStorage.removeItem('id_token');
 
   };
+
+  socket.on('started', function(data) {
+    $state.go('game');
+    player.playerNum = data.playerNum;
+  });
 
 }]);
