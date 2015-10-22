@@ -38,8 +38,8 @@ var join = function(io) {
 
 var single = function(io) {
 
-  var gameId = (Math.random() * 100000) || 0;
-  this.join(gameId.toString());
+  var gameId = ((Math.random() * 100000) || 0).toString();
+  this.join(gameId);
   console.log("single player game created at " + gameId);
 
   startGame(gameId, io);
