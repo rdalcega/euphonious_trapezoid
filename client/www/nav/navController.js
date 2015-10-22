@@ -1,5 +1,5 @@
-sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$state',
- function($scope, $window, Auth, socket, $state) {
+sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$state', 'player',
+ function($scope, $window, Auth, socket, $state, player) {
 
   $scope.single = function() {
 
