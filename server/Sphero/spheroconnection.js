@@ -36,6 +36,16 @@ var join = function(io) {
 
 };
 
+var single = function(io) {
+
+  var gameId = (Math.random() * 100000) || 0;
+  this.join(gameId.toString());
+  console.log("single player game created at " + gameId);
+
+  startGame(gameId, io);
+
+}
+
 var startGame = function(gameId, io) {
 
   var sockets = Object.keys(io.nsps['/'].adapter.rooms[gameId]).map(function(socketId) {
@@ -87,6 +97,8 @@ module.exports.init = function(io, socket) {
   socket.on('host', host.bind(socket, io));
 
   socket.on('join', join.bind(socket, io));
+
+  socket.on('single', single.bind(socket, io));
 
   //other events
 };

@@ -1,4 +1,10 @@
-sphero.controller('navController', ['$scope', '$window', 'Auth', function($scope, $window, Auth) {
+sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', function($scope, $window, Auth, socket) {
+
+  $scope.single = function() {
+
+    socket.emit('single');
+
+  };
 
   $scope.signUp = function(username, password, email) {
 
