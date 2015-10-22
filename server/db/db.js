@@ -1,10 +1,10 @@
 var mysql = require('mysql');
 
 var pool = mysql.createPool({
-  user: 'root',
-  password: '',
+  user: 'bb13d03ae42809',
+  password: 'f5675c11',
   database: 'heroku_a35b008f64f7309',
-  host: 'localhost'
+  host: 'us-cdbr-iron-east-03.cleardb.net'
 });
 
 // export the db connection

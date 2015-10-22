@@ -3,7 +3,7 @@ var Game = require('../game/game.js');
 
 var gameQueue = [];
 
-var host = function(socket) {
+var host = function(io) {
   // Create a unique Socket.IO Room
   var gameId = (Math.random() * 100000) || 0;
   // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
@@ -14,32 +14,36 @@ var host = function(socket) {
 
   
   // Join the Room and wait for the players
-  socket.join(gameId.toString());
-  gameQueue.push(gameId);
-  console.log('the game queue is ' + gameQueue);
+  this.join(gameId.toString());
+  gameQueue.push(gameId.toString());
+  console.log('THE GAME QUEUE IS CURRENTLY!!! ' + gameQueue);
 };
 
-var join = function(socket) {
+var join = function(io) {
 
   
     if (gameQueue[0]) { 
-      socket.join(gameQueue[0])
-
-      if(io.sockets.clients(gameQueue[0]).length === 4) {
-        startGame(gameQueue.shift());
+      this.join(gameQueue[0])
+      console.log("gameQueue AFTER JOIN IS " + gameQueue);
+      console.log("I THINK THIS IS AN OBJECT " + Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]));
+      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 4) {
+        startGame(gameQueue.shift(), io);
       }
 
     } else { 
-      host(socket);
+      host.call(this);
     }
 
 };
 
-var startGame = function(gameId) {
+var startGame = function(gameId, io) {
 
-  var sockets = io.sockets.clients(gameId);
+  var sockets = Object.keys(io.nsps['/'].adapter.rooms[gameId]).map(function(socketId) {
+    return io.sockets.connected[socketId];
+  });
+
   var game = new Game();
-
+  console.log("GAME MADE - IT IS " + game);
   for (var i = 0; i < sockets.length; i++) {
 
     var socket = sockets[i];
@@ -55,7 +59,7 @@ var startGame = function(gameId) {
 
     game.on(events[i], function(event) {
 
-      io.sockets.in(gameId).emit(events[i], event);
+      io.to(gameId).emit(events[i], event);
 
     });
 
@@ -67,19 +71,21 @@ var startGame = function(gameId) {
 
   });
 
-  io.sockets.in(gameId).emit('started');
+  io.to(gameId).emit('started', {"test":"test"});
 
+
+  console.log("ALL LISTENERS ATTACHED");
 };
 
 module.exports.init = function(io, socket) {
   //socket.emit('connected', can emit when connected to game)
 
   //Game Events ==========
-  
-  //host events
-  socket.on('host', host);
 
-  socket.on('join', join);
+  //host events
+  socket.on('host', host.bind(socket, io));
+
+  socket.on('join', join.bind(socket, io));
 
   //other events
 };
