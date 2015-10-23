@@ -47,9 +47,9 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
       if ($window.localStorage.getItem('id_token')) {
         Auth.loadAuth($window.localStorage.getItem('id_token'));
         $scope.logoutStatus = false;
-        setTimeout(function() {
+        // setTimeout(function() {
           $scope.loginStatus = true;
-        }, 250);
+        // }, 250);
         $scope.loaded = true;
       } else {
         $scope.loaded = true;
