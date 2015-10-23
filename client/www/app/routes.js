@@ -8,7 +8,7 @@ router.config(function($stateProvider, $urlRouterProvider) {
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-      
+
     .state('nav', {
       url: '/nav',
       templateUrl: '../nav/nav.html',
@@ -30,14 +30,24 @@ router.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
+router.run(function($rootScope, $state, Auth) {
+  $rootScope.$on('$locationChangeStart', function(event, next, current) {
+    if (!localStorage.id_token && next.templateUrl !== '../nav/nav.html') {
+      $state.go('nav');
+    }
+  });
+});
+
 router.config(function Config($httpProvider, jwtInterceptorProvider) {
-  jwtInterceptorProvider.tokenGetter = function(){  //refactor to service for minification
+  jwtInterceptorProvider.tokenGetter = function() { //refactor to service for minification
     console.log(localStorage);
     return localStorage.getItem('id_token');
   };
 
   $httpProvider.interceptors.push('jwtInterceptor');
 });
+
+
 
 // .factory('AttachTokens', function ($window) {
 //   //this factory stops all outgoing requests, then looks in local storage
