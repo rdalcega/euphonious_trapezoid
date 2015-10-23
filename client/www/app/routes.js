@@ -14,16 +14,30 @@ router.config(function($stateProvider, $urlRouterProvider) {
       templateUrl: '../nav/nav.html',
       controller: 'navController'
     })
-    .state('launch', {
+    .state('profile', {
+      url: '/profile',
+      abstract: true,
+      templateUrl: '../profile/profile.html',
+      // controller: 'profileController'
+    })
+    .state('profile.launch', {
       url: '/launch',
-      templateUrl: '../launch/launch.html',
-      controller: 'launchController'
+      views: {
+        'profile': {
+          templateUrl: '../launch/launch.html',
+          controller: 'launchController'
+        }
+      }
     })
-    .state('game', {
+    .state('profile.game', {
       url: '/game',
-      templateUrl: '../game/game.html',
-      controller: 'gameController'
-    })
+      views: {
+        'profile': {
+          templateUrl: '../game/game.html',
+          controller: 'gameController'
+        }
+      }
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/nav');
