@@ -31,9 +31,7 @@ module.exports.login = function(req, res) {
                 id: player.Player_ID
               };
 
-              var token = jwt.sign(profile, 'flashing kittens love 25% cotton!', {
-                expiresIn: 60 * 60 * 8
-              });
+              var token = jwt.sign(profile, 'flashing kittens love 25% cotton!');
 
               res.json({
                 profile: profile,
