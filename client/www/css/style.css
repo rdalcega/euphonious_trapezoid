@@ -1,1 +1,22 @@
 /* Empty. Add your own CSS if you like */
+
+#nav {
+  background-image: url("../img/nav_back.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#nav-title {
+  text-align: center;
+  font-size: 100px;
+  color: #283877;
+  margin-bottom: 110px;
+}
+
+#nav .list {
+  margin-bottom: 55px;
+}
+
+#nav .button-small {
+  font-size: 25px;
+}

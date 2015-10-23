@@ -1,7 +1,8 @@
-<ion-view title="nav">
+<ion-view title="nav" id="nav">
+<div id="nav-view">
   <ion-content padding="true" class="has-header">
-    <div class="spacer" style="width: 300px; height: 87px;"></div>
-    <h1>SPHERO</h1>
+    <div class="spacer" style="width: 300px; height: 10px;"></div>
+    <h1 id="nav-title">SPHERO</h1>
     <div ng-if="loaded">
       <!-- display if signed in -->
       <button ng-if="loginStatus" class="button button-stable button-clear button-block" ng-click="single()">SOLO</button>
@@ -30,4 +31,5 @@
       <button ng-if="loginStatus" class="button button-stable button-clear button-small" ng-click="logout()">Logout</button>
     </div>
   </ion-content>
+  </div>
 </ion-view>
