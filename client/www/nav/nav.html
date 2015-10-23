@@ -1,35 +1,35 @@
 <ion-view title="nav" id="nav">
-<div id="nav-view">
-  <ion-content padding="true" class="has-header">
-    <div class="spacer" style="width: 300px; height: 10px;"></div>
-    <h1 id="nav-title">SPHERO</h1>
-    <div ng-if="loaded">
-      <!-- display if signed in -->
-      <button ng-if="loginStatus" class="button button-stable button-clear button-block" ng-click="single()">SOLO</button>
-      <button ng-if="loginStatus" class="button button-stable button-clear button-block" ui-sref="launch">MULTIPLAYER</button>
-      <button ng-if="loginStatus" class="button button-stable button-clear button-block">OPTIONS</button>
-      <!-- display if NOT signed in -->
-      <form ng-if="!loginStatus" class="list">
-        <label class="item item-input">
-          <span class="input-label"></span>
-          <input type="text" placeholder="Username" ng-model="$parent.username">
-        </label>
-        <label class="item item-input">
-          <span class="input-label"></span>
-          <input type="text" placeholder="Password" ng-model="$parent.password">
-        </label>
-        <!-- display if signup is selected -->
-        <label class="item item-input">
-          <span class="input-label"></span>
-          <input type="text" placeholder="Email" ng-model="$parent.email">
-        </label>
-      </form>
-      <!-- display if not logged in, selected lights up and controls form -->
-      <button ng-if="!loginStatus" class="button button-stable button-clear button-small" ng-click="login(username, password)">Login</button>
-      <button ng-if="!loginStatus" class="button button-stable button-clear button-small" ng-click="signUp(username, password, email)">Sign Up</button>
-      <!-- display if signed in -->
-      <button ng-if="loginStatus" class="button button-stable button-clear button-small" ng-click="logout()">Logout</button>
-    </div>
-  </ion-content>
+  <div id="nav-view">
+    <ion-content padding="true" class="has-header">
+      <div class="spacer" style="width: 300px; height: 10px;"></div>
+      <h1 id="nav-title">SPHERO</h1>
+      <div ng-if="loaded">
+        <!-- display if signed in -->
+        <button ng-if="loginStatus" class="button button-stable button-clear button-block animate-if" ng-click="single()">SOLO</button>
+        <button ng-if="loginStatus" class="button button-stable button-clear button-block animate-if" ui-sref="launch">MULTIPLAYER</button>
+        <button ng-if="loginStatus" class="button button-stable button-clear button-block animate-if">OPTIONS</button>
+        <!-- display if NOT signed in -->
+        <form ng-if="logoutStatus" class="list animate-if">
+          <label class="item item-input">
+            <span class="input-label"></span>
+            <input type="text" placeholder="Username" ng-model="$parent.username">
+          </label>
+          <label class="item item-input">
+            <span class="input-label"></span>
+            <input type="text" placeholder="Password" ng-model="$parent.password">
+          </label>
+          <!-- display if signup is selected -->
+          <label class="item item-input">
+            <span class="input-label"></span>
+            <input type="text" placeholder="Email" ng-model="$parent.email">
+          </label>
+        </form>
+        <!-- display if not logged in, selected lights up and controls form -->
+        <button ng-if="logoutStatus" class="button button-stable button-clear button-small animate-if" ng-click="login(username, password)">Login</button>
+        <button ng-if="logoutStatus" class="button button-stable button-clear button-small animate-if" ng-click="signUp(username, password, email)">Sign Up</button>
+        <!-- display if signed in -->
+        <button ng-if="loginStatus" class="button button-stable button-clear button-small animate-if" ng-click="logout()">Logout</button>
+      </div>
+    </ion-content>
   </div>
 </ion-view>
