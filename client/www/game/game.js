@@ -77,12 +77,12 @@ sphero.factory('game', function () {
 
     // Create the materials and geometry that will be used
     objects = [];
-    playerZeroMaterial = new THREE.MeshPhongMaterial({color: 0xffff00});
-    playerOneMaterial = new THREE.MeshPhongMaterial({color: 0xF47333});
-    playerTwoMaterial = new THREE.MeshPhongMaterial({color: 0x00ff000});
-    anchorMaterial = new THREE.MeshPhongMaterial({color: 0xffffff});
+    playerZeroMaterial = new THREE.MeshPhongMaterial({color: 0xff0000});
+    playerOneMaterial = new THREE.MeshPhongMaterial({color: 0x00ff00});
+    playerTwoMaterial = new THREE.MeshPhongMaterial({color: 0x0000ff});
+    anchorMaterial = new THREE.MeshPhongMaterial({color: 0x000000});
 
-    ballGeometry = new THREE.SphereGeometry(50, 8, 8);
+    ballGeometry = new THREE.SphereGeometry(50, 50, 50);
 
     // Create the grid
     var gridGeometry = new THREE.Geometry();
@@ -165,7 +165,7 @@ sphero.factory('game', function () {
     ball.is_ob = true;
     // if there are any other 3d objects at that position, remove them
     if (board[x + "_" + y] !== undefined){
-      scene.remove(board[x + "_" + y].model)
+      anchor.remove(board[x + "_" + y].model)
     }
 
     board[x + "_" + y] = {state: state, model: ball };
@@ -221,7 +221,6 @@ sphero.factory('game', function () {
     var spheres = {};
     var from;
     var to;
-    debugger;
     data.forEach(function (move) {
       from = move.from.x + '_' + move.from.y;
       spheres[ from ] = board[ from ];
