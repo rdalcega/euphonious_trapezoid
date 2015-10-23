@@ -77,8 +77,12 @@ var removeChain = function( chain ) {
   // Removing the chain consists in
   // removing each sphere that makes up the
   // chain.
+  var state = this.get(chain[0].x, chain[0].y).state
   chain.forEach( function( coordinates ) {
-    remove( coordinates.x, coordinates.y );
+    var sphere = this.get(coordinates.x, coordinates.y);
+    if (sphere && sphere.state === state) {
+      remove( coordinates.x, coordinates.y );
+    }
   }.bind( this ));
 };
 module.exports = removeChain;
