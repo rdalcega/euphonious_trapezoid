@@ -1,8 +1,20 @@
 sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
 
-  var request = {};
+  var authFactory = {};
 
-  request.signUp = function(username, password, email) {
+  token = null;
+  username = null;
+  isAuth = false;
+
+  var useCred = function(userCredentials) {
+    username = userCredentials.username;
+    token = userCredentials.token;
+    isAuth = true;
+    //$http.defaults.headers.common['X-Auth-Token'] = userCredentials.token;
+  };
+
+
+  authFactory.signUp = function(username, password, email) {
 
     return $http({
       method: 'POST',
@@ -12,13 +24,11 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
         password: password,
         email: email
       }
-    }).then(function(resp) {
-      return resp.data; // will add immediate login to server
     });
 
   };
 
-  request.login = function(username, password) {
+  authFactory.login = function(username, password) {
 
     return $http({
       method: 'POST',
@@ -28,42 +38,66 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
         password: password
       }
     }).then(function(resp) {
+      useCred(resp.data);
       return resp.data;
-
+    }, function(err) {
+      return false;
     });
 
   };
 
-  return request;
+  authFactory.destroyCredentials = function() {
+    token = null;
+    username = undefined;
+    isAuth = false;
+    //$http.defaults.headers.common['X-Auth-Token'] = undefined;
+  };
+
+  authFactory.checkAuth = function() {
+    if (isAuth && token) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  authFactory.loadAuth = function(token) {
+    token = token;
+    isAuth = true;
+    //add token decode to get user
+    //will change this check to be server side later
+  };
+
+  return authFactory;
 
 }]);
 
 
 /* This factory sets up a socket connection and gives you .on and .emit methods to use.
-*/
-sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function (SpheroApiUrl, $rootScope) {
-   var socket;
-   // if (window.__karma__) { //in case we do testing with karma and phantom
-   //   socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
-   // } else {
-     socket = io.connect(SpheroApiUrl);
-   // }
+ */
+sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function(SpheroApiUrl, $rootScope) {
+  var socket;
+  // if (window.__karma__) { //in case we do testing with karma and phantom
+  //   socket = io.connect(window.location.protocol + "//" + window.location.hostname + ":" + 1337);
+  // } else {
+  socket = io.connect(SpheroApiUrl);
+  // }
 
 
   return {
-    on: function (eventName, callback) {
-      socket.on(eventName, function () {
+    on: function(eventName, callback) {
+      socket.on(eventName, function() {
         var args = arguments;
-        $rootScope.$apply(function () {
+        $rootScope.$apply(function() {
           callback.apply(socket, args);
         });
       });
     },
-    emit: function (eventName, data, callback) {
+    emit: function(eventName, data, callback) {
       console.log('emitting...')
-      socket.emit(eventName, data, function () {
+      socket.emit(eventName, data, function() {
         var args = arguments;
-        $rootScope.$apply(function () {
+        $rootScope.$apply(function() {
           if (callback) {
             callback.apply(socket, args);
           }
@@ -74,9 +108,10 @@ sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function (SpheroApiUrl, 
 
 }]);
 
-sphero.factory('player', function () {
+sphero.factory('player', function() {
   var playerNum = null;
-  
-  return { playerNum: playerNum };
-})
 
+  return {
+    playerNum: playerNum
+  };
+})
