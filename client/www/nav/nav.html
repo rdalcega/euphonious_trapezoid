@@ -6,7 +6,7 @@
       <div ng-if="loaded">
         <!-- display if signed in -->
         <button ng-if="loginStatus" class="button button-stable button-clear button-block animate-if" ng-click="single()">SOLO</button>
-        <button ng-if="loginStatus" class="button button-stable button-clear button-block animate-if" ui-sref="launch">MULTIPLAYER</button>
+        <button ng-if="loginStatus" class="button button-stable button-clear button-block animate-if" ui-sref="profile.launch">MULTIPLAYER</button>
         <button ng-if="loginStatus" class="button button-stable button-clear button-block animate-if">OPTIONS</button>
         <!-- display if NOT signed in -->
         <form ng-if="logoutStatus" class="list animate-if">

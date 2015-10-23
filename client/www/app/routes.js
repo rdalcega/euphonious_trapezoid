@@ -8,36 +8,60 @@ router.config(function($stateProvider, $urlRouterProvider) {
   // Set up the various states which the app can be in.
   // Each state's controller can be found in controllers.js
   $stateProvider
-      
+
     .state('nav', {
       url: '/nav',
       templateUrl: '../nav/nav.html',
       controller: 'navController'
     })
-    .state('launch', {
+    .state('profile', {
+      url: '/profile',
+      abstract: true,
+      templateUrl: '../profile/profile.html',
+      // controller: 'profileController'
+    })
+    .state('profile.launch', {
       url: '/launch',
-      templateUrl: '../launch/launch.html',
-      controller: 'launchController'
+      views: {
+        'profile': {
+          templateUrl: '../launch/launch.html',
+          controller: 'launchController'
+        }
+      }
     })
-    .state('game', {
+    .state('profile.game', {
       url: '/game',
-      templateUrl: '../game/game.html',
-      controller: 'gameController'
-    })
+      views: {
+        'profile': {
+          templateUrl: '../game/game.html',
+          controller: 'gameController'
+        }
+      }
+    });
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/nav');
 
 });
 
+router.run(function($rootScope, $state, Auth) {
+  $rootScope.$on('$locationChangeStart', function(event, next, current) {
+    if (!localStorage.id_token && next.templateUrl !== '../nav/nav.html') {
+      $state.go('nav');
+    }
+  });
+});
+
 router.config(function Config($httpProvider, jwtInterceptorProvider) {
-  jwtInterceptorProvider.tokenGetter = function(){  //refactor to service for minification
+  jwtInterceptorProvider.tokenGetter = function() { //refactor to service for minification
     console.log(localStorage);
     return localStorage.getItem('id_token');
   };
 
   $httpProvider.interceptors.push('jwtInterceptor');
 });
+
+
 
 // .factory('AttachTokens', function ($window) {
 //   //this factory stops all outgoing requests, then looks in local storage
