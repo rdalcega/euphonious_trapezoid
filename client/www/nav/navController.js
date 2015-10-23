@@ -2,6 +2,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
   function($scope, $window, Auth, socket, $state, player) {
 
     $scope.loginStatus = false;
+    $scope.logoutStatus = true;
     $scope.loaded = false;
 
     $scope.single = function() {
@@ -23,7 +24,10 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
         .then(function(user) {
           if (user) {
             $window.localStorage.setItem('id_token', user.token);
-            $scope.loginStatus = Auth.checkAuth();
+            $scope.logoutStatus = !Auth.checkAuth();
+            setTimeout(function() {
+              $scope.loginStatus = Auth.checkAuth();
+            }, 250);
           } else {
             //login error, handle
           }
@@ -34,12 +38,18 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
       $window.localStorage.removeItem('id_token');
       Auth.destroyCredentials();
       $scope.loginStatus = false;
+      setTimeout(function() {
+        $scope.logoutStatus = true;
+      }, 250);
     };
 
     $scope.load = function() {
       if ($window.localStorage.getItem('id_token')) {
         Auth.loadAuth($window.localStorage.getItem('id_token'));
-        $scope.loginStatus = true;
+        $scope.logoutStatus = false;
+        setTimeout(function() {
+          $scope.loginStatus = true;
+        }, 250);
         $scope.loaded = true;
       } else {
         $scope.loaded = true;
