@@ -59,7 +59,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
 
     socket.on('started', function(data) {
       player.playerNum = String(data.playerNum);
-      $state.go('game');
+      $state.go('profile.game');
     });
 
     $scope.load();

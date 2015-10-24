@@ -33,11 +33,32 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
 //    game.movePiece({from: {x: pos.x, y: pos.y}, to: {x: 1, y:1}, state: game.playerNum, success:true});
 
   }, false);
-
-  socket.on('put', function (data) {  
+  var eventQueue = [];
+  setInterval(function( ) {
+    var queued = eventQueue.shift( );
+    if( queued ) {
+      if( queued.event === 'put' ) {
+        game.addPiece( queued.data );
+      } else if( queued.event === 'removed' ) {
+        game.removePiece( queued.data );
+      } else if( queued.event === 'moved' ) {
+        game.movePiece( queued.data );
+      } else if( queued.event === 'rotated' ) {
+        game.rotateBoard( queued.data );
+      } else if( queued.event === 'suspended' ) {
+        game.suspendPiece( queued.data );
+      } else if( queued.event === 'fell' ) {
+        game.dropPiece( queued.data );
+      }
+    }
+  }, 75);
+  socket.on('put', function (data) {
     console.log( 'Put: ', data );
     if (data.success) {
-      game.addPiece(data);
+      eventQueue.push({
+        event: 'put',
+        data: data
+      });
     } else {
       console.log('data.success === false');
     }
@@ -46,7 +67,10 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
   socket.on('removed', function (data) {
     console.log( 'Removed: ', data );
     if (data.success) {
-      game.removePiece(data);
+      eventQueue.push({
+        event: 'removed',
+        data: data
+      });
     } else {
       console.log('removed data.error === true');
     }
@@ -55,15 +79,36 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
   socket.on('moved', function (data) {
     console.log( 'Moved: ', data );
     if (data.success) {
-      game.movePiece(data);
+      eventQueue.push({
+        event: 'moved',
+        data: data
+      });
     } else {
       console.log('removed data.error === true');
     }
   });
-
+  socket.on('suspended', function( data ) {
+    if( data.success ) {
+      eventQueue.push({
+        event: 'suspended',
+        data: data
+      });
+    }
+  });
+  socket.on( 'fell', function( data ) {
+    if( data.success ) {
+      eventQueue.push({
+        event: 'fell',
+        data: data
+      });
+    }
+  });
   socket.on('rotated', function (data) {
     console.log( 'Rotated: ', data );
-    game.rotateBoard(data);
+    eventQueue.push({
+      event: 'rotated',
+      data: data
+    });
   });
 
   socket.on('ended', function (data) {

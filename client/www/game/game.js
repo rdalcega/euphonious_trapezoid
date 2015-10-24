@@ -212,7 +212,31 @@ sphero.factory('game', function () {
       console.log("board after move: ", board);
     }
   };
-
+  var suspendPiece = function( data ) {
+    var coordinates = data.coordinates.x + '_' + data.coordinates.y;
+    board[ coordinates ]
+      .model
+      .position
+      .set( data.coordinates.x * gridStep, data.coordinates.y * gridStep, 3 * gridStep );
+    board[ coordinates + '_' + 3 ] = {
+      state: board[ coordinates ].state,
+      model: board[ coordinates ].model
+    };
+    delete board[ coordinates ];
+  };
+  var dropPiece = function( data ) {
+    var from = data.from.x + '_' + data.from.y + '_' + 3;
+    var to = data.to.x + '_' + data.to.y;
+    board[ from ]
+      .model
+      .position
+      .set( data.to.x * gridStep, data.to.y * gridStep, 0 );
+    board[ to ] = {
+      state: board[ from ].state,
+      model: board[ from ].model
+    };
+    delete board[ from ];
+  };
   var moveModel = function (data) {
      board[data.from.x + "_" + data.from.y].model.position.set(data.to.x * gridStep, data.to.y * gridStep, 0);
   };
@@ -269,6 +293,8 @@ sphero.factory('game', function () {
     addPiece: addPiece,
     removePiece: removePiece,
     movePiece: movePiece,
+    suspendPiece: suspendPiece,
+    dropPiece: dropPiece,
     rotateBoard: rotateBoard,
     endGame: endGame
 
