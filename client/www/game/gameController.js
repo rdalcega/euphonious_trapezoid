@@ -17,10 +17,11 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
 
   window.addEventListener('mousedown', function (mouseDownEvent) {
     var pos = game.getGridPosition(mouseDownEvent, function (position2d) {
-
-      socket.emit('insert', {coordinates: position2d, state:player.playerNum }, function () {
-        console.log('emitted: ', {coordinates: position2d, state:player.playerNum });
-      });
+      if (!gameEnded) {
+        socket.emit('insert', {coordinates: position2d, state:player.playerNum }, function () {
+          console.log('emitted: ', {coordinates: position2d, state:player.playerNum });
+        });
+      };
     });
 
     // game.removePiece({coordinates: {x: 0, y: 0}, state:'A', success:true})
@@ -49,6 +50,10 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
         game.suspendPiece( queued.data );
       } else if( queued.event === 'fell' ) {
         game.dropPiece( queued.data );
+      } else if( queued.event === 'state' ) {
+        game.updateBoard( queue.data );
+      } else if( queue.event === 'ended' ) {
+        game.ended( queued.data );
       }
     }
   }, 75);
@@ -110,7 +115,13 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
       data: data
     });
   });
-
+  socket.on('state', function (data) {
+    console.log( 'updateBoard: ', data);
+    eventQueue.push({
+      event: 'state',
+      data: data
+    })
+  });
   socket.on('ended', function (data) {
     game.endGame(data);
     console.log('Game has ended.');
