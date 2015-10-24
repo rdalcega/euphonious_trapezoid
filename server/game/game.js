@@ -94,7 +94,7 @@ var Game = function( ) {
     'ended',
     {
       get: function( ) {
-        return this.maximumValence >= 15;
+        return this.maximumValence >= 10;
       }
     }
   );
@@ -102,7 +102,7 @@ var Game = function( ) {
   // chain removal behavior. If the chainThreshold
   // is 4, then chains of 5 spheres with the same state
   // will get removed.
-  this.chainThreshold = 4;
+  this.chainThreshold = 2;
 };
 Game.prototype = Object.create( EventEmitter.prototype );
 Game.prototype.get = get;
