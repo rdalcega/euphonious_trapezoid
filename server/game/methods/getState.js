@@ -10,4 +10,4 @@ var getState = function( ) {
   });
   return state;
 };
-module.exports = toString;
+module.exports = getState;

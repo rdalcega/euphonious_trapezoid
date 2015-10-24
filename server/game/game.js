@@ -15,7 +15,7 @@ var rebalance = require( './methods/rebalance.js' );
 var print = require( './methods/print.js' );
 var insert = require( './methods/insert.js' );
 var rank = require( './methods/rank.js' );
-var toString = require( './methods/toString.js' );
+var getState = require( './methods/getState.js' );
 var Game = function( ) {
   // Inherit from node's event emitter
   EventEmitter.call( this );
@@ -103,7 +103,7 @@ var Game = function( ) {
   // chain removal behavior. If the chainThreshold
   // is 4, then chains of 5 spheres with the same state
   // will get removed.
-  this.chainThreshold = 2;
+  this.chainThreshold = 4;
 };
 Game.prototype = Object.create( EventEmitter.prototype );
 Game.prototype.get = get;
@@ -121,5 +121,5 @@ Game.prototype.rebalance = rebalance;
 Game.prototype.print = print;
 Game.prototype.insert = insert;
 Game.prototype.rank = rank;
-Game.prototype.toString = toString;
+Game.prototype.getState = getState;
 module.exports = Game;
