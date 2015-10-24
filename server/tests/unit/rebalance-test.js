@@ -62,10 +62,25 @@ describe( 'A game\'s rebalance method', function( ) { // A standard describe blo
     game.put( 0, 4, '3' );
     game.rebalance( );
   });
-  it( 'should emit a moved event on rebalance for every piece that falls', function( done ) {
+  it( 'should emit a fell event on rebalance for every piece that falls', function( done ) {
     var game = new Game( );
     var count = 0;
-    game.on( 'moved', function( ) {
+    game.on( 'fell', function( ) {
+      count++;
+      if( count === 2 ) {
+        done( );
+      }
+    });
+    game.put( 0, 1, '0' );
+    game.put( 0, 2, '1' );
+    game.put( 0, 3, '2' );
+    game.put( 0, 4, '3' );
+    game.rebalance( );
+  });
+  it( 'should emit a suspended event on rebalance for every piece that will fall', function( done ) {
+    var game = new Game( );
+    var count = 0;
+    game.on( 'suspended', function( ) {
       count++;
       if( count === 2 ) {
         done( );
