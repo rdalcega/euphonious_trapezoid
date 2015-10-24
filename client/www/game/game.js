@@ -116,7 +116,8 @@ sphero.factory('game', function () {
 
   var updateBoard = function(boardState) {
     var anchorPiece = board['0_0'];
-    console.log(anchor);
+
+    console.log("anchor children is ", anchor.children)
     anchor.children.forEach(function(model) {
       anchor.remove(model);
     });
