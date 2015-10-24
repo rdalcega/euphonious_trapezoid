@@ -115,10 +115,11 @@ sphero.factory('game', function () {
   };
 
   var updateBoard = function(boardState) {
+    var anchor = board['0_0'];
     anchor.children.forEach(function(model) {
       anchor.remove(model);
     });
-    board = {};
+    board = {'0_0': anchor};
     boardState.forEach(function(sphere) {
       if (sphere.state !== 'A') {
         addPiece(sphere); 
