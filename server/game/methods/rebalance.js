@@ -1,16 +1,26 @@
 var Board = require( '../board.js' );
 var rebalance = function( ) {
-  var remove = function( x, y ) {
-    // This remove is intentionally different to
-    // the remove inside of removeChain.
-    // This remove does not reanchor or replace
-    // pieces, it only saves a copy of the piece
-    // and toggles the state of the piece on the board
-    // to 'L' so that it is ignored by the rotator
-    // screening further down in the algorithm.
+  var suspend = function( x, y ) {
+    // Suspend is intended to emit an
+    // event that tells the client to
+    // move the ball in the z-direction,
+    // so as to collisions of models.
+    // To avoid adding complexity to the sphere
+    // model, the suspension in the server-side
+    // board is represented by modifying the
+    // sphere to be a liberty.
     var sphere = this.get( x,  y );
+    var event = {
+      coordinates: {
+        x: sphere.coordinates.x,
+        y: sphere.coordinates.y
+      },
+      state: sphere.state,
+      success: true
+    };
     var copy = sphere.copy( );
     sphere.state = 'L';
+    this.emit( 'suspended', event );
     return copy;
   }.bind( this );
   var findClosestLiberty = function( coordinates, valence, ignore ) {
@@ -93,7 +103,7 @@ var rebalance = function( ) {
   // We find all of the fallers and remove them from the board.
   this.board.forEach( function( sphere ) {
     if( sphere.state !== 'L' && sphere.valence > threshold ) {
-      fallers.push( remove( sphere.coordinates.x, sphere.coordinates.y ) );
+      fallers.push( suspend( sphere.coordinates.x, sphere.coordinates.y ) );
     }
   }.bind( this ));
   // We sort the fallers by ascending valence.
@@ -154,7 +164,7 @@ var rebalance = function( ) {
       state: sphere.state,
       success: true
     };
-    this.emit( 'moved', event );
+    this.emit( 'fell', event );
     var chain = this.detectChain( liberty.coordinates.x, liberty.coordinates.y );
     if( chain.remove ) {
       this.removeChain( chain.chain );
