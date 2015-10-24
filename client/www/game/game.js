@@ -116,9 +116,13 @@ sphero.factory('game', function () {
 
   var updateBoard = function(boardState) {
     var anchor = board['0_0'];
-    anchor.children.forEach(function(model) {
-      anchor.remove(model);
-    });
+    console.log(anchor.children);
+    for (var i = 0; i < anchor.children.length; i++) {
+      
+    }
+    // .forEach(function(model) {
+    //   anchor.remove(model);
+    // });
     board = {'0_0': anchor};
     boardState.forEach(function(sphere) {
       if (sphere.state !== 'A') {
@@ -295,7 +299,7 @@ sphero.factory('game', function () {
   //  console.log('board after rotation: ', board);
   // };
 
-  var endGame = function (data) {
+  var ended = function (data) {
     gameEnded = true;
   };
 
@@ -312,7 +316,7 @@ sphero.factory('game', function () {
     suspendPiece: suspendPiece,
     dropPiece: dropPiece,
     rotateBoard: rotateBoard,
-    endGame: endGame
+    ended: ended
 
   };
 });

@@ -11,6 +11,8 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
     game.resize();
   });
 
+  var gameEnded = false;
+
   // game.addPiece({coordinates: {x: 3, y: 2}, state: player.playerNum});
   // game.addPiece({coordinates: {x: 0, y: -1}, state: player.playerNum});
 
@@ -51,8 +53,8 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
       } else if( queued.event === 'fell' ) {
         game.dropPiece( queued.data );
       } else if( queued.event === 'state' ) {
-        game.updateBoard( queue.data );
-      } else if( queue.event === 'ended' ) {
+        game.updateBoard( queued.data );
+      } else if( queued.event === 'ended' ) {
         game.ended( queued.data );
       }
     }
@@ -123,7 +125,7 @@ sphero.controller('gameController', ['game', 'socket', 'player', function(game, 
     })
   });
   socket.on('ended', function (data) {
-    game.endGame(data);
+    gameEnded = true;
     console.log('Game has ended.');
   });
 

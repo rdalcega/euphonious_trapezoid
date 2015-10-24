@@ -50,6 +50,7 @@ var startGame = function(gameId, io) {
     }.bind(events[i]));
   }
   var intervalID = setInterval( function( ) {
+    console.log(Object.keys(io.nsps['/'].adapter.rooms[gameId]));
     if( Object.keys(io.nsps['/'].adapter.rooms[gameId]).length > 0 ) {
       io.to( gameId ).emit( 'state', game.getState( ) );
     } else {
