@@ -15,6 +15,7 @@ var rebalance = require( './methods/rebalance.js' );
 var print = require( './methods/print.js' );
 var insert = require( './methods/insert.js' );
 var rank = require( './methods/rank.js' );
+var toString = require( './methods/toString.js' );
 var Game = function( ) {
   // Inherit from node's event emitter
   EventEmitter.call( this );
@@ -120,4 +121,5 @@ Game.prototype.rebalance = rebalance;
 Game.prototype.print = print;
 Game.prototype.insert = insert;
 Game.prototype.rank = rank;
+Game.prototype.toString = toString;
 module.exports = Game;
