@@ -27,6 +27,7 @@ sphero.factory('game', function () {
   // the board and the player
   var board;
   var playerNum; //this is assigned in controller
+  var gameEnded = false;
   
   //controls to rotate the camera with mouse, will probably be disabled in actual game
   var controls;
@@ -111,6 +112,19 @@ sphero.factory('game', function () {
 
     // Start the render sequence
     render();
+  };
+
+  var updateBoard = function(boardState) {
+    anchor.children.forEach(function(model) {
+      anchor.remove(model);
+    });
+    board = {};
+    boardState.forEach(function(sphere) {
+      if (sphere.state !== 'A') {
+        addPiece(sphere); 
+      }
+    });
+
   };
 
   var render = function () {
@@ -281,13 +295,14 @@ sphero.factory('game', function () {
   // };
 
   var endGame = function (data) {
-
+    gameEnded = true;
   };
 
   return {
     playerNum: playerNum,
 
     init: init,
+    updateBoard: updateBoard,
     resize: resize,
     getGridPosition: getGridPosition,
     addPiece: addPiece,
