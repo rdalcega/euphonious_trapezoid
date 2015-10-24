@@ -50,14 +50,11 @@ var startGame = function(gameId, io) {
     }.bind(events[i]));
   }
   var intervalID = setInterval( function( ) {
-    if( io.nsps['/'].adapter.rooms[gameId] ) {
-      io.to( gameId ).emit( 'state', game.getState( ) );
-    } else {
+    if( !io.nsps['/'].adapter.rooms[gameId] ) {
       game.emit( 'ended' );
     }
-  }, 5000 );
+  }, 10000 );
   game.on('ended', function() {
-    clearInterval( intervalID );
     delete game;
   });
   console.log("ALL LISTENERS ATTACHED");
