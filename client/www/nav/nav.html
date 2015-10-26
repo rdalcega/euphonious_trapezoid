@@ -16,16 +16,12 @@
           <label class="item item-input">
             <input type="text" placeholder="Password" ng-model="$parent.password">
           </label>
-          <!-- display if signup is selected -->
-          <label class="item item-input">
-            <input type="text" placeholder="Email" ng-model="$parent.email">
-          </label>
         </form>
         <!-- display if not logged in, selected lights up and controls form -->
-        <button ng-if="logoutStatus" class="button button-stable button-clear button-small animate-if" ng-click="login(username, password)">Login</button>
-        <button ng-if="logoutStatus" class="button button-stable button-clear button-small animate-if" ng-click="signUp(username, password, email)">Sign Up</button>
+        <button ng-if="logoutStatus" class="login button button-stable button-clear button-small animate-if" ng-class="" ng-click="login(username, password)">Login</button>
+        <button ng-if="logoutStatus" class="signup button button-stable button-clear button-small animate-if" ng-class="" ng-click="showPopup()">Sign Up</button>
         <!-- display if signed in -->
-        <button ng-if="loginStatus" class="button button-stable button-clear button-small animate-if" ng-click="logout()">Logout</button>
+        <button ng-if="loginStatus" class="logout button button-stable button-clear button-small animate-if" ng-click="logout()">Logout</button>
       </div>
     </ion-content>
   </div>
