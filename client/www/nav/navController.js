@@ -1,5 +1,5 @@
-sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$state', 'player',
-  function($scope, $window, Auth, socket, $state, player) {
+sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$state', 'player', '$ionicPopup',
+  function($scope, $window, Auth, socket, $state, player, $ionicPopup) {
 
     $scope.loginStatus = false;
     $scope.logoutStatus = true;
@@ -9,6 +9,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
       socket.emit('single');
     };
 
+
     $scope.signUp = function(username, password, email) {
       Auth.signUp(username, password, email)
         .then(function() {
@@ -16,6 +17,43 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
         }, function(err) {
           //handle error
         });
+    };
+
+    $scope.showPopup = function() {
+      $scope.signupInfo = {};
+      var signupPopUp = $ionicPopup.show({
+        template: '<form class="list"><label class="item item-input"><input type="text" placeholder="Username" ng-model="signupInfo.username"></label><label class="item item-input"><input type="text" placeholder="Password" ng-model="signupInfo.password"></label><label class="item item-input" id="email"><input type="text" placeholder="Email" ng-model="signupInfo.email"></label></form>',
+        title: 'Enter User info',
+        scope: $scope,
+        buttons: [{
+          text: 'Cancel',
+          type: 'button-clear',
+          onTap: function(e) {
+            return false;
+          }
+        }, {
+          text: '<b>Submit</b>',
+          type: 'button-clear',
+          onTap: function(e) {
+            console.log($scope.signupInfo.username);
+            if ($scope.signupInfo.username === undefined || $scope.signupInfo.username === null) {
+              console.log('none entered');
+              //don't allow the user to close unless he enters proper credentials
+              e.preventDefault();
+            } else {
+              return $scope.signupInfo;
+            }
+          }
+        }, ]
+      });
+
+      signupPopUp.then(function(playerInfo) {
+        signupPopUp.close();
+        if (playerInfo) {
+          $scope.signUp(playerInfo.username, playerInfo.password, playerInfo.email);
+        }
+        //$location.path('/tab/editWorkout');
+      });
     };
 
     $scope.login = function(username, password) {
@@ -29,7 +67,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
               $scope.loginStatus = Auth.checkAuth();
             }, 250);
           } else {
-            //login error, handle
+            alert('Invalid login, please login or signup');
           }
         });
     };
@@ -48,7 +86,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
         Auth.loadAuth($window.localStorage.getItem('id_token'));
         $scope.logoutStatus = false;
         // setTimeout(function() {
-          $scope.loginStatus = true;
+        $scope.loginStatus = true;
         // }, 250);
         $scope.loaded = true;
       } else {
@@ -63,6 +101,8 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     });
 
     $scope.load();
+
+
 
   }
 ]);

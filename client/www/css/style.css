@@ -1,137 +1,161 @@
 /* Empty. Add your own CSS if you like */
 
 #nav {
-  background-image: url("../img/nav_back.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
+    background-image: url("../img/nav_back.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
 
 #nav-title {
-  text-align: center;
-  font-size: 75px;
-  color: #8F97B1;
-  margin-bottom: 40px;
+    text-align: center;
+    font-size: 75px;
+    color: #8F97B1;
+    margin-bottom: 40px;
 }
 
 #nav .list {
-  margin-bottom: 55px;
-  background-color: transparent;
+    margin-bottom: 55px;
+    background-color: transparent;
 }
 
 #nav .item {
-  border: 0;
+    border: 0;
+    margin-bottom: 30px;
 }
 
 #nav input {
-  text-align: center;
+    text-align: center;
 }
 
 input[type='text'] {
-  font-size: 25px;
-  color: gray;
+    font-size: 50px;
+    color: gray;
 }
+
 
 /* Place Holder CSS */
+
 ::-webkit-input-placeholder {
-  color: #000;
-  opacity: 0.5;
-  -webkit-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+    color: #000;
+    opacity: 0.5;
+    -webkit-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
+
 :-moz-placeholder {
-  color: #000;
-  opacity: 0.5;
-  -moz-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+    color: #000;
+    opacity: 0.5;
+    -moz-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
+
 ::-moz-placeholder {
-  color: #000;
-  opacity: 0.5;
-  -moz-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
-}
-:-ms-input-placeholder {  
-  color: #000;
-  opacity: 0.5;
-  -ms-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+    color: #000;
+    opacity: 0.5;
+    -moz-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
 
+:-ms-input-placeholder {
+    color: #000;
+    opacity: 0.5;
+    -ms-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
+}
+
+
 /* Place Holder CSS for Focus */
+
 :hover::-webkit-input-placeholder {
-  opacity: 0.75;
-  -webkit-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
-}
-:hover:-moz-placeholder {
-  opacity: 0.75;
-  -moz-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
-}
-:hover::-moz-placeholder {
-  opacity: 0.75;
-  -moz-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
-}
-:hover:-ms-input-placeholder {  
-  opacity: 0.75;
-  -ms-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+    opacity: 0.75;
+    -webkit-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
 
+:hover:-moz-placeholder {
+    opacity: 0.75;
+    -moz-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
+}
+
+:hover::-moz-placeholder {
+    opacity: 0.75;
+    -moz-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
+}
+
+:hover:-ms-input-placeholder {
+    opacity: 0.75;
+    -ms-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
+}
+
+
 /* Place Holder CSS for Focus */
+
 :focus::-webkit-input-placeholder {
-  opacity: 0;
-  -webkit-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+    opacity: 0;
+    -webkit-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
+
 :focus:-moz-placeholder {
-  opacity: 0;
-  -moz-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+    opacity: 0;
+    -moz-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
+
 :focus::-moz-placeholder {
-  opacity: 0;
-  -moz-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+    opacity: 0;
+    -moz-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
-:focus:-ms-input-placeholder {  
-  opacity: 0;
-  -ms-transition: opacity 0.35s ease-in-out;
-  transition: opacity 0.35s ease-in-out;
+
+:focus:-ms-input-placeholder {
+    opacity: 0;
+    -ms-transition: opacity 0.35s ease-in-out;
+    transition: opacity 0.35s ease-in-out;
 }
 
 #nav .item-input {
-  background-color: transparent;
+    background-color: transparent;
 }
 
-#nav .button-block {
-  font-size: 25px;
-  margin-bottom: 15px;
+#nav .button-block,
+#launch .button-block {
+    font-size: 25px;
+    margin-bottom: 15px;
 }
 
 #nav .button-small {
-  font-size: 25px;
+    font-size: 25px;
 }
 
 .animate-if {
-  padding:10px;
+    padding: 10px;
 }
 
-.animate-if.ng-enter, .animate-if.ng-leave {
-  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+.animate-if.ng-enter,
+.animate-if.ng-leave {
+    transition: all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
 }
 
 .animate-if.ng-enter,
 .animate-if.ng-leave.ng-leave-active {
-  opacity:0;
+    opacity: 0;
 }
 
 .animate-if.ng-leave,
 .animate-if.ng-enter.ng-enter-active {
-  opacity:1;
+    opacity: 1;
 }
 
 input[type='text'] {
-  font-size: 25px;
+    font-size: 25px;
+}
+
+#launch {
+    background-image: url("../img/launch.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
 }
