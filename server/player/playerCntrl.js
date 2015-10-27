@@ -4,13 +4,13 @@ var db = require('../db/db.js');
 module.exports.signup = function(req, res) {
   var username = req.body.username;
   var password = req.body.password; // will encrypt
-  var params = [username, password, req.body.email];
+  var params = [username, password, req.body.email, 1200, 0];
 
   var sqlQueryAsk = "SELECT Players.Player_Username FROM \
     Players WHERE Player_Username = '" + username + "' \
     LIMIT 1";
-  var sqlQueryIns = "INSERT INTO Players (Player_Username, Hash, Email) \
-    Value (?, ?, ?)";
+  var sqlQueryIns = "INSERT INTO Players (Player_Username, Hash, Email, Ranking, Games_Played) \
+    Value (?, ?, ?, ?, ?)";
 
   db.query(sqlQueryAsk, function(err, results) {
     if (err) {
@@ -38,4 +38,39 @@ module.exports.signup = function(req, res) {
       }
     }
   });
+};
+
+//allow user to friend other players at end of game
+module.exports.friend = function(req, res) {
+  var friendName = req.body.friendName;
+  var myID = req.body.id;
+  var params = [myID, null];
+
+  var sqlQueryAsk = "SELECT Players.Player_ID FROM \
+    Players WHERE Player_Username = '" + friendName + "'";
+
+  var sqlQueryIns = "INSERT INTO Friends (Player_ID, Friend_ID) \
+    Value (?, ?)";
+
+  db.query(sqlQueryAsk, function(err, results) {
+    if (err) {
+      console.log(err)
+    } else {
+      console.log(results);
+      if (results.length === 0) {
+        res.status(403).send('cannot find user');
+      } else {
+        params[1] = results[0].Player_ID;
+        db.query(sqlQueryIns, params, function(err) {
+          if (err) {
+            console.log(err);
+          } else {
+            res.status(200).send(friendName + " is now a friend");
+          }
+        });
+      }
+    }
+
+  });
+
 };

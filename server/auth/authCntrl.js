@@ -7,13 +7,14 @@ module.exports.login = function(req, res) {
   var password = req.body.password; // add decrypt
   //check to see if login credentials are in database (no encrypt yet)
   var sqlQueryAsk = "SELECT Players.Player_Username, Players.Email, \
-    Players.Player_ID, Players.Hash FROM Players WHERE \
+    Players.Player_ID, Players.Hash, Players.Ranking, Players.Games_Played FROM Players WHERE \
     Player_Username = '" + username + "' LIMIT 1";
 
   db.query(sqlQueryAsk, function(err, results) {
     if (err) {
       console.log(err);
     } else {
+      console.log(results);
       var player = results[0];
       if (results.length === 0) {
         res.status(401).send('Invalid Username');
@@ -25,9 +26,12 @@ module.exports.login = function(req, res) {
             if(!response){
               res.status(401).send('Invalid Password');
             } else {
+
               var profile = { //this is done in callback from db
                 userName: player.Player_Username,
                 email: player.Email,
+                ranking: player.Ranking,
+                gamesPlayed: player.Games_Played,
                 id: player.Player_ID
               };
 

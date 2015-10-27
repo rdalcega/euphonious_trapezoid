@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `Players` (
   `Player_Username` varchar(25) NOT NULL,
   `Hash` varchar(100) NOT NULL,
   `Email` varchar(50) NOT NULL,
-  -- `Ranking` INT NOT NULL,
+  `Ranking` INT NOT NULL,
+  `Games_Played` INT NOT NULL,
   PRIMARY KEY (`Player_ID`)
 );
 

@@ -1,4 +1,4 @@
-sphero.controller('launchController', ['$scope', '$state', 'socket','player', function($scope, $state, socket, player) {
+sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', function($scope, $state, socket, player) {
 
 	$scope.join = function() {
 

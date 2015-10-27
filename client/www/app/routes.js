@@ -37,6 +37,15 @@ router.config(function($stateProvider, $urlRouterProvider) {
           controller: 'gameController'
         }
       }
+    })
+    .state('profile.gameover', {
+      url: '/gameover',
+      views: {
+        'profile': {
+          templateUrl: '../endgame/endgame.html',
+          controller: 'endgameController'
+        }
+      }
     });
 
   // if none of the above states are matched, use this as the fallback
