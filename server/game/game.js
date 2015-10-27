@@ -15,6 +15,7 @@ var rebalance = require( './methods/rebalance.js' );
 var print = require( './methods/print.js' );
 var insert = require( './methods/insert.js' );
 var rank = require( './methods/rank.js' );
+var getState = require( './methods/getState.js' );
 var Game = function( ) {
   // Inherit from node's event emitter
   EventEmitter.call( this );
@@ -94,7 +95,7 @@ var Game = function( ) {
     'ended',
     {
       get: function( ) {
-        return this.maximumValence >= 15;
+        return this.maximumValence >= 10;
       }
     }
   );
@@ -120,4 +121,5 @@ Game.prototype.rebalance = rebalance;
 Game.prototype.print = print;
 Game.prototype.insert = insert;
 Game.prototype.rank = rank;
+Game.prototype.getState = getState;
 module.exports = Game;

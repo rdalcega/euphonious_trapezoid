@@ -29,7 +29,7 @@ var single = function(io) {
   this.join(gameId);
   console.log("single player game created at " + gameId);
   startGame(gameId, io);
-}
+};
 var startGame = function(gameId, io) {
   var sockets = Object.keys(io.nsps['/'].adapter.rooms[gameId]).map(function(socketId) {
     return io.sockets.connected[socketId];
@@ -49,6 +49,12 @@ var startGame = function(gameId, io) {
       io.to(gameId).emit(this, event);
     }.bind(events[i]));
   }
+  var intervalID = setInterval( function( ) {
+    if( !io.nsps['/'].adapter.rooms[gameId] ) {
+      game.emit( 'ended' );
+    }
+  }, 10000 );
+  
   game.on('ended', function() {
     delete game;
   });

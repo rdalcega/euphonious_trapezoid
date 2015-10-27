@@ -24,8 +24,11 @@ var insert = function( event ) {
     event.success = false;
     this.emit( 'put', event );
   }
+
   if( this.ended ) {
     this.emit( 'ended', this.rank( ) );
+  } else {
+    this.emit( 'state', this.getState());
   }
 };
 module.exports = insert;
