@@ -42,6 +42,7 @@ var startGame = function(gameId, io) {
       game.insert(event);
     });
     socket.emit('started', {playerNum: i});
+    socket.emit('state', game.getState());
   }
   var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', 'ended'];
   for (i = 0; i < events.length; i++) {
