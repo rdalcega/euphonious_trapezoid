@@ -107,7 +107,7 @@ sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function(SpheroApiUrl, $
       });
     },
     emit: function(eventName, data, callback) {
-      console.log('emitting...')
+
       socket.emit(eventName, data, function() {
         var args = arguments;
         $rootScope.$apply(function() {
