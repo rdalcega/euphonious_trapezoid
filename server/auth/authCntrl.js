@@ -7,7 +7,7 @@ module.exports.login = function(req, res) {
   var password = req.body.password; // add decrypt
   //check to see if login credentials are in database (no encrypt yet)
   var sqlQueryAsk = "SELECT Players.Player_Username, Players.Email, \
-    Players.Player_ID, Players.Hash, Players.Ranking, Players.Games_Played, Friends.Friend_ID FROM Players \
+    Players.Player_ID, Players.Hash, Players.Ranking, Players.Games_Played, Friends.Friend_Name FROM Players \
     INNER JOIN Friends ON Friends.Friend_ID = Friends.Friend_ID WHERE \
     Player_Username = '" + username + "'";
 
@@ -27,18 +27,9 @@ module.exports.login = function(req, res) {
             if(!response){
               res.status(401).send('Invalid Password');
             } else {
-              var i;
               var friends = [];
-              for (i = 0; i < results.length; i++) {
-                sqlQueryAsk = "SELECT Players.Player_Username FROM Players WHERE Player_ID = '" + results[i].Friend_ID + "'";
-                db.query(sqlQueryAsk, function(err, results) {
-                  if (err) {
-                    console.log(err)
-                  } else {
-                    console.log(results);
-                    friends.push(results[0]);
-                  }
-                });
+              for (var i = 0; i < results.length; i++) {
+                friends.push(results[i].Friend_Name);
               }
 
               var profile = { //this is done in callback from db

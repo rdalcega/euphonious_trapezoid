@@ -44,13 +44,13 @@ module.exports.signup = function(req, res) {
 module.exports.friend = function(req, res) {
   var friendName = req.body.friendName;
   var myID = req.body.id;
-  var params = [myID, null];
+  var params = [myID, null, friendName];
 
   var sqlQueryAsk = "SELECT Players.Player_ID FROM \
     Players WHERE Player_Username = '" + friendName + "'";
 
-  var sqlQueryIns = "INSERT INTO Friends (Player_ID, Friend_ID) \
-    Value (?, ?)";
+  var sqlQueryIns = "INSERT INTO Friends (Player_ID, Friend_ID, Friend_Name) \
+    Value (?, ?, ?)";
 
   db.query(sqlQueryAsk, function(err, results) {
     if (err) {

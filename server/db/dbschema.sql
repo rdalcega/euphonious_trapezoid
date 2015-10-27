@@ -14,7 +14,8 @@ CREATE TABLE IF NOT EXISTS `Players` (
 
 CREATE TABLE IF NOT EXISTS `Friends` (
   `Player_ID` INT NOT NULL,
-  `Friend_ID` INT NOT NULL
+  `Friend_ID` INT NOT NULL,
+  `Friend_Name` varchar(25) NOT NULL
 );
 
 ALTER TABLE `Friends` ADD CONSTRAINT `Friends_fk0` FOREIGN KEY (`Player_ID`) REFERENCES `Players`(`Player_ID`);
