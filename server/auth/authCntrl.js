@@ -27,9 +27,18 @@ module.exports.login = function(req, res) {
             if(!response){
               res.status(401).send('Invalid Password');
             } else {
+              var i;
               var friends = [];
-              for (var i = 0; i < results.length; i++) {
-                friends.push(results[i].Friend_ID);
+              for (i = 0; i < results.length; i++) {
+                sqlQueryAsk = "SELECT Players.Player_Username FROM Players WHERE Player_ID = '" + results[i].Friend_ID + "'";
+                db.query(sqlQueryAsk, function(err, results) {
+                  if (err) {
+                    console.log(err)
+                  } else {
+                    console.log(results);
+                    friends.push(results[0]);
+                  }
+                });
               }
 
               var profile = { //this is done in callback from db
