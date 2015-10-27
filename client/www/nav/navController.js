@@ -49,7 +49,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
 
       signupPopUp.then(function(playerInfo) {
         signupPopUp.close();
-        if(playerInfo){
+        if (playerInfo) {
           $scope.signUp(playerInfo.username, playerInfo.password, playerInfo.email);
         }
         //$location.path('/tab/editWorkout');
@@ -101,6 +101,8 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     });
 
     $scope.load();
+
+
 
   }
 ]);
