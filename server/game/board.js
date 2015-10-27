@@ -42,6 +42,7 @@ var Board = function( ) {
       }
     })
   };
+  spheres[ '0:0' ].id = 0;
   this.get = function( x, y ) {
     if( x % 1 === 0 && y % 1 === 0 ) {
       return spheres[ x + ':' + y ];

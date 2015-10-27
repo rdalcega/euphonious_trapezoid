@@ -130,6 +130,7 @@ var rebalance = function( ) {
   for( var i = 0; i < rotators.length; i++ ) {
     var sphere = rotators[ i ];
     if( this.put( -sphere.coordinates.y, sphere.coordinates.x, sphere.state ) ) {
+      this.get( -sphere.coordinates.y, sphere.coordinates.x ).id = sphere.id;
       event.push({
         to: {
           x: -sphere.coordinates.y,
@@ -152,6 +153,7 @@ var rebalance = function( ) {
   fallers.forEach( function( sphere ) {
     var liberty = findClosestLiberty( sphere.coordinates, sphere.valence );
     this.put( liberty.coordinates.x, liberty.coordinates.y, sphere.state );
+    this.get( liberty.coordinates.x, liberty.coordinates.y ).id = sphere.id;
     event = {
       to: {
         x: liberty.coordinates.x,

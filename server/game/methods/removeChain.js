@@ -32,6 +32,7 @@ var removeChain = function( chain ) {
     from = from.coordinates;
     this.updateLeaves( from.x, from.y );
     this.put( to.x, to.y, event.state );
+    this.get( to.x, to.y ).id = this.get( from.x, from.y ).id;
     event.success = true;
     this.emit( 'moved', event );
     reanchor( from );

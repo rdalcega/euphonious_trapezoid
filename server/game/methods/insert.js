@@ -11,6 +11,7 @@ var insert = function( event ) {
   // For all practical purposes, insert is the method
   // through which the client will manipulate the board's state.
   if( this.put( coordinates.x, coordinates.y, state ) ) {
+    this.get( coordinates.x, coordinates.y ).id = this.id++;
     event.success = true;
     this.emit( 'put', event );
     var chain = this.detectChain( coordinates.x, coordinates.y );

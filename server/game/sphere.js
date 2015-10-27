@@ -148,11 +148,13 @@ var Sphere = function( options ) {
     }.bind( this ));
 };
 Sphere.prototype.copy = function( ) {
-  return new Sphere({
+  var copy = new Sphere({
     state: this.state,
     valence: this.valence,
     coordinates: this.coordinates,
     leafy: this.leafy
   });
+  copy.id = this.id;
+  return copy;
 };
 module.exports = Sphere;

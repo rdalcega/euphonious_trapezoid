@@ -4,7 +4,8 @@ var getState = function( ) {
     if( sphere.state !== 'L' ) {
       state.push({
         coordinates: sphere.coordinates,
-        state: sphere.state
+        state: sphere.state,
+        id: sphere.id
       });
     }
   });
