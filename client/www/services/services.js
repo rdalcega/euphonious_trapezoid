@@ -71,6 +71,19 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
     //will change this check to be server side later
   };
 
+  authFactory.addFriend = function(otherPlayer, myID) {
+    return $http({
+      method: 'POST',
+      url: SpheroApiUrl + '/player/friend',
+      data: {
+        friendName: friend,
+        id: myID
+      }
+    }).then(function(resp){
+      console.log(resp);
+    });
+  }
+
   return authFactory;
 
 }]);
@@ -112,9 +125,13 @@ sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function(SpheroApiUrl, $
 }]);
 
 sphero.factory('player', function() {
+  
   var playerNum = null;
+  //information used to render to player in profile
+  var profile = null;
 
   return {
-    playerNum: playerNum
+    playerNum: playerNum,
+    profile: profile
   };
 })

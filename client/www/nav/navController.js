@@ -61,6 +61,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
       Auth.login(username, password)
         .then(function(user) {
           if (user) {
+            player.profile = user.profile;
             $window.localStorage.setItem('id_token', user.token);
             $scope.logoutStatus = !Auth.checkAuth();
             setTimeout(function() {
@@ -101,7 +102,6 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     });
 
     $scope.load();
-
 
 
   }
