@@ -104,6 +104,5 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     $scope.load();
 
 
-
   }
 ]);
