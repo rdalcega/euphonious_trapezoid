@@ -28,6 +28,10 @@ var Game = function( ) {
   //   L
   // L A L
   //   L
+  // Each piece on the board has an id,
+  // so it is convenient to keep track of
+  // the next available id inside of the game.
+  this.id = 1;
   // Therefore, the board is initialized
   // with four leaves at valence 0.
   // These four leaves are virtual leaves.
