@@ -1,6 +1,4 @@
-var id = 0;
 var Sphere = function( options ) {
-  this.id = id++;
   // options object must have 'state', 'valence',
   // and 'coordinates' properties. It can have 'leafy'
   // property. If 'leafy' is not specified, it defaults
