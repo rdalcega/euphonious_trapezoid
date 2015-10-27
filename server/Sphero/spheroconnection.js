@@ -54,6 +54,7 @@ var startGame = function(gameId, io) {
       game.emit( 'ended' );
     }
   }, 10000 );
+  
   game.on('ended', function() {
     delete game;
   });

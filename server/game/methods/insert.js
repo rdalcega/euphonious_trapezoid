@@ -28,7 +28,7 @@ var insert = function( event ) {
   if( this.ended ) {
     this.emit( 'ended', this.rank( ) );
   } else {
-    // this.emit( 'state', this.getState());
+    this.emit( 'state', this.getState());
   }
 };
 module.exports = insert;
