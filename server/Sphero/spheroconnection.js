@@ -2,17 +2,21 @@
 var Game = require('../game/game.js');
 
 var gameQueue = [];
+var playersInRoom = {};
 
-var host = function(io) {
+var host = function(io, data) {
   // Create a unique Socket.IO Room
-  var gameId = (Math.random() * 100000) || 0;
+  var gameId = ((Math.random() * 100000) || 0).toString();
   // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
   // Join the Room and wait for the players
-  this.join(gameId.toString());
-  gameQueue.push(gameId.toString());
-  console.log('THE GAME QUEUE IS CURRENTLY!!! ' + gameQueue);
+  this.join(gameId);
+  gameQueue.push(gameId);
+  console.log("DATA RECEIVED FROM EVENT ", data);
+  playersInRoom[gameId] = [];
+  playersInRoom[gameId].push(data);
+  console.log(playersInRoom);
 };
-var join = function(io) {
+var join = function(io, data) {
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
       console.log("gameQueue AFTER JOIN IS " + gameQueue);
@@ -24,10 +28,13 @@ var join = function(io) {
       host.call(this);
     }
 };
-var single = function(io) {
+var single = function(io, data) {
   var gameId = ((Math.random() * 100000) || 0).toString();
   this.join(gameId);
-  console.log("single player game created at " + gameId);
+  playersInRoom[gameId] = [];
+  playersInRoom[gameId].push(data);
+  console.log("data from single event is " + data);
+  console.log(playersInRoom);
   startGame(gameId, io);
 };
 var startGame = function(gameId, io) {
@@ -52,12 +59,14 @@ var startGame = function(gameId, io) {
   }
   var intervalID = setInterval( function( ) {
     if( !io.nsps['/'].adapter.rooms[gameId] ) {
+      delete playersInRoom[gameId];
       delete game;
       clearInterval( intervalID );
     }
   }, 10000 );
   
   game.on('ended', function() {
+    delete playersInRoom[gameId];
     delete game;
     clearInterval( intervalID );
   });
@@ -65,7 +74,13 @@ var startGame = function(gameId, io) {
   console.log("ALL LISTENERS ATTACHED");
 };
 module.exports.init = function(io, socket) {
-  socket.on('host', host.bind(socket, io));
-  socket.on('join', join.bind(socket, io));
-  socket.on('single', single.bind(socket, io));
+  socket.on('host', function(data){
+    host.call(socket, io, data);
+  });
+  socket.on('join', function(data) {
+    join.call(socket, io, data);
+  });
+  socket.on('single', function(data) {
+    single.call(socket, io, data);
+  });
 };
