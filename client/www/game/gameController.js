@@ -6,6 +6,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   console.log('game.playerNum: ', game.playerNum);
 
   game.init(element, 20);
+  var gameEnded = false;
 
   var eventQueue = [];
   setInterval(function() {
@@ -31,10 +32,12 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     };
     console.log(sending);
 
-    socket.emit('insert', {
-      coordinates: coordinates,
-      state: game.playerNum
-    });
+    if (!gameEnded) {
+      socket.emit('insert', {
+        coordinates: coordinates,
+        state: game.playerNum
+      });
+    }
   }, false);
 
   socket.on('state', function(data) {
@@ -74,6 +77,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
 
   socket.on('ended', function(data) {
+    gameEnded = true;
     $scope.showPopup(data);
   });
 
