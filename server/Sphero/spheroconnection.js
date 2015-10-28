@@ -28,10 +28,13 @@ var join = function(io, data) {
       host.call(this);
     }
 };
-var single = function(io) {
+var single = function(io, data) {
   var gameId = ((Math.random() * 100000) || 0).toString();
   this.join(gameId);
-  console.log("single player game created at " + gameId);
+  playersInRoom[gameId] = [];
+  playersInRoom[gameId].push(data);
+  console.log("data from single event is " + data);
+  console.log(playersInRoom);
   startGame(gameId, io);
 };
 var startGame = function(gameId, io) {
@@ -76,5 +79,8 @@ module.exports.init = function(io, socket) {
   socket.on('join', function(data) {
     join.bind(socket, io, data);
   });
-  socket.on('single', single.bind(socket, io));
+  socket.on('single', function(data) {
+    console.log("data on event single is: ", data);
+    single.bind(socket, io, data);
+  });
 };
