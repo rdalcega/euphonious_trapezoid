@@ -46,7 +46,7 @@ var rebalance = function( ) {
       // In case one of the neighbors is a liberty with a valence smaller
       // than the valence of the piece that is falling, then that neighbor
       // is the closest liberty only if it should not be ignored.
-      if( neighbor && neighbor.state === 'L' && neighbor.valence <= valence ) {
+      if( neighbor && neighbor.state === 'L' ) {
         if( ignore.indexOf( coordinates.x + ':' + coordinates.y ) < 0 ) {
           liberty = neighbor;
         }
