@@ -60,7 +60,7 @@ var startGame = function(gameId, io) {
   var intervalID = setInterval( function( ) {
     if( !io.nsps['/'].adapter.rooms[gameId] ) {
       delete playersInRoom[gameId];
-      delete game;
+      game = null;
       clearInterval( intervalID );
     }
   }, 10000 );
@@ -68,7 +68,7 @@ var startGame = function(gameId, io) {
   game.on('ended', function() {
 
     delete playersInRoom[gameId];
-    delete game.insert;
+    delete game;
     clearInterval( intervalID );
   });
   
