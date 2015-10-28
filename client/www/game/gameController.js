@@ -1,4 +1,4 @@
-sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'player', 'Auth', function($scope, $state, game, socket, player, Auth) {
+sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'player', 'Auth', '$ionicPopup', function($scope, $state, game, socket, player, Auth, $ionicPopup) {
 
   element = document.getElementById("game");
 
@@ -61,7 +61,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
         text: 'Exit',
         type: 'button-clear',
         onTap: function(e) {
-          return false;
+          return true;
         }
       }]
     });
