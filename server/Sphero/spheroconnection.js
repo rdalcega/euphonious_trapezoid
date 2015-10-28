@@ -66,8 +66,9 @@ var startGame = function(gameId, io) {
   }, 10000 );
   
   game.on('ended', function() {
+
     delete playersInRoom[gameId];
-    delete game;
+    delete game.insert;
     clearInterval( intervalID );
   });
   
