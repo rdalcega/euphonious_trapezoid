@@ -121,14 +121,17 @@ sphero.factory('socket', ['SpheroApiUrl', '$rootScope', function(SpheroApiUrl, $
 
 }]);
 
-sphero.factory('player', function() {
+sphero.factory('player', ['$window','jwtHelper', function($window, jwtHelper) {
   
   var playerNum = null;
   //information used to render to player in profile
-  var profile = null;
+  if ($window.localStorage.getItem('id_token')) {
+    var tokenPayload = jwtHelper.decodeToken($window.localStorage.getItem('id_token'));
+    var profile = tokenPayload;
+  }
 
   return {
     playerNum: playerNum,
     profile: profile
   };
-})
+}]);
