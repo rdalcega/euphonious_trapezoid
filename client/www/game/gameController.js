@@ -1,4 +1,4 @@
-sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'player', 'Auth', function($scope, $state, game, socket, player, Auth) {
+sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'player', 'Auth', '$ionicPopup', function($scope, $state, game, socket, player, Auth, $ionicPopup) {
 
   element = document.getElementById("game");
 
