@@ -11,11 +11,7 @@ var host = function(io, data) {
   // Join the Room and wait for the players
   this.join(gameId);
   gameQueue.push(gameId);
-<<<<<<< HEAD
   console.log("DATA RECEIVED FROM HOST EVENT ", data);
-=======
-  console.log("DATA RECEIVED FROM EVENT ", data);
->>>>>>> Sending full profile object to server on join and host events
   playersInRoom[gameId] = [];
   playersInRoom[gameId].push(data);
   console.log(playersInRoom);
@@ -87,12 +83,7 @@ var startGame = function(gameId, io) {
 };
 module.exports.init = function(io, socket) {
   socket.on('host', function(data){
-<<<<<<< HEAD
     host.call(socket, io, data);
-=======
-    console.log("data on event host is: " + data);
-    host.bind(socket, io, data);
->>>>>>> Sending full profile object to server on join and host events
   });
   socket.on('join', function(data) {
     join.call(socket, io, data);
