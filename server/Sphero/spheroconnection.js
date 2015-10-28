@@ -11,7 +11,7 @@ var host = function(io, data) {
   // Join the Room and wait for the players
   this.join(gameId);
   gameQueue.push(gameId);
-  console.log("DATA RECEIVED FROM EVENT ", data);
+  console.log("DATA RECEIVED FROM HOST EVENT ", data);
   playersInRoom[gameId] = [];
   playersInRoom[gameId].push(data);
   console.log(playersInRoom);
@@ -19,13 +19,14 @@ var host = function(io, data) {
 var join = function(io, data) {
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
-      console.log("gameQueue AFTER JOIN IS " + gameQueue);
-      console.log("I THINK THIS IS AN OBJECT " + Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]));
+      playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
+      playersInRoom[gameQueue[0]].push(data);
+      console.log("Players in room at ", gameQueue[0], " are ", playersInRoom[gameQueue[0]]);
       if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
       }
     } else { 
-      host.call(this);
+      host.call(this, io, data);
     }
 };
 var single = function(io, data) {
@@ -51,7 +52,7 @@ var startGame = function(gameId, io) {
     socket.emit('started', {playerNum: i});
     socket.emit('state', game.getState());
   }
-  var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', 'state', 'ended'];
+  var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', 'state'];
   for (i = 0; i < events.length; i++) {
     game.on(events[i], function(event) {
       io.to(gameId).emit(this, event);
@@ -60,14 +61,21 @@ var startGame = function(gameId, io) {
   var intervalID = setInterval( function( ) {
     if( !io.nsps['/'].adapter.rooms[gameId] ) {
       delete playersInRoom[gameId];
-      delete game;
+      game = null;
       clearInterval( intervalID );
     }
   }, 10000 );
   
   game.on('ended', function() {
+    var rank = game.rank();
+    var playerRank = [];
+    rank.forEach(function(player, index) {
+      playerRank.push(playersInRoom[gameId][player]);
+    });
+    io.to(gameId).emit('ended', playerRank);
+    console.log(playerRank);
     delete playersInRoom[gameId];
-    delete game;
+    game = null;
     clearInterval( intervalID );
   });
   
