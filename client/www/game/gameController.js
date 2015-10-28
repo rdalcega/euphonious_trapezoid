@@ -47,14 +47,14 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
   $scope.showPopup = function(playersObj) {
     $scope.endGame = playersObj; // look at what this obj is and extract
-    
+    console.log(playersObj);
     //allow player to friend other players
     $scope.friend = function(otherPlayer) {
       Auth.addFriend(otherPlayer, player.profile.id);
     };
 
     var signupPopUp = $ionicPopup.show({
-      templateUrl: '../endgame/endgame.html',
+      templateUrl: '<p>POPUP</p>', //'../endgame/endgame.html',
       title: 'Game Stats',
       scope: $scope,
       buttons: [{
