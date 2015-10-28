@@ -80,7 +80,7 @@ var rebalance = function( ) {
     ignore.push( coordinates );
     for( var i = 0; i < paths.length; i++ ) {
       var path = paths[ i ];
-      if (ignore.indexOf(path.x + ':' path.y) > -1) {
+      if (ignore.indexOf(path.x + ':' + path.y) > -1) {
         liberty = findClosestLiberty( path, valence, ignore );
         if( liberty ) {
           return liberty;
