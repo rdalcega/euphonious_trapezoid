@@ -54,7 +54,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     };
 
     var signupPopUp = $ionicPopup.show({
-      templateUrl: '<p>POPUP</p>', //'../endgame/endgame.html',
+      templateUrl: '../endgame/endgame.html',
       title: 'Game Stats',
       scope: $scope,
       buttons: [{
