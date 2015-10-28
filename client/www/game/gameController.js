@@ -61,7 +61,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
         text: 'Exit',
         type: 'button-clear',
         onTap: function(e) {
-          return false;
+          return true;
         }
       }]
     });
