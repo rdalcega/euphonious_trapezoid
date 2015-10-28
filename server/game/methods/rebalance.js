@@ -42,7 +42,7 @@ var rebalance = function( ) {
     // all of the visited coordinates in this branch of the algorithm.
     ignore = ignore || [];
     var liberty;
-    this.forNeighbors( coordinates.x, coordinates.y, function( neighbor ) {
+    this.forNeighbors( coordinates.x, coordinates.y, function( neighbor, coordinates ) {
       // In case one of the neighbors is a liberty with a valence smaller
       // than the valence of the piece that is falling, then that neighbor
       // is the closest liberty only if it should not be ignored.

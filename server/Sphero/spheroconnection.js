@@ -52,7 +52,8 @@ var startGame = function(gameId, io) {
   }
   var intervalID = setInterval( function( ) {
     if( !io.nsps['/'].adapter.rooms[gameId] ) {
-      game.emit( 'ended' );
+      delete game;
+      clearInterval( intervalID );
     }
   }, 10000 );
   
@@ -60,6 +61,7 @@ var startGame = function(gameId, io) {
     delete game;
     clearInterval( intervalID );
   });
+  
   console.log("ALL LISTENERS ATTACHED");
 };
 module.exports.init = function(io, socket) {
