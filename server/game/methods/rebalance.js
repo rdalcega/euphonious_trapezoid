@@ -80,12 +80,13 @@ var rebalance = function( ) {
     ignore.push( coordinates );
     for( var i = 0; i < paths.length; i++ ) {
       var path = paths[ i ];
-      liberty = findClosestLiberty( path, valence, ignore );
-      if( liberty ) {
-        return liberty;
+      if (ignore.indexOf(path.x + ':' path.y) > -1) {
+        liberty = findClosestLiberty( path, valence, ignore );
+        if( liberty ) {
+          return liberty;
+        }
       }
     }
-    ignore.pop( );
     // If no paths were found, this is
     // because for every possible path
     // starting at the coordinates in paths,
