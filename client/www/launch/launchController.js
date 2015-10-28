@@ -2,13 +2,13 @@ sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', f
 
 	$scope.join = function() {
 
-		socket.emit('join');
+		socket.emit('join', player.profile.userName);
 
 	}
 
 	$scope.host = function() {
 
-		socket.emit('host');
+		socket.emit('host', player.profile.userName);
 
 	}
 
