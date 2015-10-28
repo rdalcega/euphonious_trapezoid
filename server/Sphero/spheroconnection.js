@@ -65,6 +65,7 @@ var startGame = function(gameId, io) {
   }, 10000 );
   
   game.on('ended', function() {
+    delete playersInRoom[gameId];
     delete game;
     clearInterval( intervalID );
   });
@@ -73,14 +74,12 @@ var startGame = function(gameId, io) {
 };
 module.exports.init = function(io, socket) {
   socket.on('host', function(data){
-    console.log("data on event host is: ", data);
-    host.bind(socket, io, data);
+    host.call(socket, io, data);
   });
   socket.on('join', function(data) {
-    join.bind(socket, io, data);
+    join.call(socket, io, data);
   });
   socket.on('single', function(data) {
-    console.log("data on event single is: ", data);
     single.call(socket, io, data);
   });
 };
