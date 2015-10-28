@@ -18,10 +18,6 @@ sphero.controller('endgameController', ['$scope', '$state', 'socket', 'player', 
 	$scope.players = [];
 
   //receive usernames and scores of players user played with
-  socket.on('endgame', function(data) {
-    
 
-    
-  });
 
 }]);

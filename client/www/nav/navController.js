@@ -54,7 +54,6 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
         if (playerInfo) {
           $scope.signUp(playerInfo.username, playerInfo.password, playerInfo.email);
         }
-        //$location.path('/tab/editWorkout');
       });
     };
 
