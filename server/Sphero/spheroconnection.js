@@ -54,6 +54,7 @@ var startGame = function(gameId, io) {
   var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', 'state', 'ended'];
   for (i = 0; i < events.length; i++) {
     game.on(events[i], function(event) {
+      console.log("the event is ", event);
       io.to(gameId).emit(this, event);
     }.bind(events[i]));
   }
