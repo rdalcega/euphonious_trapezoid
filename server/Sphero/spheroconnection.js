@@ -4,20 +4,18 @@ var Game = require('../game/game.js');
 var gameQueue = [];
 var playersInRoom = {};
 
-var host = function(io, data) {
+var host = function(io) {
   // Create a unique Socket.IO Room
   var gameId = ((Math.random() * 100000) || 0).toString();
   // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
   // Join the Room and wait for the players
   this.join(gameId);
   gameQueue.push(gameId);
-  playersInRoom[gameId] = [];
-  playersInRoom[gameId].push(data);
+  // playersInRoom[gameId] = [];
+  // playersInRoom[gameId].push(data);
   console.log(playersInRoom);
-
-  console.log("players in room are: ", playersInRoom[gameId]);
 };
-var join = function(io, data) {
+var join = function(io) {
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
       console.log("gameQueue AFTER JOIN IS " + gameQueue);
@@ -70,7 +68,7 @@ var startGame = function(gameId, io) {
   console.log("ALL LISTENERS ATTACHED");
 };
 module.exports.init = function(io, socket) {
-  socket.on('host', function(data){}, host.bind(socket, io, data));
-  socket.on('join', function(data){}, join.bind(socket, io, data));
+  socket.on('host', host.bind(socket, io));
+  socket.on('join', join.bind(socket, io));
   socket.on('single', single.bind(socket, io));
 };
