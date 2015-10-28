@@ -6,7 +6,8 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     $scope.loaded = false;
 
     $scope.single = function() {
-      socket.emit('single');
+      console.log("profile is ", player.profile);
+      socket.emit('single', player.profile);
     };
 
 

@@ -81,6 +81,6 @@ module.exports.init = function(io, socket) {
   });
   socket.on('single', function(data) {
     console.log("data on event single is: ", data);
-    single.bind(socket, io, data);
+    single.call(socket, io, data);
   });
 };
