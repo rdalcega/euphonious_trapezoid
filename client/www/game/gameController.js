@@ -73,7 +73,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   };
 
 
-  socket.on('endgame', function(data) {
+  socket.on('ended', function(data) {
     $scope.showPopup(data);
   });
 
