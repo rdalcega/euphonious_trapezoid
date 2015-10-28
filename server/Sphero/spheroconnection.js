@@ -70,7 +70,7 @@ var startGame = function(gameId, io) {
 };
 module.exports.init = function(io, socket) {
   socket.on('host', function(data){
-    host.bind(socket, io, data));
+    host.bind(socket, io, data);
   });
   socket.on('join', function(data) {
     join.bind(socket, io, data);
