@@ -12,8 +12,8 @@ var host = function(io, data) {
   this.join(gameId);
   gameQueue.push(gameId);
   console.log("DATA RECEIVED FROM EVENT ", data);
-  // playersInRoom[gameId] = [];
-  // playersInRoom[gameId].push(data);
+  playersInRoom[gameId] = [];
+  playersInRoom[gameId].push(data);
   console.log(playersInRoom);
 };
 var join = function(io, data) {
@@ -70,6 +70,7 @@ var startGame = function(gameId, io) {
 };
 module.exports.init = function(io, socket) {
   socket.on('host', function(data){
+    console.log("data on event host is: " + data);
     host.bind(socket, io, data);
   });
   socket.on('join', function(data) {
