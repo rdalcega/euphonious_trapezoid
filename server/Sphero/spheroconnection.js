@@ -44,7 +44,7 @@ var startGame = function(gameId, io) {
     socket.emit('started', {playerNum: i});
     socket.emit('state', game.getState());
   }
-  var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', ,'state', 'ended'];
+  var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', 'state', 'ended'];
   for (i = 0; i < events.length; i++) {
     game.on(events[i], function(event) {
       io.to(gameId).emit(this, event);
@@ -52,13 +52,16 @@ var startGame = function(gameId, io) {
   }
   var intervalID = setInterval( function( ) {
     if( !io.nsps['/'].adapter.rooms[gameId] ) {
-      game.emit( 'ended' );
+      delete game;
+      clearInterval( intervalID );
     }
   }, 10000 );
   
   game.on('ended', function() {
     delete game;
+    clearInterval( intervalID );
   });
+  
   console.log("ALL LISTENERS ATTACHED");
 };
 module.exports.init = function(io, socket) {

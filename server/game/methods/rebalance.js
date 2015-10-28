@@ -24,75 +24,105 @@ var rebalance = function( ) {
     this.emit( 'suspended', event );
     return copy;
   }.bind( this );
-  var findClosestLiberty = function( coordinates, valence, ignore ) {
-    // This is for the fallers. It is the function
-    // used to figure out where the pieces that did
-    // not rotate with the rest of the board because
-    // their valence was too large will fall.
-    if( coordinates.x === 0 && coordinates.y === 0 ) {
-      // This is the base case. If the function reached
-      // the anchor in search of a closest liberty toward
-      // the center, this means that said branch
-      // of the search algorithm did not yield a plausible
-      // solution. We return false so that the algorithm knows
-      // to explore other branches.
-      return false;
-    }
-    // Ignore is the array of coordinates, as x:y strings, that holds
-    // all of the visited coordinates in this branch of the algorithm.
-    ignore = ignore || [];
+
+  var findClosestLiberty = function( coordinates ) {
+
     var liberty;
-    this.forNeighbors( coordinates.x, coordinates.y, function( neighbor ) {
-      // In case one of the neighbors is a liberty with a valence smaller
-      // than the valence of the piece that is falling, then that neighbor
-      // is the closest liberty only if it should not be ignored.
-      if( neighbor && neighbor.state === 'L' && neighbor.valence <= valence ) {
-        if( ignore.indexOf( coordinates.x + ':' + coordinates.y ) < 0 ) {
-          liberty = neighbor;
+
+    this.board.forEach(function(sphere) {
+      if (sphere.state === 'L') {
+        if (!liberty) {
+          liberty = sphere
+        } else if (sphere.coordinates.x !== coordinates.x || 
+          sphere.coordinates.y !== coordinates.y ) {
+          var sphereDistance = Math.abs(sphere.coordinates.x - coordinates.x) + 
+          Math.abs(sphere.coordinates.y - coordinates.y);
+          var libertyDistance = Math.abs(liberty.coordinates.x - coordinates.x) +
+          Math.abs(liberty.coordinates.y - coordinates.y);
+
+          if (libertyDistance > sphereDistance) {
+            liberty = sphere;
+          }
+
         }
+
       }
-    }.bind( this ));
-    // In the case that one of the neighbors
-    // was the closest liberty, we simply return
-    // that liberty.
-    if( liberty ) {
-      return liberty;
-    }
-    // Paths is an array of all the coordinates
-    // through which the function can continue
-    // searching for a liberty.
-    var paths = [];
-    this.forNeighbors( coordinates.x, coordinates.y, function( neighbor, coordinates ) {
-      paths.push( coordinates );
     });
-    // Paths is sorted in order of distance from
-    // the anchor so as to prefer paths that yield
-    // liberties closer to the center.
-    paths.sort( function( aCoordinates, theCoordinates ) {
-      return Math.abs( aCoordinates.x ) + Math.abs( aCoordinates.y ) -
-        Math.abs( theCoordinates.x ) - Math.abs( theCoordinates.y );
-    });
-    // Because we didn't find a liberty above, we search
-    // for liberties in paths starting at each of
-    // the coordinates in paths.
-    // The loop is broken and a liberty
-    // is returned only if a liberty is found.
-    ignore.push( coordinates );
-    for( var i = 0; i < paths.length; i++ ) {
-      var path = paths[ i ];
-      liberty = findClosestLiberty( path, valence, ignore );
-      if( liberty ) {
-        return liberty;
-      }
-    }
-    ignore.pop( );
-    // If no paths were found, this is
-    // because for every possible path
-    // starting at the coordinates in paths,
-    // there is no available liberty.
-    // Presumably, liberty is false.
+
     return liberty;
-  }.bind( this );
+
+  }.bind(this);
+
+  // var findClosestLiberty = function( coordinates, valence, ignore ) {
+  //   // This is for the fallers. It is the function
+  //   // used to figure out where the pieces that did
+  //   // not rotate with the rest of the board because
+  //   // their valence was too large will fall.
+  //   if( coordinates.x === 0 && coordinates.y === 0 ) {
+  //     // This is the base case. If the function reached
+  //     // the anchor in search of a closest liberty toward
+  //     // the center, this means that said branch
+  //     // of the search algorithm did not yield a plausible
+  //     // solution. We return false so that the algorithm knows
+  //     // to explore other branches.
+  //     return false;
+  //   }
+  //   // Ignore is the array of coordinates, as x:y strings, that holds
+  //   // all of the visited coordinates in this branch of the algorithm.
+  //   ignore = ignore || [];
+  //   var liberty;
+  //   this.forNeighbors( coordinates.x, coordinates.y, function( neighbor, coordinates ) {
+  //     // In case one of the neighbors is a liberty with a valence smaller
+  //     // than the valence of the piece that is falling, then that neighbor
+  //     // is the closest liberty only if it should not be ignored.
+  //     if( neighbor && neighbor.state === 'L' ) {
+  //       if( ignore.indexOf( coordinates.x + ':' + coordinates.y ) < 0 ) {
+  //         liberty = neighbor;
+  //       }
+  //     }
+  //   }.bind( this ));
+  //   // In the case that one of the neighbors
+  //   // was the closest liberty, we simply return
+  //   // that liberty.
+  //   if( liberty ) {
+  //     return liberty;
+  //   }
+  //   // Paths is an array of all the coordinates
+  //   // through which the function can continue
+  //   // searching for a liberty.
+  //   var paths = [];
+  //   this.forNeighbors( coordinates.x, coordinates.y, function( neighbor, coordinates ) {
+  //     paths.push( coordinates );
+  //   });
+  //   // Paths is sorted in order of distance from
+  //   // the anchor so as to prefer paths that yield
+  //   // liberties closer to the center.
+  //   paths.sort( function( aCoordinates, theCoordinates ) {
+  //     return Math.abs( aCoordinates.x ) + Math.abs( aCoordinates.y ) -
+  //       Math.abs( theCoordinates.x ) - Math.abs( theCoordinates.y );
+  //   });
+  //   // Because we didn't find a liberty above, we search
+  //   // for liberties in paths starting at each of
+  //   // the coordinates in paths.
+  //   // The loop is broken and a liberty
+  //   // is returned only if a liberty is found.
+  //   ignore.push( coordinates );
+  //   for( var i = 0; i < paths.length; i++ ) {
+  //     var path = paths[ i ];
+  //     if (ignore.indexOf(path.x + ':' + path.y) < 0) {
+  //       liberty = findClosestLiberty( path, valence, ignore );
+  //       if( liberty ) {
+  //         return liberty;
+  //       }
+  //     }
+  //   }
+  //   // If no paths were found, this is
+  //   // because for every possible path
+  //   // starting at the coordinates in paths,
+  //   // there is no available liberty.
+  //   // Presumably, liberty is false.
+  //   return liberty;
+  // }.bind( this );
   // There are two types of spheres on an unbalanced
   // board. Fallers are the pieces with a valence
   // greater than the threshold, and rotators are
@@ -153,7 +183,7 @@ var rebalance = function( ) {
   // any of these movements a chain is created, that chain
   // is destroyed before the rest of the fallers fall.
   fallers.forEach( function( sphere ) {
-    var liberty = findClosestLiberty( sphere.coordinates, sphere.valence );
+    var liberty = findClosestLiberty( sphere.coordinates );
     this.put( liberty.coordinates.x, liberty.coordinates.y, sphere.state );
     this.get( liberty.coordinates.x, liberty.coordinates.y ).id = sphere.id;
     event = {
