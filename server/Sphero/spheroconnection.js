@@ -58,6 +58,7 @@ var startGame = function(gameId, io) {
   
   game.on('ended', function() {
     delete game;
+    clearInterval( intervalID );
   });
   console.log("ALL LISTENERS ATTACHED");
 };
