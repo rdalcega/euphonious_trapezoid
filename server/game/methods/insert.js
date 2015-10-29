@@ -29,7 +29,7 @@ var insert = function( event ) {
   }
 
   if( this.ended ) {
-    this.emit( 'ended', this.rank( ) );
+    this.emit( 'ended' );
   } else {
     this.emit( 'state', this.getState());
   }
