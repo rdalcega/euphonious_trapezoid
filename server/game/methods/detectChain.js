@@ -6,6 +6,12 @@ var detectChain = function( x, y, chain ) {
   // that includes the piece at ( x, y )
   // on the game's board.
   var sphere = this.get( x, y );
+  // Never detect chains of liberties
+  if( sphere.state === 'L' ) {
+    return {
+      remove: false
+    };
+  }
   chain = chain || [];
   chain.push( x + ':' + y );
   // If any of the piece's neighbors is
