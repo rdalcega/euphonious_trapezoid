@@ -11,7 +11,7 @@ var host = function(io, data) {
   // Join the Room and wait for the players
   this.join(gameId);
   gameQueue.push(gameId);
-  console.log("DATA RECEIVED FROM EVENT ", data);
+  console.log("DATA RECEIVED FROM HOST EVENT ", data);
   playersInRoom[gameId] = [];
   playersInRoom[gameId].push(data);
   console.log(playersInRoom);
@@ -26,7 +26,7 @@ var join = function(io, data) {
         startGame(gameQueue.shift(), io);
       }
     } else { 
-      host.call(this);
+      host.call(this, data);
     }
 };
 var single = function(io, data) {
