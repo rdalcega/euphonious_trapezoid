@@ -51,7 +51,7 @@ var startGame = function(gameId, io) {
     socket.emit('started', {playerNum: i});
     socket.emit('state', game.getState());
   }
-  var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', 'state', 'ended'];
+  var events = ['put', 'removed', 'moved', 'rotated', 'fell', 'suspended', 'state'];
   for (i = 0; i < events.length; i++) {
     game.on(events[i], function(event) {
       io.to(gameId).emit(this, event);
@@ -66,9 +66,15 @@ var startGame = function(gameId, io) {
   }, 10000 );
   
   game.on('ended', function() {
-
+    var rank = game.rank();
+    var playerRank = [];
+    rank.forEach(function(player, index) {
+      playerRank.push(playersInRoom[gameId][player]);
+    });
+    io.to(gameId).emit('ended', playerRank);
+    console.log(playerRank);
     delete playersInRoom[gameId];
-    delete game;
+    game = null;
     clearInterval( intervalID );
   });
   

@@ -1,4 +1,5 @@
-sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'player', 'Auth', '$ionicPopup', function($scope, $state, game, socket, player, Auth, $ionicPopup) {
+sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'player', 'Auth', '$ionicPopup', 
+  function($scope, $state, game, socket, player, Auth, $ionicPopup) {
 
   element = document.getElementById("game");
 
@@ -75,9 +76,10 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     });
   };
 
-
   socket.on('ended', function(data) {
     gameEnded = true;
+    window.removeEventListener('resize');
+    window.removeEventListener('mousedown');
     $scope.showPopup(data);
   });
 
