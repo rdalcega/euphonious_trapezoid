@@ -29,6 +29,10 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
         setTimeout( checkQueue, game.moved( queued.data ) );
       } else if ( queued.event === 'suspended') {
         setTimeout( checkQueue, game.suspended( queued.data ));
+      } else if ( queued.event === 'rotated' ) {
+        setTimeout( checkQueue, game.rotated( queued.data ));
+      } else if ( queued.event === 'fell' ) {
+        setTimeout( checkQueue, game.fell( queued.data ));
       }
     } else {
       setTimeout( checkQueue, 0)
@@ -139,8 +143,24 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   });
 
   socket.on('suspended', function (data) {
+    console.log( data.id + " suspended");
     eventQueue.push( {
       event: 'suspended',
+      data: data
+    });
+  });
+
+  socket.on('rotated', function (data) {
+    eventQueue.push( {
+      event: 'rotated',
+      data: data
+    });
+  });
+
+  socket.on('fell', function (data) {
+    console.log( data.id + " fell");
+    eventQueue.push( {
+      event: 'fell',
       data: data
     });
   });

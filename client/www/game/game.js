@@ -17,7 +17,7 @@ sphero.factory('game', function () {
   0: ["#fc9bcb", "#fccfe6"], // light pink #fccfe6 dark pink #b96890
   1: ["#97d9a1", "#c3d9c6"], // light green #c3d9c6
   2: ["#00a8db", "#017ba0"], // light blue #6ec2db
-  3: ["#787b8c", "#525460"] };
+  3: ["#787b8c", "#b2b5c3"] }; // light gray #b2b5c3 dark gray #525460
 
   var radius;
 
@@ -56,6 +56,8 @@ sphero.factory('game', function () {
       .attr("fill", "none");
 
     spheres
+      .transition()
+      .duration(50)
       .attr("cx", function (d) {
         var pos = (100/20) * d.coordinates.x + 50;
         var posString = String(pos) + "%";
@@ -110,7 +112,7 @@ sphero.factory('game', function () {
   };
 
   var put = function (data) {
-
+    var duration;
     if (data.success) {
       duration = 100;
       d3.select("#grid").append("circle").datum( {coordinates: data.coordinates, id: data.id, state: data.state} )
@@ -125,14 +127,13 @@ sphero.factory('game', function () {
       .attr("r", radius)
       .style("fill", colors[data.state][0]);
 
-      return duration;
     } else {
       var sphere = d3.select("#grid").selectAll("circle")
       .filter( function (d) {
         return d.coordinates.x === data.coordinates.x && d.coordinates.y === data.coordinates.y;
       })
       if (sphere.size() === 1) {
-        var duration = 100
+        duration = 100
         var numPositions = Math.floor(100 + (Math.random() * 5));
         var vibrationRange = 2 * Math.abs( 100/(gridSize * 2) - 100/(gridSize*(2 + wiggleRoom)) );
 
@@ -161,8 +162,6 @@ sphero.factory('game', function () {
         .attr("cx", getSvgPosition(data.coordinates).x)
         .attr("cy", getSvgPosition(data.coordinates).y)
 
-        return duration;
-
       } else {
         duration = 200;
         sphere = d3.select("#grid").append("circle")
@@ -182,9 +181,10 @@ sphero.factory('game', function () {
         // .attr("r", 0)
         .remove();
 
-        return duration + 25;
       }
     }
+
+    return duration + 10;
   };
 
   var removed = function (data) {
@@ -234,18 +234,37 @@ sphero.factory('game', function () {
 
     sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
 
-    return duration;
+    return duration + 10;
   };
 
+  var fell = function (data) {
+    var duration = 300;
+
+    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id } );
+
+    sphere.transition()
+    .duration( duration )
+    .ease("elastic")
+    .attr("cx", getSvgPosition(data.to).x )
+    .attr("cy", getSvgPosition(data.to).y )
+    .attr("r", radius);
+
+
+    sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
+
+    return duration + 10;
+
+  }
+
   var suspended = function (data) {
-    var duration = 300 + Math.random() * 200;
+    var duration = 100 + Math.random() * 100;
     var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id} );
 
     var oscillate = function () {
       sphere.transition()
       .duration(duration * 0.5)
       .ease("sin")
-      .attr("r", Number(radius.slice(0, -1))/2 + "%" )
+      .attr("r", Number(radius.slice(0, -1)) * 0.75 + "%" )
       .style("fill", colors[data.state][1])
       .transition()
       .duration(duration * 0.5)
@@ -261,6 +280,92 @@ sphero.factory('game', function () {
     return 0;
     
   }
+
+  var rotated = function (data) {
+    var duration = 400;
+    
+    var antiClockwiseAngle = (Math.PI/2) * 1.25;
+    var antiClockwiseSteps = 90 * 1.25;
+    var antiClockwiseResolution = antiClockwiseAngle/antiClockwiseSteps;
+    var antiClockwiseDuration = duration * .65;
+
+    var clockwiseAngle = -Math.PI/2 * .25;
+    var clockwiseSteps = 90 * .25;
+    var clockwiseResolution = clockwiseAngle/clockwiseSteps;
+    var clockwiseDuration = duration * .35;
+
+    var spheres = d3.select("#grid").selectAll("circle")
+    .filter( function (d) {
+      var mid, low, high;
+      low = 0;
+      high = data.length - 1;
+      mid = Math.floor( (low + high)/2 )
+
+      while ( data[mid].id !== d.id) {
+        if (low === high) {
+          return false;
+        } else if (data[mid].id < d.id) {
+          low = mid + 1;
+        } else if (data[mid].id > d.id) {
+          if (mid === 0) {
+            return false;
+          }
+          high = mid - 1;
+        }
+        mid = Math.floor( (low + high)/2 );
+      }
+      return true;
+    });
+
+    var transition = spheres;
+
+    var rotateTheta = function (x, y, theta) {
+      return { 
+        x: x * Math.cos(theta) - y * Math.sin(theta),
+        y: x * Math.sin(theta) + y * Math.cos(theta)
+      };
+    };
+
+    for (var i = 0; i <= antiClockwiseAngle; i+= antiClockwiseResolution) {
+      transition = transition.transition().duration( antiClockwiseDuration/antiClockwiseSteps ).ease('linear')
+                .attr("cx", function (d) {
+                  var coordinates = rotateTheta( d.coordinates.x, d.coordinates.y, antiClockwiseResolution );
+                  d.coordinates.x = coordinates.x;
+                  d.coordinates.y = coordinates.y;
+                  return getSvgPosition(d.coordinates).x;
+                })
+                .attr("cy", function (d) {
+                  return getSvgPosition(d.coordinates).y;
+                });
+    }
+
+    for ( var i = 0; i >= clockwiseAngle; i += clockwiseResolution ) {
+      transition = transition.transition().duration( clockwiseDuration/clockwiseSteps ).ease('linear')
+                .attr("cx", function (d) {
+                  var coordinates = rotateTheta( d.coordinates.x, d.coordinates.y, clockwiseResolution );
+                  d.coordinates.x = coordinates.x;
+                  d.coordinates.y = coordinates.y;
+                  return getSvgPosition(d.coordinates).x;
+                })
+                .attr("cy", function (d) {
+                  return getSvgPosition(d.coordinates).y;
+                });
+
+      if (i <= clockwiseAngle - clockwiseResolution/2 ) {
+        transition.attr("cx", function (d) {
+          d.coordinates.x = Math.round(d.coordinates.x);
+          d.coordinates.y = Math.round(d.coordinates.y);
+          return getSvgPosition(d.coordinates).x;
+        })
+        .attr("cy", function (d) {
+          return getSvgPosition(d.coordinates).y;
+        });
+      }
+    }
+
+    return duration + 10;
+  }
+
 
 
   var i = 0;
@@ -330,7 +435,9 @@ sphero.factory('game', function () {
     put: put,
     removed: removed,
     moved: moved,
-    suspended: suspended
+    fell: fell,
+    suspended: suspended,
+    rotated: rotated
   };
 
 });
