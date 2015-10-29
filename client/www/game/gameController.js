@@ -2,6 +2,8 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
   element = document.getElementById("game");
 
+  var gameEnded = false;
+
   game.playerNum = String(player.playerNum);
   console.log('game.playerNum: ', game.playerNum);
 
@@ -30,11 +32,12 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
       state: game.playerNum
     };
     console.log(sending);
-
-    socket.emit('insert', {
-      coordinates: coordinates,
-      state: game.playerNum
-    });
+    if (!gameEnded) {
+      socket.emit('insert', {
+        coordinates: coordinates,
+        state: game.playerNum
+      });
+    }
   }, false);
 
   socket.on('state', function(data) {
@@ -47,7 +50,9 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
   $scope.showPopup = function(playersObj) {
     $scope.endGame = playersObj; // look at what this obj is and extract
-    console.log(playersObj);
+    console.log(playersObj); 
+    // an array with players profiles in order of their rank for current game
+    
     //allow player to friend other players
     $scope.friend = function(otherPlayer) {
       Auth.addFriend(otherPlayer, player.profile.id);
@@ -74,6 +79,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
 
   socket.on('ended', function(data) {
+    gameEnded = true;
     $scope.showPopup(data);
   });
 
