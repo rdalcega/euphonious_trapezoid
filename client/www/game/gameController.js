@@ -119,7 +119,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     window.removeEventListener('resize');
     window.removeEventListener('mousedown');
     $scope.showPopup(data);
-
+  });
 
   socket.on('put', function (data) {
     eventQueue.push( {
