@@ -9,7 +9,17 @@ sphero.factory('game', function () {
 
   var gridSize;
   var gridStepIncrement;
+  var wiggleRoom;
+
   var playerNum;
+  var colors = { 
+  A: ["#fd3132", "#8a2225"], 
+  0: ["#fc9bcb", "#fccfe6"], // light pink #fccfe6 dark pink #b96890
+  1: ["#97d9a1", "#c3d9c6"], // light green #c3d9c6
+  2: ["#00a8db", "#017ba0"], // light blue #6ec2db
+  3: ["#787b8c", "#b2b5c3"] }; // light gray #b2b5c3 dark gray #525460
+
+  var radius;
 
   var setSize = function () {
     gameWidth = gameDomElement.offsetWidth || window.innerWidth;
@@ -32,7 +42,7 @@ sphero.factory('game', function () {
 
   };
 
-  var updateBoard = function ( data ) {
+  var updateBoard = function ( data, duration ) {
     console.log("data: ", data );
 
     var spheres = d3.select('#grid').selectAll('circle')
@@ -47,7 +57,7 @@ sphero.factory('game', function () {
 
     spheres
       .transition()
-      .duration(100)
+      .duration(50)
       .attr("cx", function (d) {
         var pos = (100/20) * d.coordinates.x + 50;
         var posString = String(pos) + "%";
@@ -58,19 +68,12 @@ sphero.factory('game', function () {
         var posString = String(pos) + "%";
         return posString;
       })
-      .attr("r", 100/(20*2.1) + "%")
+      .attr("r", radius)
       .style("fill", function (d) {
-        var colors = { 
-        A: "yellow",
-        0: "red", 
-        1: "green", 
-        2: "blue", 
-        3: "cyan"};
-
-        return colors[d.state];
+        return colors[d.state][0];
       });
 
-    spheres.exit().transition().duration(1000).attr("r", 0).remove();
+    spheres.exit().remove();
 
   };
 
@@ -96,6 +99,274 @@ sphero.factory('game', function () {
     return coordinates;
   };
 
+  var getSvgPosition = function (coordinates) {
+    var posX = (100/20) * coordinates.x + 50;
+    var posStringX = String(posX) + "%";
+    var posY = (-100/20) * coordinates.y + 50;
+    var posStringY = String(posY) + "%";
+
+    return {
+      x: posStringX,
+      y: posStringY
+    };
+  };
+
+  var put = function (data) {
+    var duration;
+    if (data.success) {
+      duration = 100;
+      d3.select("#grid").append("circle").datum( {coordinates: data.coordinates, id: data.id, state: data.state} )
+
+      .attr("r", 0)
+      .style("fill", "white")
+      .attr("cx", getSvgPosition(data.coordinates).x)
+      .attr("cy", getSvgPosition(data.coordinates).y)
+      .transition()
+      .duration(duration)
+      .ease('bounce')
+      .attr("r", radius)
+      .style("fill", colors[data.state][0]);
+
+    } else {
+      var sphere = d3.select("#grid").selectAll("circle")
+      .filter( function (d) {
+        return d.coordinates.x === data.coordinates.x && d.coordinates.y === data.coordinates.y;
+      })
+      if (sphere.size() === 1) {
+        duration = 100
+        var numPositions = Math.floor(100 + (Math.random() * 5));
+        var vibrationRange = 2 * Math.abs( 100/(gridSize * 2) - 100/(gridSize*(2 + wiggleRoom)) );
+
+
+        for (var i = 0; i < numPositions; i++) {
+          sphere = sphere
+          .transition()
+          .duration(duration/(numPositions + 1))
+          .ease("sin")
+          .attr("cx", function(d) {
+            var current = getSvgPosition(d.coordinates).x;
+            current = Number(current.slice(0, -1));
+            return current + Math.random() * vibrationRange - (vibrationRange/2) + "%";
+          })
+          .attr("cy", function(d) {
+            var current = getSvgPosition(d.coordinates).y;
+            current = Number(current.slice(0, -1));
+            return current + Math.random() * vibrationRange - (vibrationRange/2) + "%";
+          });
+        }
+
+        sphere
+        .transition()
+        .duration(duration/(numPositions + 1))
+        .ease("sin")
+        .attr("cx", getSvgPosition(data.coordinates).x)
+        .attr("cy", getSvgPosition(data.coordinates).y)
+
+      } else {
+        duration = 200;
+        sphere = d3.select("#grid").append("circle")
+        .attr("r", 0)
+        .style("fill", "black")
+        .attr("cx", getSvgPosition(data.coordinates).x)
+        .attr("cy", getSvgPosition(data.coordinates).y)
+        .transition()
+        .duration(duration/2)
+        .ease("elastic")
+        .attr("r", Number(radius.slice(0, -1))/3 + "%" )
+
+        .transition()
+        .duration(duration/2)
+        .ease("linear")
+        .style("fill", "white")
+        // .attr("r", 0)
+        .remove();
+
+      }
+    }
+
+    return duration + 10;
+  };
+
+  var removed = function (data) {
+    var duration = 100;
+    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id });
+
+    console.log('data.state on remove event: ', data.state);
+
+    sphere
+//    .style("stroke", colors["A"][1])
+//    .style("stroke-width", 0)
+    .transition()
+    .duration(duration *  (2/3))
+    .ease("elastic")
+    .attr("r", Number(radius.slice(0, -1)) * (2+wiggleRoom)/2 + "%") 
+//    .style("stroke-width", 1)
+    .style("fill", colors[data.state][1])
+    .transition()
+    .duration( duration/3 )
+    .ease("linear")
+    .attr("r", 0)
+
+    .remove();
+
+    return duration + 50;
+  };
+
+  var moved = function (data) {
+    var duration = 100;
+
+    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id } );
+
+    sphere.transition()
+    .duration( duration * .15 )
+    .ease("cubic")
+    .attr("r", Number(radius.slice(0, -1)) * 0.75 + "%" )
+    .transition()
+    .duration( duration * 0.7 )
+    .ease("cubic-in-out")
+    .attr("cx", getSvgPosition(data.to).x )
+    .attr("cy", getSvgPosition(data.to).y )
+    .transition()
+    .duration( duration * 0.15 )
+    .ease("elastic")
+    .attr("r", radius);
+
+
+    sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
+
+    return duration + 10;
+  };
+
+  var fell = function (data) {
+    var duration = 300;
+
+    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id } );
+
+    sphere.transition()
+    .duration( duration )
+    .ease("elastic")
+    .attr("cx", getSvgPosition(data.to).x )
+    .attr("cy", getSvgPosition(data.to).y )
+    .attr("r", radius);
+
+
+    sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
+
+    return duration + 10;
+
+  }
+
+  var suspended = function (data) {
+    var duration = 100 + Math.random() * 100;
+    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id} );
+
+    var oscillate = function () {
+      sphere.transition()
+      .duration(duration * 0.5)
+      .ease("sin")
+      .attr("r", Number(radius.slice(0, -1)) * 0.75 + "%" )
+      .style("fill", colors[data.state][1])
+      .transition()
+      .duration(duration * 0.5)
+      .ease("sin")
+      .style("fill", colors[data.state][0])
+      .attr("r", radius)
+
+      .each( "end", oscillate);
+    };
+
+    oscillate();
+
+    return 0;
+    
+  }
+
+  var rotated = function (data) {
+    var duration = 400;
+    
+    var antiClockwiseAngle = (Math.PI/2) * 1.25;
+    var antiClockwiseSteps = 90 * 1.25;
+    var antiClockwiseResolution = antiClockwiseAngle/antiClockwiseSteps;
+    var antiClockwiseDuration = duration * .65;
+
+    var clockwiseAngle = -Math.PI/2 * .25;
+    var clockwiseSteps = 90 * .25;
+    var clockwiseResolution = clockwiseAngle/clockwiseSteps;
+    var clockwiseDuration = duration * .35;
+
+    var spheres = d3.select("#grid").selectAll("circle")
+    .filter( function (d) {
+      var mid, low, high;
+      low = 0;
+      high = data.length - 1;
+      mid = Math.floor( (low + high)/2 )
+
+      while ( data[mid].id !== d.id) {
+        if (low === high) {
+          return false;
+        } else if (data[mid].id < d.id) {
+          low = mid + 1;
+        } else if (data[mid].id > d.id) {
+          if (mid === 0) {
+            return false;
+          }
+          high = mid - 1;
+        }
+        mid = Math.floor( (low + high)/2 );
+      }
+      return true;
+    });
+
+    var transition = spheres;
+
+    var rotateTheta = function (x, y, theta) {
+      return { 
+        x: x * Math.cos(theta) - y * Math.sin(theta),
+        y: x * Math.sin(theta) + y * Math.cos(theta)
+      };
+    };
+
+    for (var i = 0; i <= antiClockwiseAngle; i+= antiClockwiseResolution) {
+      transition = transition.transition().duration( antiClockwiseDuration/antiClockwiseSteps ).ease('linear')
+                .attr("cx", function (d) {
+                  var coordinates = rotateTheta( d.coordinates.x, d.coordinates.y, antiClockwiseResolution );
+                  d.coordinates.x = coordinates.x;
+                  d.coordinates.y = coordinates.y;
+                  return getSvgPosition(d.coordinates).x;
+                })
+                .attr("cy", function (d) {
+                  return getSvgPosition(d.coordinates).y;
+                });
+    }
+
+    for ( var i = 0; i >= clockwiseAngle; i += clockwiseResolution ) {
+      transition = transition.transition().duration( clockwiseDuration/clockwiseSteps ).ease('linear')
+                .attr("cx", function (d) {
+                  var coordinates = rotateTheta( d.coordinates.x, d.coordinates.y, clockwiseResolution );
+                  d.coordinates.x = coordinates.x;
+                  d.coordinates.y = coordinates.y;
+                  return getSvgPosition(d.coordinates).x;
+                })
+                .attr("cy", function (d) {
+                  return getSvgPosition(d.coordinates).y;
+                });
+
+      if (i <= clockwiseAngle - clockwiseResolution/2 ) {
+        transition.attr("cx", function (d) {
+          d.coordinates.x = Math.round(d.coordinates.x);
+          d.coordinates.y = Math.round(d.coordinates.y);
+          return getSvgPosition(d.coordinates).x;
+        })
+        .attr("cy", function (d) {
+          return getSvgPosition(d.coordinates).y;
+        });
+      }
+    }
+
+    return duration + 10;
+  }
+
+
 
   var i = 0;
   var particle = function () {
@@ -119,17 +390,29 @@ sphero.factory('game', function () {
   };
 
 
-
   var init = function (element, size) {
     gameDomElement = element || document.getElementById("game");
     gridSize = size || 20;
+    wiggleRoom = wiggleRoom || .5;
 
+    radius = 100/(gridSize* (2 + wiggleRoom)) + "%";
     svg = d3.select(gameDomElement).append("svg");
     svg
       .style("pointer-events", "all")
 //      .on("ontouchstart" in document ? "touchmove" : "mousemove", particle);
+    
+    var defs = svg.append('defs');
+    var gradient = defs.append('linearGradient').attr("id", "gameGradient");
+    gradient.append("stop").attr("offset", "0%").attr("stop-color", "#010708");
+    gradient.append("stop").attr("offset", "70%").attr("stop-color", "#011218");
+
+    svg.append("rect").attr("width", "100%").attr("height", "100%")
+    .attr("id", "gradientBackground").attr("fill", "url(#gameGradient)");
 
     grid = svg.append("svg").attr("id", "grid");
+
+
+
 
     setSize();
     // svg.insert("circle")
@@ -142,12 +425,19 @@ sphero.factory('game', function () {
 
 
   return {
+
     playerNum: playerNum,
 
     init: init,
     setSize: setSize,
     getPosition: getPosition,
-    updateBoard: updateBoard
+    updateBoard: updateBoard,
+    put: put,
+    removed: removed,
+    moved: moved,
+    fell: fell,
+    suspended: suspended,
+    rotated: rotated
   };
 
 });
