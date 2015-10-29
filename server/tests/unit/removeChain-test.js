@@ -101,13 +101,12 @@ describe( 'a game\'s removeChain method', function( ) { // A standard describe b
     var count = 0;
     game.on( 'removed', function( ) {
       count++;
-      if( count === 13 ) {
+      if( count === 12 ) {
         done( );
       }
     });
     game.put( 0, 1, '1' );
     game.put( 0, 2, '1' );
-    game.put( 0, 3, '1' );
     game.put( 0, 3, '1' );
     game.put( 0, 4, '1' );
     game.put( 0, 5, '1' );
