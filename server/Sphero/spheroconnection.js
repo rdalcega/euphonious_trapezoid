@@ -19,8 +19,9 @@ var host = function(io, data) {
 var join = function(io, data) {
     if (gameQueue[0]) { 
       this.join(gameQueue[0])
-      console.log("gameQueue AFTER JOIN IS " + gameQueue);
-      console.log("I THINK THIS IS AN OBJECT " + Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]));
+      playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
+      playersInRoom[gameQueue[0]].push(data);
+      console.log("Players in room at ", gameQueue[0], " are ", playersInRoom[gameQueue[0]]);
       if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
       }

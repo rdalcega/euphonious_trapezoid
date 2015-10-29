@@ -129,6 +129,7 @@ sphero.factory('player', ['$window','jwtHelper', function($window, jwtHelper) {
     var tokenPayload = jwtHelper.decodeToken($window.localStorage.getItem('id_token'));
     var profile = tokenPayload;
   }
+  console.log(profile);
 
   return {
     playerNum: playerNum,
