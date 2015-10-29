@@ -184,7 +184,7 @@ sphero.factory('game', function () {
       }
     }
 
-    return duration + 10;
+    return duration + 50;
   };
 
   var removed = function (data) {
