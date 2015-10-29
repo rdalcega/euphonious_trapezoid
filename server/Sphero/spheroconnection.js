@@ -26,7 +26,7 @@ var join = function(io, data) {
         startGame(gameQueue.shift(), io);
       }
     } else { 
-      host.call(this, data);
+      host.call(this, io, data);
     }
 };
 var single = function(io, data) {
