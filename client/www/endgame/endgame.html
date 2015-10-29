@@ -1,9 +1,9 @@
 <div class="endgame-popup">
   <ul class="end-stats">
-    <li>Place: {{endGame.place}}</li>
-    <li>Ranking: {{endGame.ranking}}</li>
+    <li>Place: {{placeObj[place]}}</li>
+    <li>Global Ranking: {{me.ranking}}</li>
   </ul>
-<!--   <ul class="player-list" ng-repeat="player-name in endgame.players">
-    <li>{{player-name}} <button class="button button-stable button-clear" ng-click="friend()">friend</button></li>
-  </ul> -->
+  <ul class="player-list" ng-repeat="player-name in endgame">
+    <li>{{player-name.username}} <button class="button button-stable button-clear" ng-click="friend()">friend</button></li>
+  </ul>
 </div>
