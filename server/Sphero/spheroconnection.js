@@ -103,7 +103,10 @@ var startGame = function(gameId, io) {
     var rank = game.rank();
     var playerRank = [];
     rank.forEach(function(player, index) {
-      playerRank.push(playersInRoom[gameId][player][0]);
+      console.log("PLAYER IN ROOM is ", playersInRoom[gameId][player]);
+      if (playersInRoom[gameId][player]) {
+        playerRank.push(playersInRoom[gameId][player][0]);
+      }
     });
     io.to(gameId).emit('ended', playerRank);
     console.log("player Rank array is ", playerRank);
