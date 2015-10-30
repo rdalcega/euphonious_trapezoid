@@ -4,12 +4,13 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   element = document.getElementById("game");
 
   var gameEnded = false;
+  // var lastTimePlayed = Date.now();
 
   game.playerNum = String(player.playerNum);
 
   console.log('game.playerNum: ', game.playerNum);
 
-  game.init(element, 20);
+  game.init(element, 16);
   var gameEnded = false;
 
   var eventQueue = [];
@@ -48,12 +49,13 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     var coordinates = game.getPosition( mouseDownEvent.clientX, mouseDownEvent.clientY );
     var sending = {coordinates: coordinates, state: game.playerNum };
 
-    if (!gameEnded) {
+    // if (!gameEnded && Date.now() > lastTimePlayed - 500) {
+    //   lastTimePlayed = Date.now();
       socket.emit('insert', {
         coordinates: coordinates,
         state: game.playerNum
       });
-    }
+    // }
   }, false);
 
 // listener for testing solo games, remove in production

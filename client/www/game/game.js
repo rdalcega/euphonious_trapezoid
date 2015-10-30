@@ -59,12 +59,12 @@ sphero.factory('game', function () {
       .transition()
       .duration(duration)
       .attr("cx", function (d) {
-        var pos = (100/20) * d.coordinates.x + 50;
+        var pos = (100/gridSize) * d.coordinates.x + 50;
         var posString = String(pos) + "%";
         return posString;
       })
       .attr("cy", function (d) {
-        var pos = (-100/20) * d.coordinates.y + 50;
+        var pos = (-100/gridSize) * d.coordinates.y + 50;
         var posString = String(pos) + "%";
         return posString;
       })
@@ -85,7 +85,7 @@ sphero.factory('game', function () {
     var gridTop = grid.attr("y");
     var gridCenter = grid.attr("width")/2;
 
-    var gridSize = grid.attr("width");
+    var gridLength = grid.attr("width");
 
     var relativeX = mouseX - gridLeft;
     var relativeY = mouseY - gridTop;
@@ -93,16 +93,16 @@ sphero.factory('game', function () {
     var distFromCenterX = relativeX - gridCenter;
     var distFromCenterY = gridCenter - relativeY;
 
-    coordinates.x = Math.round(distFromCenterX * (20 / gridSize));
-    coordinates.y = Math.round(distFromCenterY * (20 / gridSize));
+    coordinates.x = Math.round(distFromCenterX * (gridSize / gridLength));
+    coordinates.y = Math.round(distFromCenterY * (gridSize / gridLength));
 
     return coordinates;
   };
 
   var getSvgPosition = function (coordinates) {
-    var posX = (100/20) * coordinates.x + 50;
+    var posX = (100/gridSize) * coordinates.x + 50;
     var posStringX = String(posX) + "%";
-    var posY = (-100/20) * coordinates.y + 50;
+    var posY = (-100/gridSize) * coordinates.y + 50;
     var posStringY = String(posY) + "%";
 
     return {
