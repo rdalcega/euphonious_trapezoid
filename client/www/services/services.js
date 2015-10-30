@@ -74,7 +74,7 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', '$window', function($http, Sphe
       method: 'POST',
       url: SpheroApiUrl + '/player/friend',
       data: {
-        friendName: friend,
+        friendName: otherPlayer,
         id: myID
       }
     }).then(function(resp){

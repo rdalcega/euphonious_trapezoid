@@ -9,6 +9,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     game.playerNum = String(player.playerNum);
 
     $scope.friend = function(otherPlayer) {
+      console.log('called the friend function outside', otherPlayer, player.profile.id);
       Auth.addFriend(otherPlayer, player.profile.id);
     };
 
@@ -86,6 +87,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
       $scope.endGameArray = []; // an array of the player usernames in order of current game performance
       console.log('in popup ==============', playersArray, $scope.endGameArray);
       $scope.me = null;
+      $scope.dupObj = {};
       $scope.place = null;
       $scope.placeObj = {
         '1': '1st',
@@ -97,17 +99,20 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
       // an array with players profiles in order of their rank for current game
       for (var i = 0; i < playersArray.length; i++) {
         if (playersArray[i]) {
-          $scope.endGameArray.push(playersArray[i].userName);
+          if (playersArray[i].userName !== player.profile.userName && !$scope.dupObj[playersArray[i].userName]) {
+            $scope.endGameArray.push(playersArray[i].userName);
+            $scope.dupObj[playersArray[i].userName] = playersArray[i].userName;
+          }
           if (playersArray[i].userName === player.profile.userName) {
             $scope.me = playersArray[i];
             $scope.place = i;
           }
         }
       }
-      //allow player to friend other players
-      $scope.friend = function(otherPlayer) {
-        Auth.addFriend(otherPlayer, player.profile.id);
-      };
+      // //allow player to friend other players
+      // $scope.friend = function(otherPlayer) {
+      //   Auth.addFriend(otherPlayer, player.profile.id);
+      // };
 
       var signupPopUp = $ionicPopup.show({
         templateUrl: '../endgame/endgame.html',

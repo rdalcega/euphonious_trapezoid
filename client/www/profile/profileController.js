@@ -2,11 +2,11 @@ sphero.controller('profileController', ['$scope', '$window', 'Auth', 'socket', '
   function($scope, $window, Auth, socket, $state, player) {
   	
   	$scope.profile = player.profile;
-    console.log($scope.profile);
-  	
+    $scope.friends = player.profile.friends;
+    console.log($scope.friends);  	
   	$scope.logout = function() {
   		Auth.destroyCredentials();
-      $state.go('nav');
+      setTimeout(function() {$state.go('nav');}, 500);
   	};
   	
   }
