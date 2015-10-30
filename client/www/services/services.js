@@ -1,4 +1,4 @@
-sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
+sphero.factory('Auth', ['$http', 'SpheroApiUrl', '$window', function($http, SpheroApiUrl, $window) {
 
   var authFactory = {};
 
@@ -47,6 +47,7 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', function($http, SpheroApiUrl) {
   };
 
   authFactory.destroyCredentials = function() {
+    $window.localStorage.removeItem('id_token');
     token = null;
     username = undefined;
     isAuth = false;
