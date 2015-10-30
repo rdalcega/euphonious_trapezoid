@@ -20,6 +20,15 @@ var invite = function(io, data) {
 
 };
 
+var grabProfile = function(io, data) {
+
+  if (activeUsers[this.id]) {
+    activeUsers[this.id] = data;
+    console.log("active user profile is ", activeUsers);
+  };
+
+};
+
 var host = function(io, data) {
   // Create a unique Socket.IO Room
 
@@ -165,6 +174,7 @@ module.exports.init = function(io, socket) {
   });
   socket.on('grabProfile', function(data) {
     grabProfile.call(socket, io, data);
+
     io.emit('updateUsers', activeUsers);
   });
 

@@ -8,13 +8,12 @@ module.exports = function(io) {
   //   handshake: true
   // }));
 
-  var activeUsers = {};
-
   io.on('connection', function(socket) {
     console.log('a user connected');
 
     Sphero.init(io, socket);
-    
+
+
   });
 
 };
