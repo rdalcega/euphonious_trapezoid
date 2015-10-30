@@ -1,5 +1,4 @@
 sphero.factory('game', function () {
-
   var gameDomElement;
   var svg;
   var grid;
@@ -44,7 +43,7 @@ sphero.factory('game', function () {
 
   var updateBoard = function ( data ) {
     console.log("data: ", data );
-    var duration = 50;
+    var duration = 125;
     var spheres = d3.select('#grid').selectAll('circle')
       .data( data, function (d) {
         return d.id;
@@ -59,12 +58,12 @@ sphero.factory('game', function () {
       .transition()
       .duration(duration)
       .attr("cx", function (d) {
-        var pos = (100/20) * d.coordinates.x + 50;
+        var pos = (100/gridSize) * d.coordinates.x + 50;
         var posString = String(pos) + "%";
         return posString;
       })
       .attr("cy", function (d) {
-        var pos = (-100/20) * d.coordinates.y + 50;
+        var pos = (-100/gridSize) * d.coordinates.y + 50;
         var posString = String(pos) + "%";
         return posString;
       })
@@ -85,7 +84,7 @@ sphero.factory('game', function () {
     var gridTop = grid.attr("y");
     var gridCenter = grid.attr("width")/2;
 
-    var gridSize = grid.attr("width");
+    var gridLength = grid.attr("width");
 
     var relativeX = mouseX - gridLeft;
     var relativeY = mouseY - gridTop;
@@ -93,16 +92,16 @@ sphero.factory('game', function () {
     var distFromCenterX = relativeX - gridCenter;
     var distFromCenterY = gridCenter - relativeY;
 
-    coordinates.x = Math.round(distFromCenterX * (20 / gridSize));
-    coordinates.y = Math.round(distFromCenterY * (20 / gridSize));
+    coordinates.x = Math.round(distFromCenterX * (gridSize / gridLength));
+    coordinates.y = Math.round(distFromCenterY * (gridSize / gridLength));
 
     return coordinates;
   };
 
   var getSvgPosition = function (coordinates) {
-    var posX = (100/20) * coordinates.x + 50;
+    var posX = (100/gridSize) * coordinates.x + 50;
     var posStringX = String(posX) + "%";
-    var posY = (-100/20) * coordinates.y + 50;
+    var posY = (-100/gridSize) * coordinates.y + 50;
     var posStringY = String(posY) + "%";
 
     return {
@@ -114,7 +113,7 @@ sphero.factory('game', function () {
   var put = function (data) {
     var duration;
     if (data.success) {
-      duration = 100;
+      duration = 200;
       d3.select("#grid").append("circle").datum( {coordinates: data.coordinates, id: data.id, state: data.state} )
 
       .attr("r", 0)
@@ -133,7 +132,7 @@ sphero.factory('game', function () {
         return d.coordinates.x === data.coordinates.x && d.coordinates.y === data.coordinates.y;
       })
       if (sphere.size() === 1) {
-        duration = 100
+        duration = 200
         var numPositions = Math.floor(100 + (Math.random() * 5));
         var vibrationRange = 2 * Math.abs( 100/(gridSize * 2) - 100/(gridSize*(2 + wiggleRoom)) );
 
@@ -163,24 +162,24 @@ sphero.factory('game', function () {
         .attr("cy", getSvgPosition(data.coordinates).y)
 
       } else {
-        duration = 200;
-        sphere = d3.select("#grid").append("circle")
+        duration = 500;
+        sphere = d3.select("#grid").append("circle").datum( { id: NaN } )
         .attr("r", 0)
-        .style("fill", "black")
+        .style("fill", "white")
         .attr("cx", getSvgPosition(data.coordinates).x)
         .attr("cy", getSvgPosition(data.coordinates).y)
         .transition()
         .duration(duration/2)
         .ease("elastic")
-        .attr("r", Number(radius.slice(0, -1))/3 + "%" )
+        .attr("r", Number(radius.slice(0, -1)) * 0.5 + "%" )
 
         .transition()
         .duration(duration/2)
         .ease("linear")
-        .style("fill", "white")
+        .style("fill", "black")
         // .attr("r", 0)
         .remove();
-
+        return 500;
       }
     }
 
@@ -209,11 +208,11 @@ sphero.factory('game', function () {
 
     .remove();
 
-    return duration + 50;
+    return duration + 25;
   };
 
   var moved = function (data) {
-    var duration = 100;
+    var duration = 200;
 
     var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id } );
 
@@ -234,11 +233,11 @@ sphero.factory('game', function () {
 
     sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
 
-    return duration + 10;
+    return duration + 50;
   };
 
   var fell = function (data) {
-    var duration = 100;
+    var duration = 200;
 
     var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id } );
 
@@ -252,7 +251,7 @@ sphero.factory('game', function () {
 
     sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
 
-    return duration + 10;
+    return duration + 50;
 
   }
 
@@ -363,7 +362,7 @@ sphero.factory('game', function () {
       }
     }
 
-    return duration + 10;
+    return duration + 50;
   }
 
 
@@ -392,7 +391,7 @@ sphero.factory('game', function () {
 
   var init = function (element, size) {
     gameDomElement = element || document.getElementById("game");
-    gridSize = size || 20;
+    gridSize = size || 12;
     wiggleRoom = wiggleRoom || .5;
 
     radius = 100/(gridSize* (2 + wiggleRoom)) + "%";

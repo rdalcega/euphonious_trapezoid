@@ -9,7 +9,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
   console.log('game.playerNum: ', game.playerNum);
 
-  game.init(element, 20);
+  game.init(element, 16);
   var gameEnded = false;
 
   var eventQueue = [];
@@ -43,12 +43,12 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   window.addEventListener('resize', function() {
     game.setSize();
   });
-
+  var lastTimePlayed = Date.now( );
   document.getElementById("game").addEventListener('mousedown', function (mouseDownEvent) {
     var coordinates = game.getPosition( mouseDownEvent.clientX, mouseDownEvent.clientY );
     var sending = {coordinates: coordinates, state: game.playerNum };
-
-    if (!gameEnded) {
+    if (!gameEnded && Date.now( ) - lastTimePlayed > 500 ) {
+      lastTimePlayed = Date.now( );
       socket.emit('insert', {
         coordinates: coordinates,
         state: game.playerNum
