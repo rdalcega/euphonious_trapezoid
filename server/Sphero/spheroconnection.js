@@ -43,10 +43,10 @@ var host = function(io, data) {
     console.log(activeUsers[this.id]);
     this.join(gameId);
 
-
     // io.sockets.socket(this.id).emit('hosting', gameId);
 
     io.sockets.socket(this.id).emit('hosting', gameId);
+
 
 
     gameQueue.push(gameId);
