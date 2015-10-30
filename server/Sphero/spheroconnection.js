@@ -30,7 +30,11 @@ var host = function(io, data) {
     console.log(activeUsers[this.id]);
     this.join(gameId);
 
+<<<<<<< HEAD
     // io.sockets.socket(this.id).emit('hosting', gameId);
+=======
+    io.sockets.socket(this.id).emit('hosting', gameId);
+>>>>>>> 1c21207b7f3d8fdcf15d327155f8ad72240af840
 
     gameQueue.push(gameId);
     console.log("DATA RECEIVED FROM HOST EVENT ", data);

@@ -6,14 +6,12 @@ sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', f
 
 	};
 
-
   $scope.profile = player.profile;
   console.log($scope.profile);
     
   $scope.logout = function() {
     Auth.destroyCredentials();
   };
-
 
 	$scope.hostGame = function() {
 
