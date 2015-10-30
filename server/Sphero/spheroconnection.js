@@ -144,4 +144,10 @@ module.exports.init = function(io, socket) {
   socket.on('grabProfile', function(data) {
     grabProfile.call(socket, io, data);
   });
+
+  socket.on('disconnect', function(){
+    delete activeUsers[this.id];
+    console.log(activeUsers[this.id]);
+    console.log('a user disconnected');
+  });
 };

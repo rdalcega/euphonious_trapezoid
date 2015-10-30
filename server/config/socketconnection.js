@@ -8,16 +8,13 @@ module.exports = function(io) {
   //   handshake: true
   // }));
 
-  var activeUsers = {};
+  
 
   io.on('connection', function(socket) {
     console.log('a user connected');
-    activeUsers[socket.id] = true;
+    
     Sphero.init(io, socket);
-    socket.on('disconnect', function(){
-      delete activeUsers[this.id];
-      console.log('a user disconnected');
-    });
+    
   });
 
 };
