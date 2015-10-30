@@ -11,8 +11,8 @@ sphero.controller('hostController', ['$scope', '$state', 'socket', 'player',
 	};
 
 	$scope.invite = function(user) {
-		socket.emit('invite', 
-	}
+		socket.emit('invite', user);
+	};
 
   socket.on('started', function(data) {
     player.playerNum = String(data.playerNum);

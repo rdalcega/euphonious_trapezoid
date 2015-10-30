@@ -54,6 +54,8 @@ var host = function(io, data) {
 
 };
 var join = function(io, data) {
+  console.log("data on join is ", data);
+  console.log("this si the activeuser info on join event ", activeUsers[this.id])
   if (!activeUsers[this.id].joined) {
     if (gameQueue[0]) { 
 
@@ -66,6 +68,8 @@ var join = function(io, data) {
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
 
       playersInRoom[gameQueue[0]].forEach(function(player) {
+
+        console.log("Players in the room inside the loop are ", player);
 
         if (player[1].userName === data.userName) {
           found = true;
