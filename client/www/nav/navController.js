@@ -77,7 +77,6 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     };
 
     $scope.logout = function() {
-      $window.localStorage.removeItem('id_token');
       Auth.destroyCredentials();
       $scope.loginStatus = false;
       setTimeout(function() {

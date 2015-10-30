@@ -18,7 +18,7 @@ router.config(function($stateProvider, $urlRouterProvider) {
       url: '/profile',
       abstract: true,
       templateUrl: '../profile/profile.html',
-      // controller: 'profileController'
+      controller: 'profileController'
     })
     .state('profile.launch', {
       url: '/launch',
