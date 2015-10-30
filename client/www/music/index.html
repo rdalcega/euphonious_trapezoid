@@ -6,4 +6,24 @@
   <script src='./WhiteNoise.js'></script>
   <script src='./Synthesizer.js'></script>
   <script src='./SequenceElement.js'></script>
+  <script>
+    window.context = new AudioContext( );
+    window.filter = context.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 1500;
+    filter.connect( context.destination );
+    var root = context.createSequenceElement( 36, 1 );
+    root.connect( filter );
+    var third = context.createSequenceElement( 40, 1 );
+    third.connect( filter );
+    var second = context.createSequenceElement( 38, 2 );
+    second.connect( filter );
+    var seventh = context.createSequenceElement( 35, 3 );
+    seventh.connect( filter );
+    root.start( context.currentTime );
+    third.start( context.currentTime + 0.125 );
+    second.start( context.currentTime + 0.125 * 3 );
+    third.start( context.currentTime + 0.125 * 4 );
+    seventh.start( context.currentTime + 0.125 * 6 );
+  </script>
 </body>
