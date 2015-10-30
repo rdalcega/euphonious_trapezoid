@@ -42,7 +42,11 @@ var startGame = function(gameId, io) {
   var sockets = Object.keys(io.nsps['/'].adapter.rooms[gameId]).map(function(socketId) {
     return io.sockets.connected[socketId];
   });
-  var players = ['0','1','2','3'];
+  var players = [];
+  for (var i = 0; i < sockets.length; i++) {
+    players.push(String(i));
+  };
+  console.log("The players are!! ", players);
   var game = new Game();
   var alreadyPlayed = false;
   console.log("GAME MADE - IT IS " + game);
@@ -51,7 +55,7 @@ var startGame = function(gameId, io) {
 
     players.push(players.shift());
     io.to(gameId).emit('turnEnded', players);
-    alreadyPlayed = true;
+    alreadyPlayed = false;
 
   }, 1000);
 
