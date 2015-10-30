@@ -4,6 +4,15 @@ var Game = require('../game/game.js');
 var gameQueue = [];
 var playersInRoom = {};
 
+var grabProfile = function(io, data) {
+
+  if (activeUsers[this.id]) {
+    activeUsers[this.id] = data;
+    console.log("active user profile is ", activeUsers);
+  };
+
+};
+
 var host = function(io, data) {
   // Create a unique Socket.IO Room
   var gameId = ((Math.random() * 100000) || 0).toString();
@@ -127,5 +136,8 @@ module.exports.init = function(io, socket) {
   });
   socket.on('single', function(data) {
     single.call(socket, io, data);
+  });
+  socket.on('grabProfile', function(data) {
+    grabProfile.call(socket, io, data);
   });
 };
