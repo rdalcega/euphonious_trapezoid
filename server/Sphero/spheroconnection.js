@@ -22,7 +22,7 @@ var join = function(io, data) {
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
       playersInRoom[gameQueue[0]].push(data);
       console.log("Players in room at ", gameQueue[0], " are ", playersInRoom[gameQueue[0]]);
-      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 4) {
+      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
       }
     } else { 
@@ -44,16 +44,25 @@ var startGame = function(gameId, io) {
   });
   var players = ['0','1','2','3'];
   var game = new Game();
+  var alreadyPlayed = false;
   console.log("GAME MADE - IT IS " + game);
+
+  var intervalID2 = setInterval( function() {
+
+    players.push(players.shift());
+    io.to(gameId).emit('turnEnded', players);
+    alreadyPlayed = true;
+
+  }, 1000);
+
   for (var i = 0; i < sockets.length; i++) {
     var socket = sockets[i];
 
     socket.on('insert', function(event) {
-      // if (event.state === players[0]) {
-      //   players.push(players.shift());
-      //   io.to(gameId).emit('turnEnded', players);
+      if (event.state === players[0] && !alreadyPlayed) {
+        alreadyPlayed = true;
         game.insert(event);
-      // }
+      }
     });
     socket.emit('started', {playerNum: i});
     socket.emit('state', game.getState());
