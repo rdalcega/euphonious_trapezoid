@@ -45,10 +45,6 @@ var host = function(io, data) {
 
     // io.sockets.socket(this.id).emit('hosting', gameId);
 
-    io.sockets.socket(this.id).emit('hosting', gameId);
-
-
-
     gameQueue.push(gameId);
     console.log("DATA RECEIVED FROM HOST EVENT ", data);
     playersInRoom[gameId] = [];
