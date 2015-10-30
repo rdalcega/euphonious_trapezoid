@@ -13,14 +13,27 @@ var host = function(io, data) {
   gameQueue.push(gameId);
   console.log("DATA RECEIVED FROM HOST EVENT ", data);
   playersInRoom[gameId] = [];
-  playersInRoom[gameId].push(data);
+  playersInRoom[gameId].push([data, data.userName]);
   console.log(playersInRoom);
 };
 var join = function(io, data) {
     if (gameQueue[0]) { 
-      this.join(gameQueue[0])
+      this.join(gameQueue[0]);
+
+      var found = false;
+
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
-      playersInRoom[gameQueue[0]].push(data);
+      playersInRoom[gameQueue[0]].forEach(function(player, index) {
+        if (player[1].userName === data.userName) {
+          found = true;
+        } 
+
+      });
+
+      if (!found) {
+        playersInRoom[gameQueue[0]].push([data, data.userName]);
+      }
+
       console.log("Players in room at ", gameQueue[0], " are ", playersInRoom[gameQueue[0]]);
       if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
@@ -33,7 +46,7 @@ var single = function(io, data) {
   var gameId = ((Math.random() * 100000) || 0).toString();
   this.join(gameId);
   playersInRoom[gameId] = [];
-  playersInRoom[gameId].push(data);
+  playersInRoom[gameId].push([data, data.userName]);
   console.log("data from single event is " + data);
   console.log(playersInRoom);
   startGame(gameId, io);
@@ -82,6 +95,7 @@ var startGame = function(gameId, io) {
       delete playersInRoom[gameId];
       game = null;
       clearInterval( intervalID );
+      clearInterval( intervalID2 );
     }
   }, 10000 );
   
@@ -89,13 +103,14 @@ var startGame = function(gameId, io) {
     var rank = game.rank();
     var playerRank = [];
     rank.forEach(function(player, index) {
-      playerRank.push(playersInRoom[gameId][player]);
+      playerRank.push(playersInRoom[gameId][player][0]);
     });
     io.to(gameId).emit('ended', playerRank);
-    console.log(playerRank);
+    console.log("player Rank array is ", playerRank);
     delete playersInRoom[gameId];
     game = null;
     clearInterval( intervalID );
+    clearInterval( intervalID2 );
   });
   
   console.log("ALL LISTENERS ATTACHED");
