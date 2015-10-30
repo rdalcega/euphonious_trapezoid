@@ -8,8 +8,6 @@ module.exports = function(io) {
   //   handshake: true
   // }));
 
-  
-
   io.on('connection', function(socket) {
     console.log('a user connected');
     
