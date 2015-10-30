@@ -90,7 +90,7 @@ var startGame = function(gameId, io) {
   var intervalID2 = setInterval( function() {
 
     players.push(players.shift());
-    io.to(gameId).emit('turnEnded', { players: players, duration: 1000);
+    io.to(gameId).emit('turnEnded', { players: players, duration: 1000} );
     alreadyPlayed = false;
 
   }, 1000);
