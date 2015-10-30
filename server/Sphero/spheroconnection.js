@@ -8,7 +8,7 @@ var activeUsers = {};
 var grabProfile = function(io, data) {
 
   if (activeUsers[this.id]) {
-    activeUsers[this.id] = data;
+    activeUsers[this.id] = { profile: data, joined: false };
     console.log("active user profile is ", activeUsers);
   };
 
@@ -16,24 +16,29 @@ var grabProfile = function(io, data) {
 
 var host = function(io, data) {
   // Create a unique Socket.IO Room
-  var gameId = ((Math.random() * 100000) || 0).toString();
-  // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-  // Join the Room and wait for the players
-  this.join(gameId);
-  gameQueue.push(gameId);
-  console.log("DATA RECEIVED FROM HOST EVENT ", data);
-  playersInRoom[gameId] = [];
-  playersInRoom[gameId].push([data, data.userName]);
-  console.log(playersInRoom);
+  if (!activeUsers[this.id].joined) {
+    var gameId = ((Math.random() * 100000) || 0).toString();
+    // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
+    // Join the Room and wait for the players
+    activeUsers[this.id].joined = true;
+    this.join(gameId);
+    gameQueue.push(gameId);
+    console.log("DATA RECEIVED FROM HOST EVENT ", data);
+    playersInRoom[gameId] = [];
+    playersInRoom[gameId].push([data, data.userName]);
+    console.log(playersInRoom);
+  }
 };
 var join = function(io, data) {
+  if (!activeUsers[this.id].joined) {
     if (gameQueue[0]) { 
+      activeUsers[this.id].joined = true;
       this.join(gameQueue[0]);
 
       var found = false;
 
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
-      playersInRoom[gameQueue[0]].forEach(function(player, index) {
+      playersInRoom[gameQueue[0]].forEach(function(player) {
         if (player[1].userName === data.userName) {
           found = true;
         } 
@@ -51,6 +56,7 @@ var join = function(io, data) {
     } else { 
       host.call(this, io, data);
     }
+  }
 };
 var single = function(io, data) {
   var gameId = ((Math.random() * 100000) || 0).toString();
@@ -147,7 +153,8 @@ module.exports.init = function(io, socket) {
 
   socket.on('disconnect', function(){
     delete activeUsers[this.id];
-    console.log(activeUsers[this.id]);
+    console.log('socket id in activeUsers is ', activeUsers[this.id], ' and activeUsers is ', activeUsers);
     console.log('a user disconnected');
   });
+
 };
