@@ -17,8 +17,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     var queued = eventQueue.shift( );
     if( queued ) {
       if( queued.event === 'state' ) {
-        game.updateBoard( queued.data );
-        setTimeout( checkQueue, 0);
+        setTimeout( checkQueue, game.updateBoard( queued.data ) );
       } else if( queued.event === 'ended' ) {
         game.ended( queued.data );
       } else if ( queued.event === 'put' ) {
@@ -35,7 +34,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
         setTimeout( checkQueue, game.fell( queued.data ));
       }
     } else {
-      setTimeout( checkQueue, 0)
+      setTimeout( checkQueue, 0);
     }
   };
 
