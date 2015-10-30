@@ -3,6 +3,7 @@ var Game = require('../game/game.js');
 
 var gameQueue = [];
 var playersInRoom = {};
+var activeUsers = {};
 
 var grabProfile = function(io, data) {
 
@@ -128,6 +129,9 @@ var startGame = function(gameId, io) {
   console.log("ALL LISTENERS ATTACHED");
 };
 module.exports.init = function(io, socket) {
+
+  activeUsers[socket.id] = true;
+
   socket.on('host', function(data){
     host.call(socket, io, data);
   });
