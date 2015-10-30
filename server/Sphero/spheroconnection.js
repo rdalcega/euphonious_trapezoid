@@ -94,6 +94,7 @@ var startGame = function(gameId, io) {
 
     players.push(players.shift());
     io.to(gameId).emit('turnEnded', { players: players, duration: 1000} );
+
     alreadyPlayed = false;
 
   }, 1000);
