@@ -5,6 +5,7 @@ var gameQueue = [];
 var playersInRoom = {};
 var activeUsers = {};
 
+
 var grabProfile = function(io, data) {
 
   if (activeUsers[this.id]) {
@@ -19,6 +20,7 @@ var invite = function(io, data) {
 
 
 };
+
 
 var grabProfile = function(io, data) {
 
