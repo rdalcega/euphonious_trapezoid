@@ -48,10 +48,13 @@ var startGame = function(gameId, io) {
   for (var i = 0; i < sockets.length; i++) {
     var socket = sockets[i];
 
+    var intervalID2 = setInterval(function() {
+      players.push(players.shift());
+      io.to(gameId).emit('turnEnded', players);
+    }, 1000);
+
     socket.on('insert', function(event) {
       if (event.state === players[0]) {
-        players.push(players.shift());
-        io.to(gameId).emit('turnEnded', players);
         game.insert(event);
       }
     });
@@ -69,6 +72,7 @@ var startGame = function(gameId, io) {
       delete playersInRoom[gameId];
       game = null;
       clearInterval( intervalID );
+      clearInterval( intervalID2 );
     }
   }, 10000 );
   
@@ -83,6 +87,7 @@ var startGame = function(gameId, io) {
     delete playersInRoom[gameId];
     game = null;
     clearInterval( intervalID );
+    clearInterval( intervalID2 );
   });
   
   console.log("ALL LISTENERS ATTACHED");
