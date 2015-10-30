@@ -4,13 +4,13 @@ sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', f
 
 		socket.emit('join', player.profile);
 
-	}
+	};
 
-	$scope.host = function() {
+	$scope.hostGame = function() {
 
-		socket.emit('host', player.profile);
+		$state.go('profile.host');
 
-	}
+	};
 
   socket.on('started', function(data) {
     player.playerNum = String(data.playerNum);
