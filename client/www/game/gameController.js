@@ -76,18 +76,18 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   });
 
   $scope.showPopup = function(playersArray) {
-    $scope.endGame = []; // look at what this obj is and extract
-    console.log('in popup ==============', playersArray); 
+    $scope.endGameArray = []; // an array of the player usernames in order of current game performance
+    console.log('in popup ==============', playersArray, $scope.endGameArray); 
     $scope.me = null;
     $scope.place = null;
     $scope.placeObj = {'1': '1st', '2': '2nd', '3': '3rd', '4': '4th'};
     // an array with players profiles in order of their rank for current game
     for(var i = 0; i < playersArray.length; i++){
       if(playersArray[i]){
-        $scope.endGame.push(playersArray[i]);
-        if(playersArray[i].username === player.profile.username){
-          me = playersArray[i];
-          place = i;
+        $scope.endGameArray.push(playersArray[i].userName);
+        if(playersArray[i].userName === player.profile.userName){
+          $scope.me = playersArray[i];
+          $scope.place = i;
         }
       }
     }
