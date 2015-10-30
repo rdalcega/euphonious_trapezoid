@@ -22,7 +22,7 @@ var join = function(io, data) {
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
       playersInRoom[gameQueue[0]].push(data);
       console.log("Players in room at ", gameQueue[0], " are ", playersInRoom[gameQueue[0]]);
-      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 4) {
+      if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 3) {
         startGame(gameQueue.shift(), io);
       }
     } else { 
