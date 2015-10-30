@@ -21,6 +21,7 @@ var host = function(io, data) {
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
     // Join the Room and wait for the players
     activeUsers[this.id].joined = true;
+    console.log(activeUsers[this.id]);
     this.join(gameId);
     gameQueue.push(gameId);
     console.log("DATA RECEIVED FROM HOST EVENT ", data);
