@@ -14,6 +14,12 @@ var grabProfile = function(io, data) {
 
 };
 
+var invite = function(io, data) {
+
+
+
+};
+
 var host = function(io, data) {
   // Create a unique Socket.IO Room
   if (!activeUsers[this.id].joined) {
@@ -84,7 +90,7 @@ var startGame = function(gameId, io) {
   var intervalID2 = setInterval( function() {
 
     players.push(players.shift());
-    io.to(gameId).emit('turnEnded', players);
+    io.to(gameId).emit('turnEnded', { players: players, duration: 1000);
     alreadyPlayed = false;
 
   }, 1000);
@@ -150,10 +156,16 @@ module.exports.init = function(io, socket) {
   });
   socket.on('grabProfile', function(data) {
     grabProfile.call(socket, io, data);
+    io.emit('updateUsers', activeUsers);
+  });
+
+  socket.on('invite', function(data) {
+    invite.call(socket, io, data);
   });
 
   socket.on('disconnect', function(){
     delete activeUsers[this.id];
+    io.emit('updateUsers', activeUsers);
     console.log('socket id in activeUsers is ', activeUsers[this.id], ' and activeUsers is ', activeUsers);
     console.log('a user disconnected');
   });
