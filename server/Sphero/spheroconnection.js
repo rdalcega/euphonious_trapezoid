@@ -25,7 +25,7 @@ var invite = function(io, data) {
 var grabProfile = function(io, data) {
 
   if (activeUsers[this.id]) {
-    activeUsers[this.id] = data;
+    activeUsers[this.id] = { profile: data, joined: false };
     console.log("active user profile is ", activeUsers);
   };
 
@@ -33,39 +33,57 @@ var grabProfile = function(io, data) {
 
 var host = function(io, data) {
   // Create a unique Socket.IO Room
+<<<<<<< HEAD
 
+=======
+>>>>>>> Prevent users from hosting or joining multiple games
   if (!activeUsers[this.id].joined) {
     var gameId = ((Math.random() * 100000) || 0).toString();
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
     // Join the Room and wait for the players
     activeUsers[this.id].joined = true;
+<<<<<<< HEAD
     console.log(activeUsers[this.id]);
     this.join(gameId);
 
     // io.sockets.socket(this.id).emit('hosting', gameId);
 
+=======
+    this.join(gameId);
+>>>>>>> Prevent users from hosting or joining multiple games
     gameQueue.push(gameId);
     console.log("DATA RECEIVED FROM HOST EVENT ", data);
     playersInRoom[gameId] = [];
     playersInRoom[gameId].push([data, data.userName]);
     console.log(playersInRoom);
   }
+<<<<<<< HEAD
 
+=======
+>>>>>>> Prevent users from hosting or joining multiple games
 };
 var join = function(io, data) {
   if (!activeUsers[this.id].joined) {
     if (gameQueue[0]) { 
+<<<<<<< HEAD
 
       activeUsers[this.id].joined = true;
 
+=======
+      activeUsers[this.id].joined = true;
+>>>>>>> Prevent users from hosting or joining multiple games
       this.join(gameQueue[0]);
 
       var found = false;
 
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
+<<<<<<< HEAD
 
       playersInRoom[gameQueue[0]].forEach(function(player) {
 
+=======
+      playersInRoom[gameQueue[0]].forEach(function(player) {
+>>>>>>> Prevent users from hosting or joining multiple games
         if (player[1].userName === data.userName) {
           found = true;
         } 
@@ -187,6 +205,7 @@ module.exports.init = function(io, socket) {
   socket.on('disconnect', function(){
     delete activeUsers[this.id];
     io.emit('updateUsers', activeUsers);
+
     console.log('socket id in activeUsers is ', activeUsers[this.id], ' and activeUsers is ', activeUsers);
     console.log('a user disconnected');
   });
