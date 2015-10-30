@@ -22,6 +22,7 @@ var invite = function(io, data) {
 
 var host = function(io, data) {
   // Create a unique Socket.IO Room
+
   if (!activeUsers[this.id].joined) {
     var gameId = ((Math.random() * 100000) || 0).toString();
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
@@ -38,17 +39,22 @@ var host = function(io, data) {
     playersInRoom[gameId].push([data, data.userName]);
     console.log(playersInRoom);
   }
+
 };
 var join = function(io, data) {
   if (!activeUsers[this.id].joined) {
     if (gameQueue[0]) { 
+
       activeUsers[this.id].joined = true;
+
       this.join(gameQueue[0]);
 
       var found = false;
 
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
+
       playersInRoom[gameQueue[0]].forEach(function(player) {
+
         if (player[1].userName === data.userName) {
           found = true;
         } 
@@ -130,7 +136,6 @@ var startGame = function(gameId, io) {
     var rank = game.rank();
     var playerRank = [];
     rank.forEach(function(player, index) {
-      console.log("PLAYER IN ROOM is ", playersInRoom[gameId][player]);
       if (playersInRoom[gameId][player]) {
         playerRank.push(playersInRoom[gameId][player][0]);
       }
