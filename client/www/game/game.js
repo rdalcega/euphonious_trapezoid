@@ -1,4 +1,14 @@
-sphero.factory('game', function () {
+sphero.factory('game', ['scales', function (scales) {
+  // MUSIC STUFFS!
+  // ------
+  var context = new AudioContext( );
+  var elements = {}; // { id: number, element: sequenceElement }
+  var scale; // The working scale is not chosen until the first element is placed on the board
+  var filter = context.createBiquadFilter();
+  filter.type = 'lowpass';
+  filter.frequency.value = 1000;
+  filter.connect( context.destination );
+  // -------
   var gameDomElement;
   var svg;
   var background;
