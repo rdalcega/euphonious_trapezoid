@@ -5,6 +5,7 @@ var getState = function( ) {
       state.push({
         coordinates: sphere.coordinates,
         state: sphere.state,
+        valence: sphere.valence,
         id: sphere.id
       });
     }
