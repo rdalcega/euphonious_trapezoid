@@ -1,26 +1,45 @@
 /* Empty. Add your own CSS if you like */
 
-#nav {
-    background-image: url("../img/nav_back.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
+@font-face {
+font-family: Vermin;
+src: url("vermin-vibes-2-edm-xtc/Vermin Vibes 2 EDM XTC.otf") format("opentype");
 }
 
-#nav-title {
+#nav {
+    background-color: black;
+}
+
+.nav-title {
+    font-family: Vermin;
     text-align: center;
-    font-size: 75px;
-    color: #8F97B1;
+    font-size: 5em;
     margin-bottom: 40px;
 }
 
+.blue {
+    color: #00a8db;
+}
+
+.gray {
+    color: #787b8c;
+}
+
+.green {
+    color: #97d9a1;
+}
+
+.pink {
+    color: #fc9bcb;
+}
+
 #nav .list {
-    margin-bottom: 55px;
+    margin-bottom: 2em;
     background-color: transparent;
 }
 
 #nav .item {
     border: 0;
-    margin-bottom: 30px;
+    margin-bottom: 2em;
 }
 
 #nav input {
@@ -28,8 +47,9 @@
 }
 
 input[type='text'] {
-    font-size: 50px;
-    color: gray;
+    font-size: 4em;
+    font-weight: bold;
+    color: #626366;
 }
 
 
