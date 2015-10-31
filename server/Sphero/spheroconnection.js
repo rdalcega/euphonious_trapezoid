@@ -99,25 +99,33 @@ var startGame = function(gameId, io) {
   };
   console.log("The players are!! ", players);
   var game = new Game();
-  var alreadyPlayed = false;
+  
   console.log("GAME MADE - IT IS " + game);
 
-  var intervalID2 = setInterval( function() {
+  if (players.length > 1) {
+    var alreadyPlayed = false;
 
-    players.push(players.shift());
+    var intervalID2 = setInterval( function() {
 
-    io.to(gameId).emit('turnEnded', { players: players, duration: 1000} );
+      players.push(players.shift());
 
-    alreadyPlayed = false;
+      io.to(gameId).emit('turnEnded', { players: players, duration: 1000} );
 
-  }, 1000);
+      alreadyPlayed = false;
+
+    }, 1000);
+  }
 
   for (var i = 0; i < sockets.length; i++) {
     var socket = sockets[i];
 
     socket.on('insert', function(event) {
-      if (event.state === players[0] && !alreadyPlayed) {
-        alreadyPlayed = true;
+      if (players.length > 1) {
+        if (event.state === players[0] && !alreadyPlayed) {
+          alreadyPlayed = true;
+          game.insert(event);
+        }
+      } else {
         game.insert(event);
       }
     });
