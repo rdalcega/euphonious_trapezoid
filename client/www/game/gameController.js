@@ -65,7 +65,6 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   document.getElementById("game").addEventListener('mousedown', function (mouseDownEvent) {
     var coordinates = game.getPosition( mouseDownEvent.clientX, mouseDownEvent.clientY );
     var sending = {coordinates: coordinates, state: game.gameInfo.playerNum };
-
       if ( !(coordinates.x === 0 && coordinates.y === 0) ) {
         socket.emit('insert', {
           coordinates: coordinates,

@@ -2,7 +2,7 @@ sphero.factory('game', ['scales', function (scales) {
   // MUSIC STUFFS!
   // ------
   var context = new AudioContext( );
-  var elements = {}; // { id: number, element: sequenceElement }
+  var elements = {}; // { id: { element: sequenceElement, note: integer } }
   var scale; // The working scale is not chosen until the first element is placed on the board
   var filter = context.createBiquadFilter();
   filter.type = 'lowpass';
@@ -119,6 +119,42 @@ sphero.factory('game', ['scales', function (scales) {
       });
 
     spheres.exit().remove();
+    // -----
+    // Update the filter frequency.
+    // The more spheres there are on the
+    // game, the larger the filter frequency.
+    // Note that a board with valence 8 can have at most
+    // 113 spheres on a terminating condition
+    filter.frequency.value = 500 + data.length * 2500 / 113;
+    // Choose scale if non exists or if the number of pieces
+    // in the board is less than the scale's length
+    if( !scale ) {
+      scale = scales[ Math.floor( Math.random() * ( scales.length - 1 ))];
+    }
+    // if( data.length < scale.length ) {
+    //   // We use a random index offset to ensure we choose
+    //   // a new scale each time around.
+    //   var offset = Math.floor( Math.random( ) * ( scales.length - 1 ) );
+    //   // The new scale must contain the note corresponding
+    //   // to each sphere on the board.
+    //   for( var i = 0; i < scales.length; i++ ) {
+    //     var aScale = scales[ ( i + offset ) % scales.length ];
+    //     var valid = true;
+    //     for( var j = 0; j < data.length; j++ ) {
+    //       var sphere = data[ j ];
+
+    //       if( aScale.indexOf( sphere.note % 12 ) < 0 ) {
+    //         valid = false;
+    //         break;
+    //       }
+    //     }
+    //     if( valid ) {
+    //       scale = aScale;
+    //       break;
+    //     }
+    //   }
+    // }
+    // ----
     return duration;
   };
 
@@ -159,9 +195,93 @@ sphero.factory('game', ['scales', function (scales) {
   var put = function (data) {
     var duration;
     if (data.success) {
+      // -----
+      // We create a new sequence element that will correspond to this
+      // sphere until it's valence changes.
+      // We choose the midiNote
+      var midiNote;
+      // In order to choose the note,
+      // we will need access to the sphere's
+      // neighbors.
+      var neighbors = d3.select('#grid').selectAll('circle').filter( function(d) {
+        var condition =
+          d.coordinates.x === data.coordinates.x + 1 && d.coordinates.y === data.coordinates.y ||
+          d.coordinates.x === data.coordinates.x - 1 && d.coordinates.y === data.coordinates.y ||
+          d.coordinates.x === data.coordinates.x && d.coordinates.y === data.coordinates.y + 1 ||
+          d.coordinates.x === data.coordinates.x && d.coordinates.y === data.coordinates.y - 1;
+        return condition;
+      });
+      // In the special case that the only neighbor
+      // of a sphere is the anchor, the note for
+      // the element is chosen randomly within the chosen
+      // scale and within the 24 - 36 octave.
+      if( data.valence === 1 && neighbors.length === 1 ) {
+        midiNote = 36 + scale[ ~~( Math.random( ) * scale.length ) ];
+      } else {
+        // In every other case, the value of the midiNote
+        // is determined from one of it's neighbors. Preference
+        // is given to notes on the scale that are closest to the
+        // note of one of it's neighbors.
+        var absNeighborMidiNote = 0;
+        neighbors.each( function( d ) {
+          if( elements[ d.id ] ) {
+            absNeighborMidiNote += elements[d.id].midiNote;
+          }
+        });
+        absNeighborMidiNote = Math.floor( absNeighborMidiNote / neighbors.size() );
+        console.log( 'average neighbor: ', absNeighborMidiNote );
+        var relNeighborMidiNote = absNeighborMidiNote % 12;
+        var octave = absNeighborMidiNote - relNeighborMidiNote;
+        var screen = Math.random( );
+        var stepSize;
+        if( screen < 0.25 ) {
+          stepSize = ( ~~(Math.random( ) * 2)*2 - 1 ) * 2; // whole
+        } else if( screen < 0.5 ) {
+          stepSize = ( ~~(Math.random( ) * 2)*2 - 1 ) * 4; // third
+        } else if( screen < 0.70 ) {
+          stepSize = ( ~~(Math.random( ) * 2)*2 - 1 ) * 5; // fourth
+        } else if( screen < 0.85 ) {
+          stepSize = ( ~~(Math.random( ) * 2)*2 - 1 ) * 7; // fifth
+        } else if( screen < 0.925 ) {
+          stepSize = ( ~~(Math.random( ) * 2)*2 - 1 ) * 9; // sixth
+        } else if( screen < 0.975 ) {
+          stepSize = ( ~~(Math.random( ) * 2)*2 - 1 ) * 11; // seventh
+        } else {
+          stepSize = ( ~~(Math.random( ) * 2)*2 - 1 ) * 12; //octave
+        }
+        console.log( 'stepSize: ', stepSize );
+        midiNote = relNeighborMidiNote + stepSize;
+        if( midiNote > 12 ) {
+          octave += 12;
+          midiNote = midiNote % 12;
+        } else if( midiNote < 0 ) {
+          octave -= 12;
+          midiNote = midiNote + 12;
+        }
+        midiNote = scale.reduce( function( closest, current ) {
+          if( Math.abs( midiNote - closest ) > Math.abs( midiNote - current ) ) {
+            return current;
+          } else {
+            return closest;
+          }
+        });
+        midiNote += octave;
+        if( midiNote < 12 ) {
+          midiNote = 12 + scale[ 0 ];
+        } else if( midiNote > 72 ) {
+          midiNote = 60 + scale[ scale.length - 1 ];
+        }
+      }
+      // Now that we have the midiNote, we can create the element
+      var element = context.createSequenceElement( midiNote, data.valence );
+      element.connect( filter );
+      elements[ data.id ] = {
+        element: element,
+        midiNote: midiNote
+      };
+      // -----
       duration = 200;
       d3.select("#grid").append("circle").datum( {coordinates: data.coordinates, id: data.id, state: data.state} )
-
       .attr("r", 0)
       .attr("class", function (d) { return d.state + " piece"; })
       .style("fill", "white")
@@ -172,7 +292,6 @@ sphero.factory('game', ['scales', function (scales) {
       .ease('bounce')
       .attr("r", radius)
       .style("fill", colors[data.state][0]);
-
     } else {
       var sphere = d3.select("#grid").selectAll(".piece")
       .filter( function (d) {
@@ -183,8 +302,6 @@ sphero.factory('game', ['scales', function (scales) {
         duration = 200
         var numPositions = Math.floor(100 + (Math.random() * 5));
         var vibrationRange = 2 * Math.abs( 100/(gridSize * 2) - 100/(gridSize*(2 + wiggleRoom)) );
-
-
         for (var i = 0; i < numPositions; i++) {
           sphere = sphere
           .transition()
@@ -252,7 +369,10 @@ sphero.factory('game', ['scales', function (scales) {
     .duration( duration/3 )
     .ease("linear")
     .attr("r", 0)
-
+    .each('end', function( d ) {
+      elements[ d.id ].element.disconnect( );
+      delete elements[ d.id ];
+    })
     .remove();
 
     return duration + 25;
@@ -275,7 +395,13 @@ sphero.factory('game', ['scales', function (scales) {
     .transition()
     .duration( duration * 0.15 )
     .ease("elastic")
-    .attr("r", radius);
+    .attr("r", radius)
+    .each('end', function( d ) {
+      elements[ d.id ].element.disconnect();
+      elements[ d.id ].element =
+        context.createSequenceElement( elements[ d.id ].midiNote, data.valence );
+      elements[ d.id ].element.connect( filter );
+    });
 
 
     sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
@@ -293,7 +419,13 @@ sphero.factory('game', ['scales', function (scales) {
     .ease("elastic")
     .attr("cx", getSvgPosition(data.to).x )
     .attr("cy", getSvgPosition(data.to).y )
-    .attr("r", radius);
+    .attr("r", radius)
+    .each( 'end', function( d ) {
+      elements[ d.id ].element.disconnect();
+      elements[ d.id ].element =
+        context.createSequenceElement( elements[ d.id ].midiNote, data.valence );
+      elements[ d.id ].element.connect( filter );
+    });
 
 
     sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
@@ -318,21 +450,16 @@ sphero.factory('game', ['scales', function (scales) {
       .style("fill", colors[data.state][0])
       .attr("r", Number( radius.slice(0, -1)) * 0.8 + "%")
     };
-
     getSmaller();
-
     return 0;
-    
   }
 
   var rotated = function (data) {
     var duration = 200;
-    
     var antiClockwiseAngle = (Math.PI/2) * 1.35;
     var antiClockwiseSteps = 90 * 1.25;
     var antiClockwiseResolution = antiClockwiseAngle/antiClockwiseSteps;
     var antiClockwiseDuration = duration * .65;
-
     var clockwiseAngle = -Math.PI/2 * .35;
     var clockwiseSteps = 90 * .25;
     var clockwiseResolution = clockwiseAngle/clockwiseSteps;
@@ -573,13 +700,8 @@ sphero.factory('game', ['scales', function (scales) {
     .attr("id", "gradientBackground").attr("fill", "url(#gameGradient)");
 
     grid = svg.append("svg").attr("id", "grid");
-
     indicator = grid.append("circle").datum( {id: null} ).attr("r", anchorRadius).attr("cx", "50%").attr("cy", "50%")
     .style("fill", colors[gameInfo.currentTurn][2]).attr("class", "indicator").attr("id", "indicator");
-
-
-
-
     setSize();
     showBorder();
     indicatorOscillate();
@@ -588,10 +710,102 @@ sphero.factory('game', ['scales', function (scales) {
     //     .attr("cy", "50%")
     //     .attr("r", '2%')
     //     .style("fill", "blue")
+    // ---
+    // MUSIC stuff
+    // Sequence
+    var ms = Math.pow( 10, -3 );
+    var timeoutLength = 300 * ms; // ms
+    var sixteenthTime = 125 * ms; // ms
+    var lastScheduledTime = context.currentTime;
+    var lastScheduledCoordinates;
+    var sequence = function( ) {
+      setTimeout( sequence, timeoutLength );
+      var timeoutStart = context.currentTime;
+      var screen = Math.random( );
+      while( lastScheduledTime + sixteenthTime < timeoutStart + timeoutLength ) {
+        var ids = Object.keys( elements );
+        if( ids.length > 0 && screen > 0.1 ) {
+          if( !lastScheduledCoordinates ) {
+            var choice = ~~( Math.random( ) * ids.length );
+            var sphere = d3.select('#grid').selectAll('circle')
+              .filter( function( d ) {
+                return Number( ids[ choice ] ) === d.id;
+              });
+            sphere.each( function( d ) {
+              lastScheduledCoordinates = d.coordinates;
+            });
+            elements[ ids[ choice ] ].element.start( lastScheduledTime + sixteenthTime );
+            lastScheduledTime += sixteenthTime;
+            sphere.transition( )
+              .delay( ( lastScheduledTime - context.currentTime ) * 1000 )
+              .duration( ( sixteenthTime / 2 ) * 1000 )
+              .ease( 'cubic-in-out' )
+              .attr( 'r', Number( radius.slice( 0, -1 ) ) * 0.75 + '%' )
+              .style( 'fill', function( d ) {
+                return colors[ d.state ][ 1 ];
+              })
+              .transition( )
+              .duration( ( sixteenthTime / 2 ) * 1000 )
+              .ease( 'elastic' )
+              .attr( 'r', radius )
+              .style( 'fill', function( d ) {
+                return colors[ d.state ][ 0 ];
+              });
+          } else {
+            var neighbors = d3.select('#grid').selectAll('circle').filter( function(d) {
+              var condition =
+                d.coordinates.x === lastScheduledCoordinates.x + 1 && d.coordinates.y === lastScheduledCoordinates.y ||
+                d.coordinates.x === lastScheduledCoordinates.x - 1 && d.coordinates.y === lastScheduledCoordinates.y ||
+                d.coordinates.x === lastScheduledCoordinates.x && d.coordinates.y === lastScheduledCoordinates.y + 1 ||
+                d.coordinates.x === lastScheduledCoordinates.x && d.coordinates.y === lastScheduledCoordinates.y - 1;
+              return condition;
+            });
+            var choice = ~~(Math.random()*neighbors.size( ));
+            var id;
+            neighbors.each( function( d, i ) {
+              if( i === choice && d.state !== 'A' ) {
+                id = d.id;
+              } else if( i === choice ) {
+                id = -1;
+              }
+            });
+            if( id >= 0 ) {
+              var sphere = d3.select('#grid').selectAll('circle')
+                .filter( function( d ) {
+                  return id === d.id;
+                });
+              sphere.each( function( d ) {
+                lastScheduledCoordinates = d.coordinates;
+              });
+              elements[ id ].element.start( lastScheduledTime + sixteenthTime );
+              lastScheduledTime += sixteenthTime;
+              sphere.transition( )
+                .delay( ( lastScheduledTime - context.currentTime ) * 1000 )
+                .duration( ( sixteenthTime / 2 ) * 1000 )
+                .ease( 'cubic-in-out' )
+                .attr( 'r', Number( radius.slice( 0, -1 ) ) * 0.75 + '%' )
+                .style( 'fill', function( d ) {
+                  return colors[ d.state ][ 1 ];
+                })
+                .transition( )
+                .duration( ( sixteenthTime / 2 ) * 1000 )
+                .ease( 'elastic' )
+                .attr( 'r', radius )
+                .style( 'fill', function( d ) {
+                  return colors[ d.state ][ 0 ];
+                });
+            } else {
+              lastScheduledCoordinates = undefined;
+              lastScheduledTime += sixteenthTime;
+            }
+          }
+        } else {
+          lastScheduledTime += sixteenthTime;
+        }
+      }
+    };
+    sequence( );
   };
-
-
-
   return {
 
     gameInfo: gameInfo,
@@ -610,4 +824,4 @@ sphero.factory('game', ['scales', function (scales) {
     rotated: rotated
   };
 
-});
+}]);
