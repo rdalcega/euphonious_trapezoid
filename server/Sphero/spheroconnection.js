@@ -3,24 +3,76 @@ var Game = require('../game/game.js');
 
 var gameQueue = [];
 var playersInRoom = {};
+var activeUsers = {};
+
+var grabProfile = function(io, data) {
+
+  if (activeUsers[this.id]) {
+    activeUsers[this.id] = { profile: data, joined: false };
+    console.log("active user profile is ", activeUsers);
+  };
+
+};
 
 var host = function(io, data) {
   // Create a unique Socket.IO Room
-  var gameId = ((Math.random() * 100000) || 0).toString();
-  // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
-  // Join the Room and wait for the players
-  this.join(gameId);
-  gameQueue.push(gameId);
-  console.log("DATA RECEIVED FROM HOST EVENT ", data);
-  playersInRoom[gameId] = [];
-  playersInRoom[gameId].push(data);
-  console.log(playersInRoom);
+  if (!activeUsers[this.id].joined) {
+    var gameId = ((Math.random() * 100000) || 0).toString();
+    // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
+    // Join the Room and wait for the players
+    activeUsers[this.id].joined = true;
+
+    console.log(activeUsers[this.id]);
+    this.join(gameId);
+
+    // io.sockets.socket(this.id).emit('hosting', gameId);
+    gameQueue.push(gameId);
+    
+
+    console.log("DATA RECEIVED FROM HOST EVENT ", data);
+
+    playersInRoom[gameId] = [];
+    playersInRoom[gameId].push([data, data.userName]);
+    console.log(playersInRoom);
+  }
+
+};
+
+var join = function(io, data) {
+  console.log("data on join is ", data);
+  console.log("this si the activeuser info on join event ", activeUsers[this.id])
+  if (!activeUsers[this.id].joined) {
+    if (gameQueue[0]) { 
+
+      activeUsers[this.id].joined = true;
+    }
+  }
+
 };
 var join = function(io, data) {
+  if (!activeUsers[this.id].joined) {
     if (gameQueue[0]) { 
-      this.join(gameQueue[0])
+      activeUsers[this.id].joined = true;
+      this.join(gameQueue[0]);
+
+      var found = false;
+
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
-      playersInRoom[gameQueue[0]].push(data);
+
+      playersInRoom[gameQueue[0]].forEach(function(player) {
+
+        console.log("Players in the room inside the loop are ", player);
+
+        if (player[1].userName === data.userName) {
+          found = true;
+        } 
+
+      });
+
+      if (!found) {
+        playersInRoom[gameQueue[0]].push([data, data.userName]);
+      }
+
       console.log("Players in room at ", gameQueue[0], " are ", playersInRoom[gameQueue[0]]);
       if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
@@ -28,12 +80,13 @@ var join = function(io, data) {
     } else { 
       host.call(this, io, data);
     }
+  }
 };
 var single = function(io, data) {
   var gameId = ((Math.random() * 100000) || 0).toString();
   this.join(gameId);
   playersInRoom[gameId] = [];
-  playersInRoom[gameId].push(data);
+  playersInRoom[gameId].push([data, data.userName]);
   console.log("data from single event is " + data);
   console.log(playersInRoom);
   startGame(gameId, io);
@@ -42,25 +95,35 @@ var startGame = function(gameId, io) {
   var sockets = Object.keys(io.nsps['/'].adapter.rooms[gameId]).map(function(socketId) {
     return io.sockets.connected[socketId];
   });
-  var players = ['0','1','2','3'];
+  var players = [];
+  for (var i = 0; i < sockets.length; i++) {
+    players.push(String(i));
+  };
+  console.log("The players are!! ", players);
   var game = new Game();
-  var alreadyPlayed = false;
+  
   console.log("GAME MADE - IT IS " + game);
 
-  var intervalID2 = setInterval( function() {
+  if (players.length > 1) {
+    var alreadyPlayed = false;
 
-    players.push(players.shift());
-    io.to(gameId).emit('turnEnded', players);
-    alreadyPlayed = true;
-
-  }, 1000);
+    var intervalID2 = setInterval( function() {
+      players.push(players.shift());
+      io.to(gameId).emit('turnEnded', { players: players, duration: 1000} );
+      alreadyPlayed = false;
+    }, 1000);
+  }
 
   for (var i = 0; i < sockets.length; i++) {
     var socket = sockets[i];
 
     socket.on('insert', function(event) {
-      if (event.state === players[0] && !alreadyPlayed) {
-        alreadyPlayed = true;
+      if (players.length > 1) {
+        if (event.state === players[0] && !alreadyPlayed) {
+          alreadyPlayed = true;
+          game.insert(event);
+        }
+      } else {
         game.insert(event);
       }
     });
@@ -78,6 +141,7 @@ var startGame = function(gameId, io) {
       delete playersInRoom[gameId];
       game = null;
       clearInterval( intervalID );
+      clearInterval( intervalID2 );
     }
   }, 10000 );
   
@@ -85,18 +149,25 @@ var startGame = function(gameId, io) {
     var rank = game.rank();
     var playerRank = [];
     rank.forEach(function(player, index) {
-      playerRank.push(playersInRoom[gameId][player]);
+      if (playersInRoom[gameId][player]) {
+        playerRank.push(playersInRoom[gameId][player][0]);
+      }
     });
     io.to(gameId).emit('ended', playerRank);
-    console.log(playerRank);
+    console.log("player Rank array is ", playerRank);
     delete playersInRoom[gameId];
     game = null;
     clearInterval( intervalID );
+    clearInterval( intervalID2 );
   });
   
   console.log("ALL LISTENERS ATTACHED");
 };
+
 module.exports.init = function(io, socket) {
+
+  activeUsers[socket.id] = true;
+
   socket.on('host', function(data){
     host.call(socket, io, data);
   });
@@ -106,4 +177,21 @@ module.exports.init = function(io, socket) {
   socket.on('single', function(data) {
     single.call(socket, io, data);
   });
+  socket.on('grabProfile', function(data) {
+    grabProfile.call(socket, io, data);
+    io.emit('updateUsers', activeUsers);
+  });
+
+  socket.on('invite', function(data) {
+    invite.call(socket, io, data);
+  });
+
+  socket.on('disconnect', function(){
+    delete activeUsers[this.id];
+    io.emit('updateUsers', activeUsers);
+
+    console.log('socket id in activeUsers is ', activeUsers[this.id], ' and activeUsers is ', activeUsers);
+    console.log('a user disconnected');
+  });
+
 };
