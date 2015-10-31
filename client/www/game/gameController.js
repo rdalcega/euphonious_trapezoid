@@ -47,7 +47,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   document.getElementById("game").addEventListener('mousedown', function (mouseDownEvent) {
     var coordinates = game.getPosition( mouseDownEvent.clientX, mouseDownEvent.clientY );
     var sending = {coordinates: coordinates, state: game.playerNum };
-    if (!gameEnded && Date.now( ) - lastTimePlayed > 500 ) {
+    if (!gameEnded && Date.now( ) - lastTimePlayed > 50 ) {
       lastTimePlayed = Date.now( );
       socket.emit('insert', {
         coordinates: coordinates,
