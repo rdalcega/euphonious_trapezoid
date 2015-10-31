@@ -29,15 +29,6 @@ router.config(function($stateProvider, $urlRouterProvider) {
         }
       }
     })
-    .state('profile.host', {
-      url: '/host',
-      views: {
-        'profile': {
-          templateUrl: '../host/host.html',
-          controller: 'hostController'
-        }
-      }
-    })
     .state('profile.game', {
       url: '/game',
       views: {

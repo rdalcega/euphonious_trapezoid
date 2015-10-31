@@ -11,7 +11,6 @@ var invite = function(io, data) {
 
 };
 
-
 var grabProfile = function(io, data) {
 
   if (activeUsers[this.id]) {
@@ -23,7 +22,6 @@ var grabProfile = function(io, data) {
 
 var host = function(io, data) {
   // Create a unique Socket.IO Room
-  console.log("DATA RECEIVED FROM HOST EVENT BUT NOT HOSTING", data);
   if (!activeUsers[this.id].joined) {
     var gameId = ((Math.random() * 100000) || 0).toString();
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
@@ -34,9 +32,11 @@ var host = function(io, data) {
     this.join(gameId);
 
     // io.sockets.socket(this.id).emit('hosting', gameId);
-
     gameQueue.push(gameId);
     
+
+    console.log("DATA RECEIVED FROM HOST EVENT ", data);
+
     playersInRoom[gameId] = [];
     playersInRoom[gameId].push([data, data.userName]);
     console.log(playersInRoom);
@@ -51,6 +51,11 @@ var join = function(io, data) {
 
       activeUsers[this.id].joined = true;
 
+};
+var join = function(io, data) {
+  if (!activeUsers[this.id].joined) {
+    if (gameQueue[0]) { 
+      activeUsers[this.id].joined = true;
       this.join(gameQueue[0]);
 
       var found = false;
@@ -60,7 +65,7 @@ var join = function(io, data) {
       playersInRoom[gameQueue[0]].forEach(function(player) {
 
         console.log("Players in the room inside the loop are ", player);
-
+]
         if (player[1].userName === data.userName) {
           found = true;
         } 
@@ -106,13 +111,9 @@ var startGame = function(gameId, io) {
     var alreadyPlayed = false;
 
     var intervalID2 = setInterval( function() {
-
       players.push(players.shift());
-
       io.to(gameId).emit('turnEnded', { players: players, duration: 1000} );
-
       alreadyPlayed = false;
-
     }, 1000);
   }
 
@@ -180,7 +181,6 @@ module.exports.init = function(io, socket) {
   });
   socket.on('grabProfile', function(data) {
     grabProfile.call(socket, io, data);
-
     io.emit('updateUsers', activeUsers);
   });
 
