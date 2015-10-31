@@ -49,25 +49,27 @@ sphero.factory('game', function () {
   };
 
   var showTurnChange = function (player, duration) {
+    console.log('current players turn: ', playerInfo.currentTurn);
+    indicator
+      .style("fill", colors[playerInfo.currentTurn][2]);
 
-    d3.select(".A")
-      .attr('cx', '50%')
-      .attr('cy', '50%')
-      .style('fill', colors[player][2])
-      .attr('r', Number(radius.slice(0, -1)) * .2 + "%")
+    // d3.select(".A")
+    //   .attr('cx', '50%')
+    //   .attr('cy', '50%')
+    //   .style('fill', colors[player][2])
+    //   .attr('r', Number(radius.slice(0, -1)) * .2 + "%")
 
-      .transition()
-      .duration(duration/2) // change 1000 to a variable representing turn duration
-      .attr('r', Number(radius.slice(0, -1)) * (2+wiggleRoom)/2 + "%" )
+    //   .transition()
+    //   .duration(duration/2) // change 1000 to a variable representing turn duration
+    //   .attr('r', Number(radius.slice(0, -1)) * (2+wiggleRoom)/2 + "%" )
 
-      .transition()
-      .duration(duration/2)
-      .attr('r', Number(radius.slice(0, -1)) * .2 + "%" );
+    //   .transition()
+    //   .duration(duration/2)
+    //   .attr('r', Number(radius.slice(0, -1)) * .2 + "%" );
 
   };
 
   var updateBoard = function ( data ) {
-    console.log("data: ", data );
     var duration = 50;
     var spheres = d3.select('#grid').selectAll('.piece')
       .data( data, function (d) {
@@ -408,11 +410,11 @@ sphero.factory('game', function () {
     indicator.transition()
     .duration(duration * 0.5)
     .ease("sin")
-    .attr("r",  anchorRadius)
+    .attr("r",  radius)
     .transition()
     .duration(duration * 0.5)
     .ease("sin")
-    .attr("r", radius)
+    .attr("r", anchorRadius)
      .each( "end", indicatorOscillate);
   };
 
@@ -462,7 +464,8 @@ sphero.factory('game', function () {
 
     grid = svg.append("svg").attr("id", "grid");
 
-    indicator = grid.append("circle").datum( {id: null} ).attr("r", anchorRadius).attr("cx", "50%").attr("cy", "50%").style("fill", "white").attr("class", "indicator");
+    indicator = grid.append("circle").datum( {id: null} ).attr("r", anchorRadius).attr("cx", "50%").attr("cy", "50%")
+    .style("fill", "white").attr("class", "indicator");
 
 
 

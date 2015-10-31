@@ -6,12 +6,8 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   // var lastTimePlayed = Date.now();
 
   game.playerInfo.playerNum = String(player.playerNum);
-  if ( game.playerInfo.playerNum === "0" ) {
-    game.playersTurn = true;
-  } else {
-    game.playersTurn = false;
-  }
-
+  game.playerInfo.currentTurn = "0"; 
+  
   console.log('game.playerInfo.playerNum: ', game.playerInfo.playerNum);
 
   game.init(element, 16);
@@ -131,11 +127,11 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
   socket.on('turnEnded', function (data) {
     // data === {duration: DUR, players: [0,1,2,3] }
-    if (data[0] === game.playerInfo.playerNum) {
-      game.playersTurn = true;
-    }
-
-    game.showTurnChange( data.players[0], data.duration );
+    game.playerInfo.currentTurn = data.players[0];
+    
+    // do the turn change
+    // either with just color or oscillation
+    game.showTurnChange( data.duration );  
  
 
   })
