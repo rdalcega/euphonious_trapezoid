@@ -12,6 +12,7 @@ sphero.factory('game', function () {
   var gridSize;
   var gridStepIncrement;
   var wiggleRoom;
+  var anchorPercentage;
 
 
   var playerInfo = {};
@@ -95,7 +96,11 @@ sphero.factory('game', function () {
         return posString;
       })
       .attr("r", function (d) {
-        return radius;
+        if (d.state === 'A') {
+          return anchorRadius;
+        } else {
+          return radius;
+        }
         
       })
       .style("fill", function (d) {
@@ -292,7 +297,7 @@ sphero.factory('game', function () {
     var duration = 500 + Math.random() * 100;
     var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id} );
 
-    var oscillate = function () {
+    var getSmaller = function () {
       sphere.transition()
       .duration(duration * 0.5)
       .ease("sin")
@@ -303,10 +308,9 @@ sphero.factory('game', function () {
       .ease("sin")
       .style("fill", colors[data.state][0])
       .attr("r", Number( radius.slice(0, -1)) * 0.8 + "%")
-//      .each( "end", oscillate);
     };
 
-    oscillate();
+    getSmaller();
 
     return 0;
     
@@ -398,7 +402,19 @@ sphero.factory('game', function () {
     return duration + 10;
   }
 
+  var indicatorOscillate = function () {
+    duration = 1000;
 
+    indicator.transition()
+    .duration(duration * 0.5)
+    .ease("sin")
+    .attr("r",  anchorRadius)
+    .transition()
+    .duration(duration * 0.5)
+    .ease("sin")
+    .attr("r", radius)
+     .each( "end", indicatorOscillate);
+  };
 
   var i = 0;
   var particle = function () {
@@ -429,6 +445,8 @@ sphero.factory('game', function () {
     wiggleRoom = wiggleRoom || .5;
 
     radius = 100/(gridSize* (2 + wiggleRoom)) + "%";
+    anchorRadius = Number(radius.slice(0, -1)) * .3 + "%";
+
     svg = d3.select(gameDomElement).append("svg");
     svg
       .style("pointer-events", "all")
@@ -444,12 +462,13 @@ sphero.factory('game', function () {
 
     grid = svg.append("svg").attr("id", "grid");
 
-    indicator = grid.append("circle").datum( {id: null} ).attr("r", "1.5%").attr("cx", "50%").attr("cy", "50%").style("fill", "white").attr("class", "indicator");
+    indicator = grid.append("circle").datum( {id: null} ).attr("r", anchorRadius).attr("cx", "50%").attr("cy", "50%").style("fill", "white").attr("class", "indicator");
 
 
 
 
     setSize();
+    indicatorOscillate();
     // svg.insert("circle")
     //     .attr("cx", "50%")
     //     .attr("cy", "50%")
