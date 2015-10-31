@@ -181,6 +181,9 @@ module.exports.init = function(io, socket) {
     grabProfile.call(socket, io, data);
     io.emit('updateUsers', activeUsers);
   });
+  socket.on('checkForUsers', function() {
+    io.emit('updateUsers', activeUsers);
+  });
 
   socket.on('invite', function(data) {
     invite.call(socket, io, data);
