@@ -11,10 +11,12 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', '$state', 'play
     $scope.pushIt = true;
 
     $scope.single = function() {
-      $state.go('loading', {action: 'single'});
+      $state.go('loading', { action: 'single' });
     };
 
-
+    $scope.play = function() {
+      $state.go('loading', { action: 'play' });
+    }
 
     $scope.signUp = function(username, password, email) {
       if ($scope.signupActive === false) {
