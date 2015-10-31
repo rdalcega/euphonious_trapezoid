@@ -5,16 +5,6 @@ var gameQueue = [];
 var playersInRoom = {};
 var activeUsers = {};
 
-
-var grabProfile = function(io, data) {
-
-  if (activeUsers[this.id]) {
-    activeUsers[this.id] = { profile: data, joined: false };
-    console.log("active user profile is ", activeUsers);
-  };
-
-};
-
 var invite = function(io, data) {
 
 
@@ -33,7 +23,7 @@ var grabProfile = function(io, data) {
 
 var host = function(io, data) {
   // Create a unique Socket.IO Room
-
+  console.log("DATA RECEIVED FROM HOST EVENT BUT NOT HOSTING", data);
   if (!activeUsers[this.id].joined) {
     var gameId = ((Math.random() * 100000) || 0).toString();
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
@@ -46,7 +36,7 @@ var host = function(io, data) {
     // io.sockets.socket(this.id).emit('hosting', gameId);
 
     gameQueue.push(gameId);
-    console.log("DATA RECEIVED FROM HOST EVENT ", data);
+    
     playersInRoom[gameId] = [];
     playersInRoom[gameId].push([data, data.userName]);
     console.log(playersInRoom);

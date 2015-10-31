@@ -13,9 +13,9 @@ sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', f
     Auth.destroyCredentials();
   };
 
-	$scope.hostGame = function() {
+	$scope.host = function() {
 
-		$state.go('profile.host');
+		socket.emit('host', player.profile);
 
 	};
 
