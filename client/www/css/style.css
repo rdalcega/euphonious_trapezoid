@@ -209,6 +209,24 @@ input[type='text'] {
     opacity: 1;
 }
 
+.login-menu {
+
+}
+
+.login-button {
+    display: block;
+    font-family: Vermin;
+    font-size: 2em;
+    font-weight: bold;
+    color: #787B8C;
+    height: 50px;
+    line-height: inherit;
+    background-color: transparent;
+    border: 0;
+    text-align: center;
+    margin: auto;
+    margin-bottom: 30px;
+}
 
 #launch {
     background-image: url("../img/launch.jpg");
