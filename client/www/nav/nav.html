@@ -20,10 +20,34 @@
           </label>
         </form>
         <!-- display if not logged in, selected lights up and controls form -->
-        <button ng-if="logoutStatus" class="login button button-stable button-clear button-small animate-if" ng-class="" ng-click="login(username, password)">Login</button>
+        <div class="outer-container">
+        <div class="inner-container">
+        <ul class="nav-buttons">
+        <li> <!-- will alt these with gray -->
+        <button ng-if="logoutStatus" class="blueb" ng-class="" ng-click="login(username, password)">Play</button>
+        </li>
+        <li>
+        <button ng-if="logoutStatus" class="greenb" ng-class="" ng-click="login(username, password)">Login</button>
+        </li>
+        <li>
+        <button ng-if="logoutStatus" class="pinkb" ng-class="" ng-click="showPopup()">Sign Up</button>
+        </li>
+ <!--         <li class="pink">
         <button ng-if="logoutStatus" class="signup button button-stable button-clear button-small animate-if" ng-class="" ng-click="showPopup()">Sign Up</button>
+        </li> -->
+        </ul>
+        </div>
+        </div>
         <!-- display if signed in -->
-        <button ng-if="loginStatus" class="logout button button-stable button-clear button-small animate-if" ng-click="logout()">Logout</button>
+        <div class="outer-container">
+        <div class="inner-container">
+        <ul class="nav-buttons">
+        <li> <!-- will alt these with gray -->
+        <button ng-if="loginStatus" class="blueb" ng-class="" ng-click="logout()">Logout</button>
+        </li>
+        </ul>
+        </div>
+        </div>
       </div>
     </ion-content>
   </div>

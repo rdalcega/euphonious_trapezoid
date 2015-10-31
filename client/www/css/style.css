@@ -32,6 +32,23 @@ src: url("vermin-vibes-2-edm-xtc/Vermin Vibes 2 EDM XTC.otf") format("opentype")
     color: #fc9bcb;
 }
 
+.blueb {
+    background-color: #00a8db;
+    border-radius: 100;
+}
+
+.grayb {
+    background-color: #787b8c;
+}
+
+.greenb {
+    background-color: #97d9a1;
+}
+
+.pinkb {
+    background-color: #fc9bcb;
+}
+
 #nav .list {
     margin-bottom: 2em;
     background-color: transparent;
@@ -47,37 +64,40 @@ src: url("vermin-vibes-2-edm-xtc/Vermin Vibes 2 EDM XTC.otf") format("opentype")
 }
 
 input[type='text'] {
-    font-size: 4em;
+    font-family: Vermin;
+    font-size: 2em;
     font-weight: bold;
-    color: #626366;
+    color: #C1C1C1;
+    height: 50px;
+    line-height: inherit;
 }
 
 
 /* Place Holder CSS */
 
 ::-webkit-input-placeholder {
-    color: #000;
+    color: #C1C1C1;
     opacity: 0.5;
     -webkit-transition: opacity 0.35s ease-in-out;
     transition: opacity 0.35s ease-in-out;
 }
 
 :-moz-placeholder {
-    color: #000;
+    color: #C1C1C1;
     opacity: 0.5;
     -moz-transition: opacity 0.35s ease-in-out;
     transition: opacity 0.35s ease-in-out;
 }
 
 ::-moz-placeholder {
-    color: #000;
+    color: #C1C1C1;
     opacity: 0.5;
     -moz-transition: opacity 0.35s ease-in-out;
     transition: opacity 0.35s ease-in-out;
 }
 
 :-ms-input-placeholder {
-    color: #000;
+    color: #C1C1C1;
     opacity: 0.5;
     -ms-transition: opacity 0.35s ease-in-out;
     transition: opacity 0.35s ease-in-out;
@@ -141,14 +161,33 @@ input[type='text'] {
     background-color: transparent;
 }
 
-#nav .button-block,
-#launch .button-block {
-    font-size: 25px;
-    margin-bottom: 15px;
+
+.outer-container {
+    float: left;
+    position: relative;
+    left: 50%;
 }
 
-#nav .button-small {
-    font-size: 25px;
+.inner-container {
+    float: left;
+    position: relative;
+    left: -50%;
+}
+
+#nav .nav-buttons li{
+    display: inline-block;
+}
+
+#nav .nav-buttons button{
+    font-family: Vermin;
+    font-size: 12px;
+    display: inline-block;
+    height: 75px;
+    width: 75px;
+    border-radius: 50px;
+    border: 1px solid #000;
+    margin-right: 5px;
+    vertical-align: center;
 }
 
 .animate-if {
@@ -170,9 +209,6 @@ input[type='text'] {
     opacity: 1;
 }
 
-input[type='text'] {
-    font-size: 25px;
-}
 
 #launch {
     background-image: url("../img/launch.jpg");
