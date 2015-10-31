@@ -1,4 +1,4 @@
-window.AudioContext.prototype.createSequenceElement = function( midiNote, valence ) {
+window.AudioContext.prototype.createDroneElement = function( midiNote, valence ) {
   /*
     GRAPH:
     element.sub --> *
@@ -31,9 +31,9 @@ window.AudioContext.prototype.createSequenceElement = function( midiNote, valenc
   var ms = Math.pow( 10, -3 );
   // The elements sustain time depends on the
   // element's valence
-  var sustain =  5 * ms; // ms
+  var sustain =  100 * ms; // ms
   element.setSustain( sustain );
-  element.setMasterGain( 0.5 );
+  element.setMasterGain( 1 );
   // Create and configure element.carrier
   element.carrier = context.createOscillator();
   element.carrier.type = 'sine';
@@ -53,7 +53,7 @@ window.AudioContext.prototype.createSequenceElement = function( midiNote, valenc
   element.sub.start( context.currentTime );
   // Create and configure the element.sub.gain
   element.sub.gain = context.createGain( );
-  element.sub.gain.gain.value = 1;
+  element.sub.gain.gain.value = 0;
   /*
     element.sub --> element.sub.gain
   */
@@ -71,20 +71,20 @@ window.AudioContext.prototype.createSequenceElement = function( midiNote, valenc
   // Create and configure element.carrier.gain.envelope
   element.carrier.gain.envelope = {};
   // Attack time is proportional to valence
-  // Attack target is inversely proptional to valence
+  // Attack target proptional to valence
   element.carrier.gain.envelope.attack = {
-    time: 5  * ms,
-    target: 1 / Math.pow( valence, 0.35 ),
+    time: ( 500 + 1000 * valence / 8 + Math.random( ) * 100 )* ms,
+    target: 1 * valence / 8,
     initial: 0
   };
-  // Decay time is inversely proportional to valence
-  element.carrier.gain.envelope.decay = 20 * ms;
+  // Decay time is direct proportional to valence
+  element.carrier.gain.envelope.decay = ( 500 + 1000 * valence / 8 + Math.random( ) * 100 )* ms;
   // Sustain target is inversely proportional to valence
-  element.carrier.gain.envelope.sustain = 0.5 / Math.pow( valence, 0.35 );
+  element.carrier.gain.envelope.sustain = 0.25 * valence / 8;
   // Release target is always 0
   // Release time is directly proportional to valence
   element.carrier.gain.envelope.release = {
-    time: 10 * ms,//( valence * 25 + Math.random( ) * 25 ) * ms ,
+    time: ( 500 + 1000 * valence / 8 + Math.random( ) * 100 )*ms,//( valence * 25 + Math.random( ) * 25 ) * ms ,
     target: 0
   };
   element.carrier.gain.envelope = context.createEnvelope(
@@ -107,12 +107,11 @@ window.AudioContext.prototype.createSequenceElement = function( midiNote, valenc
   // Create and configure element.carrier.modulator
   element.carrier.modulator = context.createOscillator();
   element.carrier.modulator.type = 'sine';
-  element.carrier.modulator.frequency.value = 1 * 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
-  element.carrier.modulator.frequency.detune = -50;
+  element.carrier.modulator.frequency.value = 1 + 20 * valence / 8 + Math.random( );
   element.carrier.modulator.start( context.currentTime );
   // Create and configure element.carrier.modulator.gain
   element.carrier.modulator.gain = context.createGain( );
-  element.carrier.modulator.gain.gain.value = 500;
+  element.carrier.modulator.gain.gain.value = 0;
   /*
     element.carrier
            ^
@@ -131,7 +130,7 @@ window.AudioContext.prototype.createSequenceElement = function( midiNote, valenc
   element.carrier.modulator.gain.envelope = {};
   // The attack target is directly proportional to the valence
   element.carrier.modulator.gain.envelope.attack = {
-    target: element.carrier.modulator.gain.gain.value  + 4500 * Math.pow( valence, 2 ) / 64 * Math.random( ),
+    target: element.carrier.modulator.gain.gain.value  + 20 * Math.pow( valence, 2 ) / 64 * Math.random( ),
     time: element.carrier.gain.envelope.attack.time + element.carrier.gain.envelope.decay.time,
     initial: element.carrier.modulator.gain.gain.value
   };

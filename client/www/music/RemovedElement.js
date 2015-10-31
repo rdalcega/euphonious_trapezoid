@@ -1,4 +1,4 @@
-window.AudioContext.prototype.createSequenceElement = function( midiNote, valence ) {
+window.AudioContext.prototype.createRemovedElement = function( midiNote, valence ) {
   /*
     GRAPH:
     element.sub --> *
@@ -31,7 +31,7 @@ window.AudioContext.prototype.createSequenceElement = function( midiNote, valenc
   var ms = Math.pow( 10, -3 );
   // The elements sustain time depends on the
   // element's valence
-  var sustain =  5 * ms; // ms
+  var sustain =  ( 1 + valence * 150 / 8 + Math.random() * 25 ) * ms; // ms
   element.setSustain( sustain );
   element.setMasterGain( 0.5 );
   // Create and configure element.carrier
@@ -73,18 +73,18 @@ window.AudioContext.prototype.createSequenceElement = function( midiNote, valenc
   // Attack time is proportional to valence
   // Attack target is inversely proptional to valence
   element.carrier.gain.envelope.attack = {
-    time: 5  * ms,
+    time: ( 5 + valence * 20 / 8 ) * ms,
     target: 1 / Math.pow( valence, 0.35 ),
     initial: 0
   };
   // Decay time is inversely proportional to valence
-  element.carrier.gain.envelope.decay = 20 * ms;
+  element.carrier.gain.envelope.decay = ( 100 - 95 * valence / 8 ) * ms;
   // Sustain target is inversely proportional to valence
   element.carrier.gain.envelope.sustain = 0.5 / Math.pow( valence, 0.35 );
   // Release target is always 0
   // Release time is directly proportional to valence
   element.carrier.gain.envelope.release = {
-    time: 10 * ms,//( valence * 25 + Math.random( ) * 25 ) * ms ,
+    time: ( 5 + 295 * Math.sqrt( valence ) / Math.sqrt( 8 ) ) * ms,//( valence * 25 + Math.random( ) * 25 ) * ms ,
     target: 0
   };
   element.carrier.gain.envelope = context.createEnvelope(
