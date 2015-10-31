@@ -5,12 +5,6 @@ var gameQueue = [];
 var playersInRoom = {};
 var activeUsers = {};
 
-var invite = function(io, data) {
-
-
-
-};
-
 var grabProfile = function(io, data) {
 
   if (activeUsers[this.id]) {
@@ -43,6 +37,7 @@ var host = function(io, data) {
   }
 
 };
+
 var join = function(io, data) {
   console.log("data on join is ", data);
   console.log("this si the activeuser info on join event ", activeUsers[this.id])
@@ -50,6 +45,8 @@ var join = function(io, data) {
     if (gameQueue[0]) { 
 
       activeUsers[this.id].joined = true;
+    }
+  }
 
 };
 var join = function(io, data) {
@@ -166,6 +163,7 @@ var startGame = function(gameId, io) {
   
   console.log("ALL LISTENERS ATTACHED");
 };
+
 module.exports.init = function(io, socket) {
 
   activeUsers[socket.id] = true;
