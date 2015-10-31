@@ -1,9 +1,14 @@
 sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$state', 'player', '$ionicPopup',
   function($scope, $window, Auth, socket, $state, player, $ionicPopup) {
 
+    $scope.loaded = false;
     $scope.loginStatus = false;
     $scope.logoutStatus = true;
-    $scope.loaded = false;
+    $scope.logoutStatusButtons = true;
+    $scope.playActive = false; //starts true
+    $scope.loginActive = true; //starts false
+    $scope.signupActive = false;
+    $scope.pushIt = true;
 
     $scope.single = function() {
       console.log("profile is ", player.profile);
@@ -11,15 +16,27 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     };
 
 
+
     $scope.signUp = function(username, password, email) {
+      if($scope.signupActive === false){
+        //add the highlight prop to signup button
+        $scope.loginActive = false;
+        setTimeout(function() {$scope.signupActive = true;},
+          1);
+        return null;
+      }
+      
+      if(username && password && email){
       console.log("username: ", username, "password: ", password, "email: ", email);
       Auth.signUp(username, password, email)
         .then(function() {
+          $scope.pushIt = false;
           $scope.login(username, password);
         }, function(err) {
           console.log(err);
           //handle error
         });
+      }
     };
 
     $scope.showPopup = function() {
@@ -59,20 +76,30 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     };
 
     $scope.login = function(username, password) {
-      console.log(username);
+      if(!$scope.loginActive && $scope.pushIt){
+        $scope.signupActive = false;
+        setTimeout(function() {$scope.loginActive = true;},
+          1);
+        return null;
+      }
+      console.log(username, password);
+      if($scope.loginActive && username && password){
       Auth.login(username, password)
         .then(function(user) {
           if (user) {
             player.profile = user.profile;
             $window.localStorage.setItem('id_token', user.token);
-            $scope.logoutStatus = !Auth.checkAuth();
+            var isAuth = Auth.checkAuth();
+            $scope.logoutStatus = !isAuth;
+            $scope.logoutStatusButtons = !isAuth;
             setTimeout(function() {
-              $scope.loginStatus = Auth.checkAuth();
-            }, 250);
+              $scope.loginStatus = isAuth;
+            }, 150);
           } else {
             alert('Invalid login, please login or signup');
           }
         });
+      }
     };
 
     $scope.logout = function() {
@@ -80,6 +107,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
       $scope.loginStatus = false;
       setTimeout(function() {
         $scope.logoutStatus = true;
+        $scope.logoutStatusButtons = true;
       }, 250);
     };
 
@@ -87,6 +115,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
       if ($window.localStorage.getItem('id_token')) {
         Auth.loadAuth($window.localStorage.getItem('id_token'));
         $scope.logoutStatus = false;
+        $scope.logoutStatusButtons = false;
         // setTimeout(function() {
         $scope.loginStatus = true;
         // }, 250);
