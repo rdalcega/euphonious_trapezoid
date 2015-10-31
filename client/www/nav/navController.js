@@ -5,8 +5,8 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     $scope.loginStatus = false;
     $scope.logoutStatus = true;
     $scope.logoutStatusButtons = true;
-    $scope.playActive = false; //starts true
-    $scope.loginActive = true; //starts false
+    $scope.playActive = false;
+    $scope.loginActive = true;
     $scope.signupActive = false;
     $scope.pushIt = true;
 
@@ -18,24 +18,25 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
 
 
     $scope.signUp = function(username, password, email) {
-      if($scope.signupActive === false){
-        //add the highlight prop to signup button
+      if ($scope.signupActive === false) {
         $scope.loginActive = false;
-        setTimeout(function() {$scope.signupActive = true;},
+        setTimeout(function() {
+            $scope.signupActive = true;
+          },
           1);
         return null;
       }
-      
-      if(username && password && email){
-      console.log("username: ", username, "password: ", password, "email: ", email);
-      Auth.signUp(username, password, email)
-        .then(function() {
-          $scope.pushIt = false;
-          $scope.login(username, password);
-        }, function(err) {
-          console.log(err);
-          //handle error
-        });
+
+      if (username && password && email) {
+        console.log("username: ", username, "password: ", password, "email: ", email);
+        Auth.signUp(username, password, email)
+          .then(function() {
+            $scope.pushIt = false;
+            $scope.login(username, password);
+          }, function(err) {
+            console.log(err);
+            //handle error
+          });
       }
     };
 
@@ -76,9 +77,11 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
     };
 
     $scope.login = function(username, password) {
-      if(!$scope.loginActive && $scope.pushIt){
+      if (!$scope.loginActive && $scope.pushIt) {
         $scope.signupActive = false;
-        setTimeout(function() {$scope.loginActive = true;},
+        setTimeout(function() {
+            $scope.loginActive = true;
+          },
           1);
         return null;
       }
@@ -116,9 +119,7 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', 'socket', '$sta
         Auth.loadAuth($window.localStorage.getItem('id_token'));
         $scope.logoutStatus = false;
         $scope.logoutStatusButtons = false;
-        // setTimeout(function() {
         $scope.loginStatus = true;
-        // }, 250);
         $scope.loaded = true;
       } else {
         $scope.loaded = true;
