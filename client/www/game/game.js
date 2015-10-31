@@ -4,6 +4,7 @@ sphero.factory('game', function () {
   var svg;
   var background;
   var grid;
+  var indicator;
 
   var gameWidth;
   var gameHeight;
@@ -13,7 +14,7 @@ sphero.factory('game', function () {
   var wiggleRoom;
 
 
-  var playerNum;
+  var playerInfo = {};
   var playersTurn;
 
   var colors = { 
@@ -67,17 +68,17 @@ sphero.factory('game', function () {
   var updateBoard = function ( data ) {
     console.log("data: ", data );
     var duration = 50;
-    var spheres = d3.select('#grid').selectAll('circle')
+    var spheres = d3.select('#grid').selectAll('.piece')
       .data( data, function (d) {
         return d.id;
       } );
 
     spheres.enter()
-      .append('circle')
+      .insert('circle', '.indicator')
       .attr("r", 0)
       .attr("fill", "none")
       .attr("class", function (d) {
-        return d.state;
+        return d.state + " piece";
       });
 
     spheres
@@ -94,16 +95,11 @@ sphero.factory('game', function () {
         return posString;
       })
       .attr("r", function (d) {
-        if (d.state !== 'A') {
-          return radius;
-        } else {
-//          return Number(radius.slice(0, -1)) * .2 + "%";
-        }
+        return radius;
+        
       })
       .style("fill", function (d) {
-        if (d.state !== 'A') {
-          return colors[d.state][0];
-        } 
+        return colors[d.state][0];
       });
 
     spheres.exit().remove();
@@ -151,7 +147,7 @@ sphero.factory('game', function () {
       d3.select("#grid").append("circle").datum( {coordinates: data.coordinates, id: data.id, state: data.state} )
 
       .attr("r", 0)
-      .attr("class", function (d) { return d.state; })
+      .attr("class", function (d) { return d.state + " piece"; })
       .style("fill", "white")
       .attr("cx", getSvgPosition(data.coordinates).x)
       .attr("cy", getSvgPosition(data.coordinates).y)
@@ -162,10 +158,11 @@ sphero.factory('game', function () {
       .style("fill", colors[data.state][0]);
 
     } else {
-      var sphere = d3.select("#grid").selectAll("circle")
+      var sphere = d3.select("#grid").selectAll(".piece")
       .filter( function (d) {
         return d.coordinates.x === data.coordinates.x && d.coordinates.y === data.coordinates.y;
-      })
+      });
+      console.log('sphere size: ', sphere);
       if (sphere.size() === 1) {
         duration = 100
         var numPositions = Math.floor(100 + (Math.random() * 5));
@@ -200,6 +197,7 @@ sphero.factory('game', function () {
         duration = 200;
         sphere = d3.select("#grid").append("circle")
         .attr("r", 0)
+        .attr("class", "blip")
         .style("fill", "black")
         .attr("cx", getSvgPosition(data.coordinates).x)
         .attr("cy", getSvgPosition(data.coordinates).y)
@@ -223,7 +221,7 @@ sphero.factory('game', function () {
 
   var removed = function (data) {
     var duration = 100;
-    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id });
+    var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id });
 
     console.log('data.state on remove event: ', data.state);
 
@@ -249,7 +247,7 @@ sphero.factory('game', function () {
   var moved = function (data) {
     var duration = 100;
 
-    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id } );
+    var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id } );
 
     sphere.transition()
     .duration( duration * .15 )
@@ -274,7 +272,7 @@ sphero.factory('game', function () {
   var fell = function (data) {
     var duration = 100;
 
-    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id } );
+    var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id } );
 
     sphere.transition()
     .duration( duration )
@@ -292,7 +290,7 @@ sphero.factory('game', function () {
 
   var suspended = function (data) {
     var duration = 500 + Math.random() * 100;
-    var sphere = d3.select("#grid").selectAll("circle").filter( function (d) { return d.id === data.id} );
+    var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id} );
 
     var oscillate = function () {
       sphere.transition()
@@ -305,7 +303,7 @@ sphero.factory('game', function () {
       .ease("sin")
       .style("fill", colors[data.state][0])
       .attr("r", Number( radius.slice(0, -1)) * 0.8 + "%")
-      .each( "end", oscillate);
+//      .each( "end", oscillate);
     };
 
     oscillate();
@@ -327,7 +325,7 @@ sphero.factory('game', function () {
     var clockwiseResolution = clockwiseAngle/clockwiseSteps;
     var clockwiseDuration = duration * .35;
 
-    var spheres = d3.select("#grid").selectAll("circle")
+    var spheres = d3.select("#grid").selectAll(".piece")
     .filter( function (d) {
       var mid, low, high;
       low = 0;
@@ -409,6 +407,7 @@ sphero.factory('game', function () {
         .attr("cx", m[0])
         .attr("cy", m[1])
         .attr("r", 1e-6)
+        .attr("class", "particle")
         .style("fill", "none")
         .style("stroke-width", "2.5px")
         .style("stroke", d3.hsl((i = (i + 1) % 360), 1, .5))
@@ -425,7 +424,6 @@ sphero.factory('game', function () {
 
 
   var init = function (element, size) {
-    console.log('playerNum in init', playerNum);
     gameDomElement = element || document.getElementById("game");
     gridSize = size || 20;
     wiggleRoom = wiggleRoom || .5;
@@ -446,6 +444,8 @@ sphero.factory('game', function () {
 
     grid = svg.append("svg").attr("id", "grid");
 
+    indicator = grid.append("circle").datum( {id: null} ).attr("r", "1.5%").attr("cx", "50%").attr("cy", "50%").style("fill", "white").attr("class", "indicator");
+
 
 
 
@@ -461,7 +461,7 @@ sphero.factory('game', function () {
 
   return {
 
-    playerNum: playerNum,
+    playerInfo: playerInfo,
     playersTurn: playersTurn,
     colors: colors,
 
