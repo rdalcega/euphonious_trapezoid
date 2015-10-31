@@ -35,6 +35,7 @@ var removeChain = function( chain ) {
     this.get( to.x, to.y ).id = this.get( from.x, from.y ).id;
     event.success = true;
     event.id = this.get( to.x, to.y ).id;
+    event.valence = this.get( to.x, to.y ).valence;
     this.emit( 'moved', event );
     reanchor( from );
   }.bind( this );
@@ -50,6 +51,7 @@ var removeChain = function( chain ) {
         y: y
       },
       state: sphere.state,
+      valence: sphere.valence,
       id: sphere.id
     };
     sphere.state = 'L';

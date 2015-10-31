@@ -16,6 +16,7 @@ var rebalance = function( ) {
         y: sphere.coordinates.y
       },
       state: sphere.state,
+      valence: sphere.valence,
       id: sphere.id,
       success: true
     };
@@ -172,6 +173,7 @@ var rebalance = function( ) {
           y: sphere.coordinates.y
         },
         state: sphere.state,
+        valence: sphere.valence,
         id: sphere.id,
         success: true
       });
@@ -197,6 +199,7 @@ var rebalance = function( ) {
         x: sphere.coordinates.x,
         y: sphere.coordinates.y
       },
+      valence: sphere.valence,
       id: sphere.id,
       state: sphere.state,
       success: true

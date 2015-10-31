@@ -15,6 +15,7 @@ var insert = function( event ) {
     sphere.id = this.id++;
     event.success = true;
     event.id = sphere.id;
+    event.valence = sphere.valence;
     this.emit( 'put', event );
     var chain = this.detectChain( coordinates.x, coordinates.y );
     if( chain.remove ) {
