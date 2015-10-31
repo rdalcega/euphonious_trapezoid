@@ -35,10 +35,10 @@ router.config(function($stateProvider, $urlRouterProvider) {
         }
       }
     })
-    .state('profile.launch.host', {
+    .state('profile.host', {
       url: '/host',
       views: {
-        'profile.launch': {
+        'profile': {
           templateUrl: '../host/host.html',
           controller: 'hostController'
         }

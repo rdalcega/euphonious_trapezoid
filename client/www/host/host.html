@@ -1,4 +1,6 @@
-<ion-content scroll="true" id="users">
-	<button class="button button-stable button-clear button-block " ng-click="host()">Host</button>
-	<div class="user" ng-repeat="user in active-users" ng-click="invite()"> {{ user.profile.userName }}</div>
-</ion-content>
+<ion-view title="host" id="host">
+	<ion-content padding="true" class="has-header">
+		<button class="button button-stable button-clear button-block " ng-click="host()">Start Game</button>
+		<div class="user" ng-repeat="user in activeUsers" ng-click="invite()"> {{ user.name }}</div>
+	</ion-content>
+</ion-view>

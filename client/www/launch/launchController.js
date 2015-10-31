@@ -1,8 +1,8 @@
-sphero.controller('launchController', ['$scope', '$state', 'player', function($scope, $state, player) {
+sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', function($scope, $state, socket, player) {
 
 	$scope.join = function() {
 
-		$state.go('loading', {action: 'join' });
+		$state.go('loading', { action: 'join' });
 
 	};
 
@@ -13,10 +13,18 @@ sphero.controller('launchController', ['$scope', '$state', 'player', function($s
     Auth.destroyCredentials();
   };
 
-	$scope.host = function() {
+	$scope.hostGame = function() {
 
-		$state.go('host');
+		$state.go('profile.host');
 
 	};
+
+  $scope.init = function() {
+
+    socket.emit('grabProfile', player.profile);
+
+  };
+
+  $scope.init();
 
 }]);
