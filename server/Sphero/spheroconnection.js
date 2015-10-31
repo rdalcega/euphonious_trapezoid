@@ -65,7 +65,7 @@ var join = function(io, data) {
       playersInRoom[gameQueue[0]].forEach(function(player) {
 
         console.log("Players in the room inside the loop are ", player);
-]
+
         if (player[1].userName === data.userName) {
           found = true;
         } 
