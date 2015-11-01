@@ -182,6 +182,9 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
     signupPopUp.then(function() {
       signupPopUp.close();
+      if(player.profile.userName === 'anonymous'){
+        Auth.destroyCredentials();
+      }
       $state.go('nav');
     });
   };
