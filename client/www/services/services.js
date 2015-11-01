@@ -13,6 +13,11 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', '$window', function($http, Sphe
     //$http.defaults.headers.common['X-Auth-Token'] = userCredentials.token;
   };
 
+  var anonUser = {
+    username: 'anonymous',
+    password: 'anon'
+    };
+
 
   authFactory.signUp = function(username, password, email) {
 
@@ -27,6 +32,10 @@ sphero.factory('Auth', ['$http', 'SpheroApiUrl', '$window', function($http, Sphe
     });
 
   };
+
+  authFactory.playAnon = function() {
+    return anonUser;
+  }
 
   authFactory.login = function(username, password) {
 

@@ -14,9 +14,25 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', '$state', 'play
       $state.go('loading', { action: 'single' });
     };
 
+
     $scope.play = function() {
-      $state.go('loading', { action: 'play' });
-    }
+      var anonPlayer = Auth.playAnon();
+      Auth.login(anonPlayer.username, anonPlayer.password)
+        .then(function(user) {
+          if (user) {
+            player.profile = user.profile;
+            $window.localStorage.setItem('id_token', user.token);
+            var isAuth = Auth.checkAuth();
+            $scope.logoutStatus = !isAuth;
+            $scope.logoutStatusButtons = !isAuth;
+            setTimeout(function() {
+              $scope.loginStatus = isAuth;
+            }, 150);
+          } else {
+            alert('Invalid login, please login or signup');
+          }
+        });
+    };
 
     $scope.signUp = function(username, password, email) {
       if ($scope.signupActive === false) {
@@ -87,22 +103,22 @@ sphero.controller('navController', ['$scope', '$window', 'Auth', '$state', 'play
         return null;
       }
       console.log(username, password);
-      if($scope.loginActive && username && password){
-      Auth.login(username, password)
-        .then(function(user) {
-          if (user) {
-            player.profile = user.profile;
-            $window.localStorage.setItem('id_token', user.token);
-            var isAuth = Auth.checkAuth();
-            $scope.logoutStatus = !isAuth;
-            $scope.logoutStatusButtons = !isAuth;
-            setTimeout(function() {
-              $scope.loginStatus = isAuth;
-            }, 150);
-          } else {
-            alert('Invalid login, please login or signup');
-          }
-        });
+      if ($scope.loginActive && username && password) {
+        Auth.login(username, password)
+          .then(function(user) {
+            if (user) {
+              player.profile = user.profile;
+              $window.localStorage.setItem('id_token', user.token);
+              var isAuth = Auth.checkAuth();
+              $scope.logoutStatus = !isAuth;
+              $scope.logoutStatusButtons = !isAuth;
+              setTimeout(function() {
+                $scope.loginStatus = isAuth;
+              }, 150);
+            } else {
+              alert('Invalid login, please login or signup');
+            }
+          });
       }
     };
 
