@@ -3,7 +3,6 @@ window.AudioContext.prototype.createDroneElement = function( midiNote ) {
   var context = this;
   var fundamental = 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
   element.master = context.createGain( );
-  element.master.connect( context.destination );
   element.master.gain.value = 0;
   // Initialize the three oscillators
   var waves = [ 'triangle', 'square', 'sawtooth', 'sine' ];
@@ -38,6 +37,13 @@ window.AudioContext.prototype.createDroneElement = function( midiNote ) {
       element[ 'filter' + i ].frequency.value = fundamental * 1.5;
     }
   };
+  element.connect = function( destination ) {
+    if( destination.input ) {
+      element.master.connect( destination.input );
+    } else {
+      element.master.connect( destination );
+    }
+  };
   element.start = function( when ) {
     // Just come in slowly
     element.master.gain.setTargetAtTime( 1, when, 25 );
@@ -68,6 +74,23 @@ window.AudioContext.prototype.createDroneElement = function( midiNote ) {
       }
     };
     schedule( );
+  };
+  element.stop = function( when ) {
+    element.master.gain.setTargetAtTime( 0, when, 2 );
+    var intervalID = setInterval( function( ) {
+      if( element.master.gain.value < 0.01 ) {
+        for( var key in element ) {
+          var node = element[ key ];
+          if( node instanceof AudioNode ) {
+            node.disconnect( );
+          }
+          if( node instanceof OscillatorNode ) {
+            node.stop( when );
+          }
+        }
+        clearInterval( intervalID );
+      }
+    }, 5000 );
   };
   return element;
 };
