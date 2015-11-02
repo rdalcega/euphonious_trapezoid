@@ -12,11 +12,10 @@ sphero.factory('game', function () {
   var gridSize;
   var gridStepIncrement;
   var wiggleRoom;
-  var anchorPercentage;
+  var anchorRadius;
+  var borderMaxRadius;
 
-
-  var playerInfo = {};
-  var playersTurn;
+  var gameInfo = {};
 
   var colors = { 
   A: ["#fd3132", "#8a2225", "#ffffff"], 
@@ -49,9 +48,9 @@ sphero.factory('game', function () {
   };
 
   var showTurnChange = function (player, duration) {
-    console.log('current players turn: ', playerInfo.currentTurn);
+    console.log('current players turn: ', gameInfo.currentTurn);
     indicator
-      .style("fill", colors[playerInfo.currentTurn][2]);
+      .style("fill", colors[gameInfo.currentTurn][2]);
 
     // d3.select(".A")
     //   .attr('cx', '50%')
@@ -230,8 +229,6 @@ sphero.factory('game', function () {
     var duration = 100;
     var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id });
 
-    console.log('data.state on remove event: ', data.state);
-
     sphere
 //    .style("stroke", colors["A"][1])
 //    .style("stroke-width", 0)
@@ -404,6 +401,87 @@ sphero.factory('game', function () {
     return duration + 10;
   }
 
+  var showBorder = function () {
+    var borderSpheres = d3.select('#grid').selectAll(".border").data( function () {
+      var data = [];
+      for ( var i = 0; i < gameInfo.maxValence; i++ ) {
+        data.push({
+          id: null,
+          bordernum: i,
+          quadrant: Math.floor(i/gameInfo.maxValence),
+          coordinates: {
+            x: i,
+            y: gameInfo.maxValence - i
+          }
+        });
+      }
+      for (var i = gameInfo.maxValence; i < gameInfo.maxValence * 2; i ++) {
+        data.push({
+          id: null,
+          bordernum: i,
+          quadrant: Math.floor(i/gameInfo.maxValence),
+          coordinates: {
+            x: gameInfo.maxValence - (i % gameInfo.maxValence),
+            y: -1 * (i % gameInfo.maxValence)
+          }
+        });
+      }
+      for (var i = gameInfo.maxValence * 2; i < gameInfo.maxValence * 3; i++) {
+        data.push({
+          id: null,
+          bordernum: i,
+          quadrant: Math.floor(i/gameInfo.maxValence),
+          coordinates: {
+            x: -1 * (i % gameInfo.maxValence),
+            y: (-1 * gameInfo.maxValence) + (i % gameInfo.maxValence)
+          }
+        });
+      }
+      for (var i = gameInfo.maxValence * 3; i < gameInfo.maxValence * 4; i++) {
+        data.push({
+          id: null,
+          bordernum: i,
+          quadrant: Math.floor(i/gameInfo.maxValence),
+          coordinates: {
+            x: (-1 * gameInfo.maxValence) + (i % gameInfo.maxValence),
+            y: i % gameInfo.maxValence
+          }
+        });
+      }
+      return data;
+    });
+
+    borderSpheres.enter()
+      .append('circle')
+      .attr('class', 'border')
+      .style('fill', function (d) {
+        return colors[ d.quadrant ][0];
+      })
+      .attr('r', borderMaxRadius)
+      .attr('cx', function (d) {
+        return getSvgPosition(d.coordinates).x;
+      })
+      .attr('cy', function (d) {
+        return getSvgPosition(d.coordinates).y;
+      });
+
+    // d3.selectAll('.border')
+    //   .each( function (d, i) {
+    //     this.transition().
+    //     .delay(/**/)
+    //     .duration(200)
+    //     .each("end", animate)
+
+    //   })
+
+    // go through each sphere
+    // for that sphere
+      // transition
+      // delay calculated based on index 
+      // on end transition again on that sphere (don't go through the selection again)
+
+  };
+
   var indicatorOscillate = function () {
     duration = 1000;
 
@@ -448,6 +526,8 @@ sphero.factory('game', function () {
 
     radius = 100/(gridSize* (2 + wiggleRoom)) + "%";
     anchorRadius = Number(radius.slice(0, -1)) * .3 + "%";
+    borderMaxRadius = Number(radius.slice(0, -1)) * .3 + "%";
+
 
     svg = d3.select(gameDomElement).append("svg");
     svg
@@ -465,12 +545,13 @@ sphero.factory('game', function () {
     grid = svg.append("svg").attr("id", "grid");
 
     indicator = grid.append("circle").datum( {id: null} ).attr("r", anchorRadius).attr("cx", "50%").attr("cy", "50%")
-    .style("fill", "white").attr("class", "indicator");
+    .style("fill", colors[gameInfo.currentTurn][2]).attr("class", "indicator");
 
 
 
 
     setSize();
+    showBorder();
     indicatorOscillate();
     // svg.insert("circle")
     //     .attr("cx", "50%")
@@ -483,8 +564,7 @@ sphero.factory('game', function () {
 
   return {
 
-    playerInfo: playerInfo,
-    playersTurn: playersTurn,
+    gameInfo: gameInfo,
     colors: colors,
 
     init: init,
