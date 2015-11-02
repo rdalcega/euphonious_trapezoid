@@ -8,6 +8,10 @@ sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', f
 
   };
 
+  $scope.back = function() {
+    $state.go('nav');
+  }
+
   $scope.profile = player.profile;
   console.log($scope.profile);
 
