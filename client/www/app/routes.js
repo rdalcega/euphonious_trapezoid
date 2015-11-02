@@ -11,26 +11,26 @@ router.config(function($stateProvider, $urlRouterProvider) {
 
     .state('nav', {
       url: '/nav',
-      templateUrl: '../nav/nav.html',
+      templateUrl: 'nav/nav.html',
       controller: 'navController'
     })
     .state('loading', {
       url: '/loading',
-      templateUrl: '../loading/loading.html',
+      templateUrl: 'loading/loading.html',
       params: { action: null },
       controller: 'loadingController'
     })
     .state('profile', {
       url: '/profile',
       abstract: true,
-      templateUrl: '../profile/profile.html',
+      templateUrl: 'profile/profile.html',
       controller: 'profileController'
     })
     .state('profile.launch', {
       url: '/launch',
       views: {
         'profile': {
-          templateUrl: '../launch/launch.html',
+          templateUrl: 'launch/launch.html',
           controller: 'launchController'
         }
       }
@@ -39,7 +39,7 @@ router.config(function($stateProvider, $urlRouterProvider) {
       url: '/host',
       views: {
         'profile': {
-          templateUrl: '../host/host.html',
+          templateUrl: 'host/host.html',
           controller: 'hostController'
         }
       }
@@ -48,7 +48,7 @@ router.config(function($stateProvider, $urlRouterProvider) {
       url: '/game',
       views: {
         'profile': {
-          templateUrl: '../game/game.html',
+          templateUrl: 'game/game.html',
           controller: 'gameController'
         }
       }
@@ -57,7 +57,7 @@ router.config(function($stateProvider, $urlRouterProvider) {
       url: '/gameover',
       views: {
         'profile': {
-          templateUrl: '../endgame/endgame.html',
+          templateUrl: 'endgame/endgame.html',
           controller: 'endgameController'
         }
       }
