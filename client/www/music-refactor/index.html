@@ -49,7 +49,9 @@
     var drones = [];
     for( var i = 0; i < 8; i++ ) {
       drones[ i ] = context.createDroneElement( chord[ i ] );
+      drones[ i ].connect( context.destination );
       drones[ i ].start( context.currentTime );
+      drones[ i ].stop( context.currentTime + 1 );
     }
 
   </script>
