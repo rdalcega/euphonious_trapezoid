@@ -202,11 +202,11 @@ input[type='text'] {
     left: -50%;
 }
 
-#nav .nav-buttons li {
+.nav-buttons li {
     display: inline-block;
 }
 
-#nav .nav-buttons button {
+.nav-buttons button {
     font-family: Vermin;
     font-size: 12px;
     display: inline-block;
@@ -253,7 +253,5 @@ input[type='text'] {
 }
 
 #launch {
-    background-image: url("../img/launch.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: black;
 }
