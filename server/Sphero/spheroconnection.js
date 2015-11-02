@@ -7,7 +7,20 @@ var activeUsers = {};
 
 var invite = function(io, data) {
 
-  io.to(data.socketID).emit('invited', data.room);
+  io.to(data.socketID).emit('invite', data.gameID);
+
+};
+
+var privateGame = function(io, data) {
+
+  if (!activeUsers[this.id].joined) {
+    var gameId = ((Math.random() * 100000) || 0).toString();
+
+    activeUsers[this.id].profile = data;
+
+    io.to(this.id).emit('hosting', gameId);
+    startGame(gameId, io);
+  }
 
 };
 
@@ -26,6 +39,7 @@ var host = function(io, data) {
     var gameId = ((Math.random() * 100000) || 0).toString();
     // Return the Room ID (gameId) and the socket ID (mySocketId) to the browser client
     // Join the Room and wait for the players
+    activeUsers[this.id].profile = data;
     activeUsers[this.id].joined = true;
 
     console.log(activeUsers[this.id]);
@@ -33,7 +47,7 @@ var host = function(io, data) {
 
     // io.sockets.socket(this.id).emit('hosting', gameId);
     gameQueue.push(gameId);
-    
+
 
     console.log("DATA RECEIVED FROM HOST EVENT ", data);
 
@@ -44,14 +58,11 @@ var host = function(io, data) {
 
 };
 
-
 var join = function(io, data) {
   if (!activeUsers[this.id].joined) {
-    if (gameQueue[0]) { 
+    if (gameQueue[0]) {
       activeUsers[this.id].joined = true;
       this.join(gameQueue[0]);
-
-      var found = false;
 
       playersInRoom[gameQueue[0]] = playersInRoom[gameQueue[0]] || [];
 
@@ -61,7 +72,7 @@ var join = function(io, data) {
       if(Object.keys(io.nsps['/'].adapter.rooms[gameQueue[0]]).length === 2) {
         startGame(gameQueue.shift(), io);
       }
-    } else { 
+    } else {
       host.call(this, io, data);
     }
   }
@@ -85,7 +96,7 @@ var startGame = function(gameId, io) {
   };
   console.log("The players are!! ", players);
   var game = new Game();
-  
+
   console.log("GAME MADE - IT IS " + game);
 
   if (players.length > 1) {
@@ -128,7 +139,7 @@ var startGame = function(gameId, io) {
       clearInterval( intervalID2 );
     }
   }, 10000 );
-  
+
   game.on('ended', function() {
     var rank = game.rank();
     var playerRank = [];
@@ -144,7 +155,7 @@ var startGame = function(gameId, io) {
     clearInterval( intervalID );
     clearInterval( intervalID2 );
   });
-  
+
   console.log("ALL LISTENERS ATTACHED");
 };
 
