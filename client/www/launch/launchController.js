@@ -2,13 +2,9 @@ sphero.controller('launchController', ['$scope', '$state', 'player', function($s
 
   $scope.join = function() {
 
-<<<<<<< 573e4432050de9a9f0f94bcb4821fafc657ad9e1
     $state.go('loading', {
       action: 'join'
     });
-=======
-		$state.go('loading', {action: 'join' });
->>>>>>> Remove sockets from nav and launch
 
   };
 
@@ -25,13 +21,10 @@ sphero.controller('launchController', ['$scope', '$state', 'player', function($s
 
   $scope.hostGame = function() {
 
-<<<<<<< 573e4432050de9a9f0f94bcb4821fafc657ad9e1
     $state.go('profile.host');
 
   };
-=======
-		$state.go('host');
->>>>>>> Remove sockets from nav and launch
+
 
   $scope.init = function() {
 
@@ -39,10 +32,7 @@ sphero.controller('launchController', ['$scope', '$state', 'player', function($s
 
   };
 
-<<<<<<< 573e4432050de9a9f0f94bcb4821fafc657ad9e1
   $scope.init();
 
 }]);
-=======
-}]);
->>>>>>> Remove sockets from nav and launch
+
