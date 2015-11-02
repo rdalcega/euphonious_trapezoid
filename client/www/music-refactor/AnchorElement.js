@@ -106,7 +106,7 @@ AudioContext.prototype.createAnchorElement = function( ) {
     anchor.subGain2Env.release
   );
   anchor.envelopes.push( anchor.subGain2Env );
-  anchor.sub.secondGain.envelope.connect( anchor.sub.secondGain.gain );
+  anchor.subGain2Env.connect( anchor.subGain2.gain );
   // Done
   return anchor;
 };
