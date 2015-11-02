@@ -1,4 +1,4 @@
-window.AudioContext.prototype.createSequenceElement = function( ) {
+window.AudioContext.prototype.createRemoveElement = function( ) {
   var context = this;
   var ms = Math.pow( 10, -3 );
   var element = {};
@@ -44,18 +44,18 @@ window.AudioContext.prototype.createSequenceElement = function( ) {
     // Attack time is proportional to valence
     // Attack target is inversely proptional to valence
     voice.carrierGainEnv.attack = {
-      time: 5 * ms,
+      time: ( 5 + valence * 20 / 8 ) * ms,
       target: 1 / Math.pow( valence, 0.35 ),
       initial: 0
     };
     // Decay time is inversely proportional to valence
-    voice.carrierGainEnv.decay = 20 * ms;
+    voice.carrierGainEnv.decay = ( 100 - 95 * valence / 8 ) * ms;
     // Sustain target is inversely proportional to valence
     voice.carrierGainEnv.sustain = 0.5 / Math.pow( valence, 0.35 );
     // Release target is always 0
     // Release time is directly proportional to valence
     voice.carrierGainEnv.release = {
-      time: 10 * ms,
+      time: ( 5 + 95 * Math.sqrt( valence ) / Math.sqrt( 8 ) ) * ms,
       target: 0
     };
     voice.carrierGainEnv = context.createEnvelope(
@@ -85,10 +85,10 @@ window.AudioContext.prototype.createSequenceElement = function( ) {
     // The attack target is directly proportional to the valence
     voice.modulatorGainEnv.attack = {
       target: voice.modulatorGain.gain.value  + 4500 * Math.pow( valence, 2 ) / 64 * Math.random( ),
-      time: voice.carrierGainEnv.attack.time + voice.carrierGainEnv.decay.time,
+      time: voice.carrierGainEnv.attack.time,
       initial: voice.modulatorGain.gain.value
     };
-    voice.modulatorGainEnv.decay = 0;
+    voice.modulatorGainEnv.decay = voice.carrierGainEnv.decay.time;
     voice.modulatorGainEnv.sustain = voice.modulatorGainEnv.attack.target;
     voice.modulatorGainEnv.release = {
       time: voice.carrierGainEnv.release.time,
@@ -102,7 +102,7 @@ window.AudioContext.prototype.createSequenceElement = function( ) {
     );
     voice.envelopes.push( voice.modulatorGainEnv );
     voice.modulatorGainEnv.connect( voice.modulatorGain.gain );
-    voice.sustain = 5 * ms;
+    voice.sustain = ( 1 + valence * 50 / 8 + Math.random() * 25 ) * ms;
     voice.envelopes.forEach( function( envelope ) {
       envelope.on( when, voice.sustain );
     });
