@@ -38,7 +38,7 @@ window.AudioContext.prototype.createDroneElement = function( midiNote ) {
     }
   };
   element.connect = function( destination ) {
-    if( destination.input ) {
+    if( destination.hasOwnProperty( 'input' ) ) {
       element.master.connect( destination.input );
     } else {
       element.master.connect( destination );
