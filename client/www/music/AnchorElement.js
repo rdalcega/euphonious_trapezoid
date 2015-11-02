@@ -1,23 +1,21 @@
 AudioContext.prototype.createAnchorElement = function( midiNote ) {
-
   /*
-
     GRAPH:
 
-    kick.sub --> kick.sub.firstGain --> kick.sub.secondGain --> kick.master --> destination
+    anchor.sub --> anchor.sub.firstGain --> anchor.sub.secondGain --> anchor.master --> destination
         ^                ^                      ^
         |                |                      |
         .frequency       .gain                  .gain
         ^                ^                      ^
         |                |                      |
-        |                |                      * <-- kick.sub.secondGain.envelope
+        |                |                      * <-- anchor.sub.secondGain.envelope
         |                |
-        |                * <-- kick.sub.firstGain.whiteNoise.gain *
+        |                * <-- anchor.sub.firstGain.whiteNoise.gain *
         |                                                         ^
         |                                                         |
-        |                                                         * <-- kick.sub.firstGain.whiteNoise
+        |                                                         * <-- anchor.sub.firstGain.whiteNoise
         |
-        * <-- kick.sub.frequency.envelope
+        * <-- anchor.sub.frequency.envelope
   */
 
   // midiNote defaults to C2
@@ -26,29 +24,29 @@ AudioContext.prototype.createAnchorElement = function( midiNote ) {
 
   midiNote = midiNote || 36;
 
-  var kick = context.createSynthesizer( );
+  var anchor = context.createSynthesizer( );
 
   var ms = Math.pow( 10, -3 );
 
-  kick.setSustain( 200 * ms );
+  anchor.setSustain( 200 * ms );
 
-  kick.setMasterGain( 0.75 );
+  anchor.setMasterGain( 0.75 );
 
-  // Create and configure kick.sub
+  // Create and configure anchor.sub
 
-  kick.sub = context.createOscillator( );
+  anchor.sub = context.createOscillator( );
 
-  kick.sub.type = 'sine';
+  anchor.sub.type = 'sine';
 
-  kick.sub.frequency.value = 440 * Math.pow( 2, ( midiNote - 12 - 69 ) / 12 );
+  anchor.sub.frequency.value = 440 * Math.pow( 2, ( midiNote - 12 - 69 ) / 12 );
 
-  kick.sub.start( context.currentTime );
+  anchor.sub.start( context.currentTime );
 
-  // Create kick.sub.frequency.envelope
+  // Create anchor.sub.frequency.envelope
 
-  kick.sub.frequency.envelope = {};
+  anchor.sub.frequency.envelope = {};
 
-  kick.sub.frequency.envelope.attack = {
+  anchor.sub.frequency.envelope.attack = {
 
     time: 1 * ms,
 
@@ -58,11 +56,11 @@ AudioContext.prototype.createAnchorElement = function( midiNote ) {
 
   };
 
-  kick.sub.frequency.envelope.decay =  74 * ms;
+  anchor.sub.frequency.envelope.decay =  74 * ms;
 
-  kick.sub.frequency.envelope.sustain = 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
+  anchor.sub.frequency.envelope.sustain = 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
 
-  kick.sub.frequency.envelope.release = {
+  anchor.sub.frequency.envelope.release = {
 
     time: 25 * ms,
 
@@ -70,147 +68,147 @@ AudioContext.prototype.createAnchorElement = function( midiNote ) {
 
   };
 
-  kick.sub.frequency.envelope = context.createEnvelope(
+  anchor.sub.frequency.envelope = context.createEnvelope(
 
-    kick.sub.frequency.envelope.attack,
+    anchor.sub.frequency.envelope.attack,
 
-    kick.sub.frequency.envelope.decay,
+    anchor.sub.frequency.envelope.decay,
 
-    kick.sub.frequency.envelope.sustain,
+    anchor.sub.frequency.envelope.sustain,
 
-    kick.sub.frequency.envelope.release
+    anchor.sub.frequency.envelope.release
 
   );
 
-  kick.envelopes.push( kick.sub.frequency.envelope );
+  anchor.envelopes.push( anchor.sub.frequency.envelope );
 
   /*
 
-  kick.sub
+  anchor.sub
       ^
       |
       .frequency
       ^
       |
-      * <-- kick.sub.frequency.envelope
+      * <-- anchor.sub.frequency.envelope
 
   */
 
-  kick.sub.frequency.envelope.connect( kick.sub.frequency );
+  anchor.sub.frequency.envelope.connect( anchor.sub.frequency );
 
-  // Create and configure kick.sub.firstGain
+  // Create and configure anchor.sub.firstGain
 
-  kick.sub.firstGain = context.createGain( );
+  anchor.sub.firstGain = context.createGain( );
 
-  kick.sub.firstGain.gain.value = 1;
+  anchor.sub.firstGain.gain.value = 1;
 
   /*
 
-  kick.sub --> kick.sub.firstGain
+  anchor.sub --> anchor.sub.firstGain
 
   */
 
-  kick.sub.connect( kick.sub.firstGain );
+  anchor.sub.connect( anchor.sub.firstGain );
 
-  // Create and configure kick.sub.firstGain.whiteNoise
+  // Create and configure anchor.sub.firstGain.whiteNoise
 
-  kick.sub.firstGain.whiteNoise = context.createWhiteNoise( );
+  anchor.sub.firstGain.whiteNoise = context.createWhiteNoise( );
 
-  // Create and configure kick.sub.firstGain.whiteNoise.gain
+  // Create and configure anchor.sub.firstGain.whiteNoise.gain
 
-  kick.sub.firstGain.whiteNoise.gain = context.createGain( );
+  anchor.sub.firstGain.whiteNoise.gain = context.createGain( );
 
-  kick.sub.firstGain.whiteNoise.gain.gain.value = 0.0005;
+  anchor.sub.firstGain.whiteNoise.gain.gain.value = 0.0005;
 
   /*
 
-  kick.sub.firstGain.whiteNoise.gain *
+  anchor.sub.firstGain.whiteNoise.gain *
                                      ^
                                      |
-                                     * <-- kick.sub.firstGain.whiteNoise
+                                     * <-- anchor.sub.firstGain.whiteNoise
 
   */
 
-  kick.sub.firstGain.whiteNoise.connect( kick.sub.firstGain.whiteNoise.gain );
+  anchor.sub.firstGain.whiteNoise.connect( anchor.sub.firstGain.whiteNoise.gain );
 
-  kick.sub.firstGain.whiteNoise.start( context.currentTime );
+  anchor.sub.firstGain.whiteNoise.start( context.currentTime );
 
   /*
 
-  kick.sub.firstGain
+  anchor.sub.firstGain
           ^
           |
           .gain
           ^
           |
-          * <-- kick.sub.firstGain.whiteNoise.gain
+          * <-- anchor.sub.firstGain.whiteNoise.gain
 
   */
 
-  kick.sub.firstGain.whiteNoise.gain.connect( kick.sub.firstGain );
+  anchor.sub.firstGain.whiteNoise.gain.connect( anchor.sub.firstGain );
 
-  // Create and configure kick.sub.secondGain
+  // Create and configure anchor.sub.secondGain
 
-  kick.sub.secondGain = context.createGain( );
+  anchor.sub.secondGain = context.createGain( );
 
-  kick.sub.secondGain.gain.value = 0;
+  anchor.sub.secondGain.gain.value = 0;
 
   /*
 
-  kick.sub.firstGain --> kick.sub.secondGain
+  anchor.sub.firstGain --> anchor.sub.secondGain
 
   */
 
-  kick.sub.firstGain.connect( kick.sub.secondGain );
+  anchor.sub.firstGain.connect( anchor.sub.secondGain );
 
   /*
 
-  kick.sub.secondGain --> kick.sub.master.gain
+  anchor.sub.secondGain --> anchor.sub.master.gain
 
   */
 
-  kick.sub.secondGain.connect( kick.master.input );
+  anchor.sub.secondGain.connect( anchor.master.input );
 
-  // Create and configure kick.sub.secondGain.envelope
+  // Create and configure anchor.sub.secondGain.envelope
 
-  kick.sub.secondGain.envelope = {};
+  anchor.sub.secondGain.envelope = {};
 
-  kick.sub.secondGain.envelope.attack = 1 * ms;
+  anchor.sub.secondGain.envelope.attack = 1 * ms;
 
-  kick.sub.secondGain.envelope.decay = 74 * ms;
+  anchor.sub.secondGain.envelope.decay = 74 * ms;
 
-  kick.sub.secondGain.envelope.sustain = 0.25;
+  anchor.sub.secondGain.envelope.sustain = 0.25;
 
-  kick.sub.secondGain.envelope.release = 25 * ms;
+  anchor.sub.secondGain.envelope.release = 25 * ms;
 
-  kick.sub.secondGain.envelope = context.createEnvelope(
+  anchor.sub.secondGain.envelope = context.createEnvelope(
 
-    kick.sub.secondGain.envelope.attack,
+    anchor.sub.secondGain.envelope.attack,
 
-    kick.sub.secondGain.envelope.decay,
+    anchor.sub.secondGain.envelope.decay,
 
-    kick.sub.secondGain.envelope.sustain,
+    anchor.sub.secondGain.envelope.sustain,
 
-    kick.sub.secondGain.envelope.release
+    anchor.sub.secondGain.envelope.release
 
   );
 
-  kick.envelopes.push( kick.sub.secondGain.envelope );
+  anchor.envelopes.push( anchor.sub.secondGain.envelope );
 
   /*
 
-  kick.sub.secondGain
+  anchor.sub.secondGain
           ^
           |
           .gain
           ^
           |
-          * <-- kick.sub.secondGain.envelope
+          * <-- anchor.sub.secondGain.envelope
 
   */
 
-  kick.sub.secondGain.envelope.connect( kick.sub.secondGain.gain );
+  anchor.sub.secondGain.envelope.connect( anchor.sub.secondGain.gain );
 
-  return kick;
+  return anchor;
   
 };
