@@ -33,12 +33,6 @@ window.AudioContext.prototype.createEnvelope =
         ) {
           throw "If target is defined, target must reference a number.";
         } else if(
-          attack.target !== undefined &&
-          envelope.sustain !== undefined &&
-          attack.target < envelope.sustain
-        ) {
-          throw "The attack's target must be greater than the envelope's sustain.";
-        } else if(
           attack.target === undefined &&
           envelope.sustain !== undefined &&
           envelope.sustain > 1

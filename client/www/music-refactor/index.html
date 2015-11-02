@@ -6,12 +6,20 @@
   <script src='./Envelope.js'></script>
   <script src='./WhiteNoise.js'></script>
   <script src='./AnchorElement.js'></script>
+  <script src='./SequenceElement.js'></script>
   <script>
   var context = new AudioContext( );
-  var anchor = context.createAnchorElement( );
-  anchor.connect( context.destination );
-  for( var i = 0; i < 10; i++ ) {
-    anchor.start( context.currentTime + i * 0.05 );
+  var sequence = context.createSequenceElement( );
+  var filter = context.createBiquadFilter( );
+  filter.type = 'lowpass';
+  filter.frequency = 1500;
+  filter.connect( context.destination );
+  sequence.connect( filter );
+  for( var i = 0; i < 32; i++ ) {
+    var valence = 1 + ~~( Math.random( ) * 8 );
+    var note = 36 + ~~( Math.random( ) * 36 );
+    console.log( valence );
+    sequence.start( context.currentTime + i * 0.125, note, valence )
   }
   </script>
 </body>
