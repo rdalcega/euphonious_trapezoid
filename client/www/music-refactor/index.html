@@ -3,4 +3,15 @@
 </head>
 <body>
   <script src='./DroneElement.js'></script>
+  <script src='./Envelope.js'></script>
+  <script src='./WhiteNoise.js'></script>
+  <script src='./AnchorElement.js'></script>
+  <script>
+  var context = new AudioContext( );
+  var anchor = context.createAnchorElement( );
+  anchor.connect( context.destination );
+  for( var i = 0; i < 10; i++ ) {
+    anchor.start( context.currentTime + i * 0.05 );
+  }
+  </script>
 </body>

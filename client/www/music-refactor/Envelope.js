@@ -198,7 +198,7 @@ window.AudioContext.prototype.createEnvelope =
       return;
     }
     // Cancel all schedules values on the envelope's param
-    envelope.param.cancelScheduledValues( );
+    envelope.param.cancelScheduledValues( when );
     // If when is not defined, then the envelope
     // triggers immediately.
     when = when || context.currentTime;
