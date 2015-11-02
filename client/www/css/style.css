@@ -202,7 +202,7 @@ input[type='text'] {
     left: -50%;
 }
 
-.nav-buttons li {
+.nav-buttons li, .launch-buttons li {
     display: inline-block;
 }
 
@@ -252,6 +252,26 @@ input[type='text'] {
     margin-bottom: 30px;
 }
 
+
+
 #launch {
     background-color: black;
 }
+
+.launch-buttons button {
+    font-family: Vermin;
+    font-size: 2em;
+    font-weight: bold;
+    display: inline-block;
+    color: #787b8c;
+    margin-right: 15px;
+    vertical-align: center;
+    line-height: inherit;
+    background-color: transparent;
+    border: 0;
+}
+
+
+
+
+
