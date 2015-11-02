@@ -210,11 +210,11 @@ input[type='text'] {
     font-family: Vermin;
     font-size: 12px;
     display: inline-block;
-    height: 75px;
-    width: 75px;
+    height: 7em;
+    width: 7em;
     border-radius: 50px;
     border: 1px solid #000;
-    margin-right: 5px;
+    margin-right: 6px;
     vertical-align: center;
 }
 
