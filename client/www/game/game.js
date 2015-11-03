@@ -48,7 +48,7 @@ sphero.factory('game', function () {
 
   };
 
-  var showTurnChange = function (player, duration) {
+  var showTurnChange = function () {
     console.log('current players turn: ', gameInfo.currentTurn);
     indicator
       .style("fill", colors[gameInfo.currentTurn][2]);
@@ -566,7 +566,7 @@ sphero.factory('game', function () {
     grid = svg.append("svg").attr("id", "grid");
 
     indicator = grid.append("circle").datum( {id: null} ).attr("r", anchorRadius).attr("cx", "50%").attr("cy", "50%")
-    .style("fill", colors[gameInfo.currentTurn][2]).attr("class", "indicator");
+    .style("fill", colors[gameInfo.currentTurn][2]).attr("class", "indicator").attr("id", "indicator");
 
 
 

@@ -2,7 +2,6 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
 
   element = document.getElementById("game");
 
-  var gameEnded = false;
   // var lastTimePlayed = Date.now();
 
   game.gameInfo.playerNum = String(player.playerNum);
@@ -45,27 +44,36 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     game.setSize();
   });
 
+  console.log( 'game.gameInfo.isSingle: ', game.gameInfo.isSingle);
+
+  if ( game.gameInfo.isSingle ) {
+    document.getElementById("indicator").addEventListener('click', function (clickEvent) {
+      if (Number(game.gameInfo.currentTurn) < 3) {
+        game.gameInfo.currentTurn = String( Number(game.gameInfo.currentTurn) + 1 );
+        game.gameInfo.playerNum = String( Number(game.gameInfo.playerNum) + 1 );
+      } else {
+        game.gameInfo.currentTurn = "0";
+        game.gameInfo.playerNum = "0";
+      }
+    
+    // do the turn change
+    // either with just color or oscillation
+      game.showTurnChange(); 
+    });
+    
+  }
+
   document.getElementById("game").addEventListener('mousedown', function (mouseDownEvent) {
     var coordinates = game.getPosition( mouseDownEvent.clientX, mouseDownEvent.clientY );
     var sending = {coordinates: coordinates, state: game.gameInfo.playerNum };
 
-    // if (!gameEnded && Date.now() > lastTimePlayed - 500) {
-    //   lastTimePlayed = Date.now();
-      socket.emit('insert', {
-        coordinates: coordinates,
-        state: game.gameInfo.playerNum
-      });
-    // }
+      if ( !(coordinates.x === 0 && coordinates.y === 0) ) {
+        socket.emit('insert', {
+          coordinates: coordinates,
+          state: game.gameInfo.playerNum
+        });
+      }
   }, false);
-
-// listener for testing solo games, remove in production
-  window.addEventListener('keydown', function (keyDownEvent) {
-    console.log("keyDownEvent.keyCode: ", keyDownEvent.keyCode)
-    if (keyDownEvent.keyCode === 16) {
-      game.gameInfo.playerNum = game.gameInfo.playerNum === "0" ? game.gameInfo.playerNum = "1" : game.gameInfo.playerNum = "0" ;
-      console.log(game.gameInfo.playerNum);
-    }
-  });
 
   socket.on('state', function (data) {
     console.log( 'updateBoard: ', data);
@@ -78,6 +86,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   socket.on('ended', function(data) {
     gameEnded = true;
     window.removeEventListener('resize');
+    window.removeEventListener('keydown');
     $scope.showPopup(data);
   });
 
@@ -131,7 +140,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
     
     // do the turn change
     // either with just color or oscillation
-    game.showTurnChange( data.duration );  
+    game.showTurnChange( data.players, data.duration );  
  
 
   })
