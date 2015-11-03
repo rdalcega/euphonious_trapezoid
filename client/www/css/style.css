@@ -271,7 +271,18 @@ input[type='text'] {
     border: 0;
 }
 
-
+#bottom-button {
+    font-family: Vermin;
+    font-size: 1em;
+    font-weight: bold;
+    width: 100%;
+    text-align: left;
+    display: block;
+    color: #787b8c;
+    line-height: inherit;
+    background-color: transparent;
+    border: 0;
+}
 
 
 
