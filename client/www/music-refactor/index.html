@@ -10,12 +10,15 @@
   <script src='./RemoveElement.js'></script>
   <script src='./ShakeElement.js'></script>
   <script src='./PutElement.js'></script>
+  <script src='./MoveElement.js'></script>
   <script>
   var context = new AudioContext( );
   var elements = [];
   elements.put = context.createPutElement( );
   elements.sequence = context.createSequenceElement( );
   elements.remove = context.createRemoveElement( );
+  elements.move = context.createMoveElement( );
+  elements.shake = context.createShakeElement( );
   var filter = context.createBiquadFilter( );
   filter.type = 'lowpass';
   filter.frequency = 10000;
@@ -23,20 +26,23 @@
   elements.put.connect( filter );
   elements.sequence.connect( filter );
   elements.remove.connect( filter );
+  elements.move.connect( filter );
+  elements.shake.connect( filter );
   for( var i = 0; i < 64; i++ ) {
     var midiNote = 12 + ~~( Math.random( ) * 48 );
     var valence = 1 + ~~( Math.random( ) * 8 );
     var choose = Math.random( );
-    if( choose < 0.8 ) {
-      elements.sequence.start( context.currentTime + i * 0.125, midiNote, valence );
-    } else if( choose < 0.95 ) {
-      elements.remove.start( context.currentTime + i * 0.125, midiNote, valence );
-    } else {
-      while( midiNote < 24 ) {
-        midiNote += 12;
-      }
-      elements.put.start( context.currentTime + i * 0.125, midiNote, valence );
-    }
+     if( choose < 0.7 ) {
+       elements.sequence.start( context.currentTime + i * 0.125, midiNote, valence );
+     } else if( choose < 0.8 ) {
+       elements.remove.start( context.currentTime + i * 0.125, midiNote, valence );
+     } else if( choose < 0.9 ) {
+       elements.move.start( context.currentTime + i * 0.125, midiNote, valence );
+     } else if( choose < 0.99 ) {
+       elements.put.start( context.currentTime + i * 0.125, midiNote, valence );
+     } else {
+       elements.shake.start( context.currentTime + i * 0.125, midiNote, valence );
+     }
   }
   </script>
 </body>
