@@ -9,8 +9,8 @@
     <ion-content>
       <ion-list>
         <ion-item>Ranking: {{profile.ranking}}</ion-item>
-        <ion-item>New Friend Invites</ion-item>
-        <ion-item>{{}}</ion-item>
+        <ion-item>Game Invites</ion-item>
+        <ion-item ng-repeat="invite in invites" ng-click="joinPrivate(invite.gameID)">{{ invite.host }}</ion-item>
         <ion-item>Friends</ion-item>
         <ion-item ng-repeat="friend in friends track by $index">{{friend}}</ion-item>
         <ion-item menu-close ng-click="home()">Home</ion-item>

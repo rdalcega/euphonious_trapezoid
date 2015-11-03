@@ -22,7 +22,7 @@ router.config(function($stateProvider, $urlRouterProvider) {
     })
     .state('profile.loading', {
       url: '/loading',
-      params: { action: null },
+      params: { action: null, gameID: null },
       views: {
         'profile': {
           templateUrl: 'loading/loading.html',

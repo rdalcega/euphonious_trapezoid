@@ -292,9 +292,22 @@ input[type='text'] {
     border: 0;
 }
 
+.user-header {
+    margin-top: 5vw;
+    font-family: Vermin;
+    font-size: 7vw;
+    font-weight: bold;
+    text-align: center;
+    color: #787b8c;
+}
+
+.user-list {
+    margin-top: 5vw;
+}
+
 .user {
     font-family: Vermin;
-    font-size: 2vw;
+    font-size: 5vw;
     font-weight: bold;
     text-align: center;
     color: #787b8c;
@@ -302,15 +315,15 @@ input[type='text'] {
 
 #public {
     font-family: Vermin;
-    font-size: 3.5vw;
+    font-size: 8vw;
     font-weight: bold;
     text-align: center;
     color: #787b8c;
 }
 
 .loader {
-  font-size: 4vw;
-  margin: 20vw auto;
+  font-size: 7vw;
+  margin: 50vh auto;
   width: 1em;
   height: 1em;
   border-radius: 50%;
