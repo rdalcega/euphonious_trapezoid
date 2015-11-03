@@ -472,7 +472,6 @@ sphero.factory('game', function () {
         var circle = this;
 
         var animate = function () {
-          console.log('animating... ', numBorderSpheres)
           d3.select(circle)
           .transition()
           .duration( 250 )
@@ -500,15 +499,6 @@ sphero.factory('game', function () {
         .transition()
         .delay( i * 250 )
         .each('start', animate)
-
-
-
-
-        
-        // d3.select(this).transition().
-        // .delay(/**/)
-        // .duration(200)
-        // .each("end", animate)
 
       })
   };
