@@ -1,4 +1,4 @@
-AudioContext.prototype.createAnchorElement = function( midiNote ) {
+AudioContext.prototype.createAnchorElement = function( ) {
   /*
     GRAPH:
 
@@ -15,200 +15,98 @@ AudioContext.prototype.createAnchorElement = function( midiNote ) {
         |                                                         |
         |                                                         * <-- anchor.sub.firstGain.whiteNoise
         |
-        * <-- anchor.sub.frequency.envelope
+        * <-- anchor.subFEnv
   */
-
-  // midiNote defaults to C2
-
   var context = this;
-
-  midiNote = midiNote || 36;
-
-  var anchor = context.createSynthesizer( );
-
   var ms = Math.pow( 10, -3 );
-
-  anchor.setSustain( 200 * ms );
-
-  anchor.setMasterGain( 0.75 );
-
-  // Create and configure anchor.sub
-
+  // midiNote defaults to C2
+  var midiNote = 36;
+  var anchor = {};
+  anchor.envelopes = [];
+  anchor.master = context.createGain( );
+  anchor.master.gain.value = 0.75;
+  anchor.sustain = 200 * ms;
+  anchor.connect = function( destination ) {
+    if( destination.hasOwnProperty( 'input' ) ) {
+      anchor.master.connect( destination.input );
+    } else {
+      anchor.master.connect( destination );
+    }
+  };
+  anchor.disconnect = function( when ) {
+    for( var key in anchor ) {
+      var node = anchor[ key ];
+      if( node instanceof AudioNode ) {
+        node.disconnect( );
+      }
+      if( node instanceof AudioOscillator ) {
+        node.stop( when );
+      } else if( typeof node.stop === 'function' ) {
+        node.stop( when );
+      }
+    }
+  };
+  anchor.start = function( when ) {
+    anchor.envelopes.forEach( function( envelope ) {
+      envelope.on( when, anchor.sustain );
+    });
+  };
   anchor.sub = context.createOscillator( );
-
   anchor.sub.type = 'sine';
-
   anchor.sub.frequency.value = 440 * Math.pow( 2, ( midiNote - 12 - 69 ) / 12 );
-
   anchor.sub.start( context.currentTime );
-
-  // Create anchor.sub.frequency.envelope
-
-  anchor.sub.frequency.envelope = {};
-
-  anchor.sub.frequency.envelope.attack = {
-
+  // Create anchor.subFEnv
+  anchor.subFEnv = {};
+  anchor.subFEnv.attack = {
     time: 1 * ms,
-
     target: 440 * Math.pow( 2, ( midiNote + 24 - 69 ) / 12 ),
-
     initial: 440 * Math.pow( 2, ( midiNote + 22 - 69 ) / 12 )
-
   };
-
-  anchor.sub.frequency.envelope.decay =  74 * ms;
-
-  anchor.sub.frequency.envelope.sustain = 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
-
-  anchor.sub.frequency.envelope.release = {
-
+  anchor.subFEnv.decay =  74 * ms;
+  anchor.subFEnv.sustain = 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
+  anchor.subFEnv.release = {
     time: 25 * ms,
-
     target: 440 * Math.pow( 2, ( midiNote - 12 - 69 ) / 12 )
-
   };
-
-  anchor.sub.frequency.envelope = context.createEnvelope(
-
-    anchor.sub.frequency.envelope.attack,
-
-    anchor.sub.frequency.envelope.decay,
-
-    anchor.sub.frequency.envelope.sustain,
-
-    anchor.sub.frequency.envelope.release
-
+  anchor.subFEnv = context.createEnvelope(
+    anchor.subFEnv.attack,
+    anchor.subFEnv.decay,
+    anchor.subFEnv.sustain,
+    anchor.subFEnv.release
   );
-
-  anchor.envelopes.push( anchor.sub.frequency.envelope );
-
-  /*
-
-  anchor.sub
-      ^
-      |
-      .frequency
-      ^
-      |
-      * <-- anchor.sub.frequency.envelope
-
-  */
-
-  anchor.sub.frequency.envelope.connect( anchor.sub.frequency );
-
-  // Create and configure anchor.sub.firstGain
-
-  anchor.sub.firstGain = context.createGain( );
-
-  anchor.sub.firstGain.gain.value = 1;
-
-  /*
-
-  anchor.sub --> anchor.sub.firstGain
-
-  */
-
-  anchor.sub.connect( anchor.sub.firstGain );
-
-  // Create and configure anchor.sub.firstGain.whiteNoise
-
-  anchor.sub.firstGain.whiteNoise = context.createWhiteNoise( );
-
-  // Create and configure anchor.sub.firstGain.whiteNoise.gain
-
-  anchor.sub.firstGain.whiteNoise.gain = context.createGain( );
-
-  anchor.sub.firstGain.whiteNoise.gain.gain.value = 0.0005;
-
-  /*
-
-  anchor.sub.firstGain.whiteNoise.gain *
-                                     ^
-                                     |
-                                     * <-- anchor.sub.firstGain.whiteNoise
-
-  */
-
-  anchor.sub.firstGain.whiteNoise.connect( anchor.sub.firstGain.whiteNoise.gain );
-
-  anchor.sub.firstGain.whiteNoise.start( context.currentTime );
-
-  /*
-
-  anchor.sub.firstGain
-          ^
-          |
-          .gain
-          ^
-          |
-          * <-- anchor.sub.firstGain.whiteNoise.gain
-
-  */
-
-  anchor.sub.firstGain.whiteNoise.gain.connect( anchor.sub.firstGain );
-
-  // Create and configure anchor.sub.secondGain
-
-  anchor.sub.secondGain = context.createGain( );
-
-  anchor.sub.secondGain.gain.value = 0;
-
-  /*
-
-  anchor.sub.firstGain --> anchor.sub.secondGain
-
-  */
-
-  anchor.sub.firstGain.connect( anchor.sub.secondGain );
-
-  /*
-
-  anchor.sub.secondGain --> anchor.sub.master.gain
-
-  */
-
-  anchor.sub.secondGain.connect( anchor.master.input );
-
-  // Create and configure anchor.sub.secondGain.envelope
-
-  anchor.sub.secondGain.envelope = {};
-
-  anchor.sub.secondGain.envelope.attack = 1 * ms;
-
-  anchor.sub.secondGain.envelope.decay = 74 * ms;
-
-  anchor.sub.secondGain.envelope.sustain = 0.25;
-
-  anchor.sub.secondGain.envelope.release = 25 * ms;
-
-  anchor.sub.secondGain.envelope = context.createEnvelope(
-
-    anchor.sub.secondGain.envelope.attack,
-
-    anchor.sub.secondGain.envelope.decay,
-
-    anchor.sub.secondGain.envelope.sustain,
-
-    anchor.sub.secondGain.envelope.release
-
+  anchor.envelopes.push( anchor.subFEnv );
+  anchor.subFEnv.connect( anchor.sub.frequency );
+  // Create and configure anchor.subGain1
+  anchor.subGain1 = context.createGain( );
+  anchor.subGain1.gain.value = 1;
+  anchor.sub.connect( anchor.subGain1 );
+  // Create and configure anchor.subGain1WN
+  anchor.subGain1WN = context.createWhiteNoise( );
+  // Create and configure anchor.subGain1WNGain
+  anchor.subGain1WNGain = context.createGain( );
+  anchor.subGain1WNGain.gain.value = 0.0005;
+  anchor.subGain1WN.connect( anchor.subGain1WNGain );
+  anchor.subGain1WN.start( context.currentTime );
+  anchor.subGain1WNGain.connect( anchor.subGain1.gain );
+  // Create and configure anchor.subGain2
+  anchor.subGain2 = context.createGain( );
+  anchor.subGain2.gain.value = 0;
+  anchor.subGain1.connect( anchor.subGain2 );
+  anchor.subGain2.connect( anchor.master );
+  // Create and configure anchor.subGain2Env
+  anchor.subGain2Env = {};
+  anchor.subGain2Env.attack = 1 * ms;
+  anchor.subGain2Env.decay = 74 * ms;
+  anchor.subGain2Env.sustain = 0.25;
+  anchor.subGain2Env.release = 25 * ms;
+  anchor.subGain2Env = context.createEnvelope(
+    anchor.subGain2Env.attack,
+    anchor.subGain2Env.decay,
+    anchor.subGain2Env.sustain,
+    anchor.subGain2Env.release
   );
-
-  anchor.envelopes.push( anchor.sub.secondGain.envelope );
-
-  /*
-
-  anchor.sub.secondGain
-          ^
-          |
-          .gain
-          ^
-          |
-          * <-- anchor.sub.secondGain.envelope
-
-  */
-
-  anchor.sub.secondGain.envelope.connect( anchor.sub.secondGain.gain );
-
+  anchor.envelopes.push( anchor.subGain2Env );
+  anchor.subGain2Env.connect( anchor.subGain2.gain );
+  // Done
   return anchor;
-  
 };
