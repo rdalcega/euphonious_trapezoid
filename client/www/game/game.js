@@ -1,5 +1,4 @@
-sphero.factory('game', function () {
-
+sphero.factory('game', ['scales', function (scales) {
   var gameDomElement;
   var svg;
   var background;
@@ -152,7 +151,6 @@ sphero.factory('game', function () {
     if (data.success) {
       duration = 100;
       d3.select("#grid").append("circle").datum( {coordinates: data.coordinates, id: data.id, state: data.state} )
-
       .attr("r", 0)
       .attr("class", function (d) { return d.state + " piece"; })
       .style("fill", "white")
@@ -163,7 +161,6 @@ sphero.factory('game', function () {
       .ease('bounce')
       .attr("r", radius)
       .style("fill", colors[data.state][0]);
-
     } else {
       var sphere = d3.select("#grid").selectAll(".piece")
       .filter( function (d) {
@@ -171,11 +168,9 @@ sphero.factory('game', function () {
       });
       console.log('sphere size: ', sphere);
       if (sphere.size() === 1) {
-        duration = 100
+        duration = 200
         var numPositions = Math.floor(100 + (Math.random() * 5));
         var vibrationRange = 2 * Math.abs( 100/(gridSize * 2) - 100/(gridSize*(2 + wiggleRoom)) );
-
-
         for (var i = 0; i < numPositions; i++) {
           sphere = sphere
           .transition()
@@ -201,8 +196,8 @@ sphero.factory('game', function () {
         .attr("cy", getSvgPosition(data.coordinates).y)
 
       } else {
-        duration = 200;
-        sphere = d3.select("#grid").append("circle")
+        duration = 100;
+        sphere = d3.select("#grid").append("circle").datum( { id: NaN } )
         .attr("r", 0)
         .attr("class", "blip")
         .style("fill", "black")
@@ -211,25 +206,23 @@ sphero.factory('game', function () {
         .transition()
         .duration(duration/2)
         .ease("elastic")
-        .attr("r", Number(radius.slice(0, -1))/3 + "%" )
+        .attr("r", Number(radius.slice(0, -1)) * 0.5 + "%" )
 
         .transition()
         .duration(duration/2)
         .ease("linear")
-        .style("fill", "white")
+        .style("fill", "black")
         // .attr("r", 0)
         .remove();
-
       }
     }
 
-    return duration + 50;
+    return duration + 25;
   };
 
   var removed = function (data) {
     var duration = 100;
     var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id });
-
     sphere
 //    .style("stroke", colors["A"][1])
 //    .style("stroke-width", 0)
@@ -243,10 +236,9 @@ sphero.factory('game', function () {
     .duration( duration/3 )
     .ease("linear")
     .attr("r", 0)
-
     .remove();
 
-    return duration + 50;
+    return duration + 25;
   };
 
   var moved = function (data) {
@@ -266,16 +258,22 @@ sphero.factory('game', function () {
     .transition()
     .duration( duration * 0.15 )
     .ease("elastic")
-    .attr("r", radius);
+    .attr("r", radius)
+    .each('end', function( d ) {
+      elements[ d.id ].removed.disconnect();
+      elements[ d.id ].removed =
+        context.createRemovedElement( elements[ d.id ].midiNote, data.valence );
+      elements[ d.id ].removed.connect( filter );
+    });
 
 
     sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
 
-    return duration + 10;
+    return duration + 25;
   };
 
   var fell = function (data) {
-    var duration = 100;
+    var duration = 200;
 
     var sphere = d3.select("#grid").selectAll(".piece").filter( function (d) { return d.id === data.id } );
 
@@ -284,12 +282,18 @@ sphero.factory('game', function () {
     .ease("elastic")
     .attr("cx", getSvgPosition(data.to).x )
     .attr("cy", getSvgPosition(data.to).y )
-    .attr("r", radius);
+    .attr("r", radius)
+    .each( 'end', function( d ) {
+      elements[ d.id ].removed.disconnect();
+      elements[ d.id ].removed =
+        context.createRemovedElement( elements[ d.id ].midiNote, data.valence );
+      elements[ d.id ].removed.connect( filter );
+    });
 
 
     sphere.datum( {id: data.id, state: data.state, coordinates: data.to } );
 
-    return duration + 10;
+    return duration + 50;
 
   }
 
@@ -309,21 +313,16 @@ sphero.factory('game', function () {
       .style("fill", colors[data.state][0])
       .attr("r", Number( radius.slice(0, -1)) * 0.8 + "%")
     };
-
     getSmaller();
-
     return 0;
-    
   }
 
   var rotated = function (data) {
     var duration = 200;
-    
     var antiClockwiseAngle = (Math.PI/2) * 1.35;
     var antiClockwiseSteps = 90 * 1.25;
     var antiClockwiseResolution = antiClockwiseAngle/antiClockwiseSteps;
     var antiClockwiseDuration = duration * .65;
-
     var clockwiseAngle = -Math.PI/2 * .35;
     var clockwiseSteps = 90 * .25;
     var clockwiseResolution = clockwiseAngle/clockwiseSteps;
@@ -399,7 +398,7 @@ sphero.factory('game', function () {
       }
     }
 
-    return duration + 10;
+    return duration + 50;
   }
 
   var showBorder = function () {
@@ -542,7 +541,7 @@ sphero.factory('game', function () {
 
   var init = function (element, size) {
     gameDomElement = element || document.getElementById("game");
-    gridSize = size || 20;
+    gridSize = size || 12;
     wiggleRoom = wiggleRoom || .5;
 
     radius = 100/(gridSize* (2 + wiggleRoom)) + "%";
@@ -564,13 +563,8 @@ sphero.factory('game', function () {
     .attr("id", "gradientBackground").attr("fill", "url(#gameGradient)");
 
     grid = svg.append("svg").attr("id", "grid");
-
     indicator = grid.append("circle").datum( {id: null} ).attr("r", anchorRadius).attr("cx", "50%").attr("cy", "50%")
     .style("fill", colors[gameInfo.currentTurn][2]).attr("class", "indicator").attr("id", "indicator");
-
-
-
-
     setSize();
     showBorder();
     indicatorOscillate();
@@ -579,10 +573,130 @@ sphero.factory('game', function () {
     //     .attr("cy", "50%")
     //     .attr("r", '2%')
     //     .style("fill", "blue")
+    // ---
+    // // MUSIC stuff
+    // if( !scale ) {
+    //   scale = scales[ Math.floor( Math.random() * ( scales.length - 1 ))];
+    // }
+    // // Create the anchor element
+    // var anchorElement = context.createAnchorElement( 24 + scale[ 0 ] );
+    // anchorElement.connect( filter );
+    // // Sequence
+    // var ms = Math.pow( 10, -3 );
+    // var timeoutLength = 300 * ms; // ms
+    // var sixteenthTime = 125 * ms; // ms
+    // var lastScheduledTime = context.currentTime;
+    // var lastScheduledAnchorTime = context.currentTime;
+    // var lastScheduledCoordinates;
+    // var sequence = function( ) {
+    //   setTimeout( sequence, timeoutLength );
+    //   var timeoutStart = context.currentTime;
+    //   var screen = Math.random( );
+    //   while( lastScheduledTime + sixteenthTime < timeoutStart + timeoutLength ) {
+    //     if( lastScheduledAnchorTime + 8 * sixteenthTime < timeoutStart + timeoutLength ) {
+    //       anchorElement.start( lastScheduledAnchorTime + 8 * sixteenthTime );
+    //       lastScheduledAnchorTime += 8 * sixteenthTime;
+    //       d3.select('#grid').selectAll('circle').filter( function( d ) {
+    //         return d.state === 'A';
+    //       }).transition( )
+    //         .delay( ( lastScheduledAnchorTime - context.currentTime ) * 1000 )
+    //         .duration( 1 * sixteenthTime * 1000 )
+    //         .ease( 'cubic-in-out' )
+    //         .attr('r', Number( radius.slice( 0, -1 ) )*0.75 + '%' )
+    //         .style( 'fill', function( d ) {
+    //           return colors[ d.state ][ 1 ];
+    //         })
+    //         .transition( )
+    //         .duration( 3 * sixteenthTime * 1000 )
+    //         .ease( 'bounce' )
+    //         .attr('r', radius)
+    //         .style( 'fill', function( d ) {
+    //           return colors[ d.state ][ 0 ];
+    //         });
+    //     }
+    //     var ids = Object.keys( elements );
+    //     if( ids.length > 0 && screen > 0.1 ) {
+    //       if( !lastScheduledCoordinates ) {
+    //         var choice = ~~( Math.random( ) * ids.length );
+    //         var sphere = d3.select('#grid').selectAll('circle')
+    //           .filter( function( d ) {
+    //             return Number( ids[ choice ] ) === d.id;
+    //           });
+    //         sphere.each( function( d ) {
+    //           lastScheduledCoordinates = d.coordinates;
+    //         });
+    //         elements[ ids[ choice ] ].sequence.start( lastScheduledTime + sixteenthTime );
+    //         lastScheduledTime += sixteenthTime;
+    //         sphere.transition( )
+    //           .delay( ( lastScheduledTime - context.currentTime ) * 1000 )
+    //           .duration( ( sixteenthTime / 2 ) * 1000 )
+    //           .ease( 'cubic-in-out' )
+    //           .attr( 'r', Number( radius.slice( 0, -1 ) ) * 0.75 + '%' )
+    //           .style( 'fill', function( d ) {
+    //             return colors[ d.state ][ 1 ];
+    //           })
+    //           .transition( )
+    //           .duration( ( sixteenthTime / 2 ) * 1000 )
+    //           .ease( 'elastic' )
+    //           .attr( 'r', radius )
+    //           .style( 'fill', function( d ) {
+    //             return colors[ d.state ][ 0 ];
+    //           });
+    //       } else {
+    //         var neighbors = d3.select('#grid').selectAll('circle').filter( function(d) {
+    //           var condition =
+    //             d.coordinates.x === lastScheduledCoordinates.x + 1 && d.coordinates.y === lastScheduledCoordinates.y ||
+    //             d.coordinates.x === lastScheduledCoordinates.x - 1 && d.coordinates.y === lastScheduledCoordinates.y ||
+    //             d.coordinates.x === lastScheduledCoordinates.x && d.coordinates.y === lastScheduledCoordinates.y + 1 ||
+    //             d.coordinates.x === lastScheduledCoordinates.x && d.coordinates.y === lastScheduledCoordinates.y - 1;
+    //           return condition;
+    //         });
+    //         var choice = ~~(Math.random()*neighbors.size( ));
+    //         var id;
+    //         neighbors.each( function( d, i ) {
+    //           if( i === choice && d.state !== 'A' ) {
+    //             id = d.id;
+    //           } else if( i === choice ) {
+    //             id = -1;
+    //           }
+    //         });
+    //         if( id >= 0 ) {
+    //           var sphere = d3.select('#grid').selectAll('circle')
+    //             .filter( function( d ) {
+    //               return id === d.id;
+    //             });
+    //           sphere.each( function( d ) {
+    //             lastScheduledCoordinates = d.coordinates;
+    //           });
+    //           elements[ id ].sequence.start( lastScheduledTime + sixteenthTime );
+    //           lastScheduledTime += sixteenthTime;
+    //           sphere.transition( )
+    //             .delay( ( lastScheduledTime - context.currentTime ) * 1000 )
+    //             .duration( ( sixteenthTime / 2 ) * 1000 )
+    //             .ease( 'cubic-in-out' )
+    //             .attr( 'r', Number( radius.slice( 0, -1 ) ) * 0.75 + '%' )
+    //             .style( 'fill', function( d ) {
+    //               return colors[ d.state ][ 1 ];
+    //             })
+    //             .transition( )
+    //             .duration( ( sixteenthTime / 2 ) * 1000 )
+    //             .ease( 'elastic' )
+    //             .attr( 'r', radius )
+    //             .style( 'fill', function( d ) {
+    //               return colors[ d.state ][ 0 ];
+    //             });
+    //         } else {
+    //           lastScheduledCoordinates = undefined;
+    //           lastScheduledTime += sixteenthTime;
+    //         }
+    //       }
+    //     } else {
+    //       lastScheduledTime += sixteenthTime;
+    //     }
+    //   }
+    // };
+    // sequence( );
   };
-
-
-
   return {
 
     gameInfo: gameInfo,
@@ -601,4 +715,4 @@ sphero.factory('game', function () {
     rotated: rotated
   };
 
-});
+}]);
