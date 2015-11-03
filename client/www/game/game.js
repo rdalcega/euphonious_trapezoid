@@ -12,6 +12,7 @@ sphero.factory('game', function () {
   var gridSize;
   var gridStepIncrement;
   var wiggleRoom;
+  var radius;
   var anchorRadius;
   var borderMaxRadius;
 
@@ -451,35 +452,65 @@ sphero.factory('game', function () {
       return data;
     });
 
-    borderSpheres.enter()
+    var numBorderSpheres = borderSpheres.enter()
       .append('circle')
       .attr('class', 'border')
       .style('fill', function (d) {
         return colors[ d.quadrant ][0];
       })
-      .attr('r', borderMaxRadius)
+      .attr('r', 0)
       .attr('cx', function (d) {
         return getSvgPosition(d.coordinates).x;
       })
       .attr('cy', function (d) {
         return getSvgPosition(d.coordinates).y;
-      });
+      }).size();
 
-    // d3.selectAll('.border')
-    //   .each( function (d, i) {
-    //     this.transition().
-    //     .delay(/**/)
-    //     .duration(200)
-    //     .each("end", animate)
 
-    //   })
+    d3.selectAll('.border')
+      .each( function (d, i) {
+        var circle = this;
 
-    // go through each sphere
-    // for that sphere
-      // transition
-      // delay calculated based on index 
-      // on end transition again on that sphere (don't go through the selection again)
+        var animate = function () {
+          console.log('animating... ', numBorderSpheres)
+          d3.select(circle)
+          .transition()
+          .duration( 250 )
+          .attr('r', borderMaxRadius)
 
+          .transition()
+          .duration( 250 )
+          .attr('r', 0)
+          
+          .transition()
+          .duration( 2000 )
+          .attr('r', borderMaxRadius)
+
+          .transition()
+          .duration( 2000 )
+          .attr('r', 0)
+
+          .transition()
+          .duration( ((numBorderSpheres -1 ) * 250) - 4500 )
+          .attr('r', 0)
+          .each('end', animate)
+        };
+
+        d3.select(circle)
+        .transition()
+        .delay( i * 250 )
+        .each('start', animate)
+
+
+
+
+        
+        // d3.select(this).transition().
+        // .delay(/**/)
+        // .duration(200)
+        // .each("end", animate)
+
+      })
   };
 
   var indicatorOscillate = function () {
@@ -526,7 +557,7 @@ sphero.factory('game', function () {
 
     radius = 100/(gridSize* (2 + wiggleRoom)) + "%";
     anchorRadius = Number(radius.slice(0, -1)) * .3 + "%";
-    borderMaxRadius = Number(radius.slice(0, -1)) * .3 + "%";
+    borderMaxRadius = Number(radius.slice(0, -1)) * .2 + "%";
 
 
     svg = d3.select(gameDomElement).append("svg");
