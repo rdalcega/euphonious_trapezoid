@@ -7,7 +7,6 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   game.gameInfo.playerNum = String(player.playerNum);
   game.gameInfo.currentTurn = "0"; 
   game.gameInfo.maxValence = 8;
-
   game.init(element, (game.gameInfo.maxValence * 2) + 1 ); // second arg should be equal (max valence * 2) + 1, server should ideally send maxValence
   var gameEnded = false;
   var eventQueue = [];
@@ -41,8 +40,6 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   window.addEventListener('resize', function() {
     game.setSize();
   });
-<<<<<<< HEAD
-
   console.log( 'game.gameInfo.isSingle: ', game.gameInfo.isSingle);
 
   if ( game.gameInfo.isSingle ) {
