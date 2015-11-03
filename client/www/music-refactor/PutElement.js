@@ -15,6 +15,9 @@ window.AudioContext.prototype.createPutElement = function( ) {
     element.master.disconnect( );
   };
   element.start = function( when, midiNote, valence ) {
+    while( midiNote < 24 ) {
+      midiNote += 12;
+    }
     var voice = {};
     voice.envelopes = [];
     voice.saw = context.createOscillator( );
