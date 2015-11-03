@@ -86,7 +86,7 @@ window.AudioContext.prototype.createMoveElement = function( ) {
     voice.sineGainEnvelope.decay = 0;
     voice.sineGainEnvelope.sustain = voice.sineGainEnvelope.attack.target;
     voice.sineGainEnvelope.release = {
-      time: ( 105 - voice.sineGainEnvelope.attack.time ) * ms,
+      time: 105 * ms - voice.sineGainEnvelope.attack.time,
       target: 0
     };
     voice.sineGainEnvelope = context.createEnvelope(
