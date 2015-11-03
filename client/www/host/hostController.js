@@ -29,10 +29,14 @@ sphero.controller('hostController', ['$scope', '$state', 'socket', 'player',
   socket.on('updateUsers', function(data) {
     $scope.activeUsers = {};
   	for (var socket in data) {
-      if (data[socket].profile) {
-        $scope.activeUsers[data[socket].profile.userName] = { joined: data[socket].joined, socketID: socket };
+      if (data[socket].profile && data[socket].profile.userName !== 'anonymous') {
+        $scope.activeUsers[data[socket].profile.userName] = {
+          name: data[socket].profile.userName,
+          joined: data[socket].joined,
+          socketID: socket
+        };
       }
-    };
+    }
     console.log($scope.activeUsers);
   });
 

@@ -172,6 +172,13 @@ module.exports.init = function(io, socket) {
   socket.on('single', function(data) {
     single.call(socket, io, data);
   });
+  socket.on('privateGame', function(data) {
+    privateGame.call(socket, io, data);
+  });
+  socket.on('invite', function(data) {
+    invite.call(socket, io, data);
+  });
+
   socket.on('grabProfile', function(data) {
     grabProfile.call(socket, io, data);
     io.emit('updateUsers', activeUsers);
@@ -179,12 +186,7 @@ module.exports.init = function(io, socket) {
   socket.on('checkForUsers', function() {
     io.emit('updateUsers', activeUsers);
   });
-  socket.on('privateGame', function(data) {
-    privateGame.call(socket, io, data);
-  });
-  socket.on('invite', function(data) {
-    invite.call(socket, io, data);
-  });
+
 
   socket.on('disconnect', function(){
     delete activeUsers[this.id];
