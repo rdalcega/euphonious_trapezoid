@@ -498,9 +498,9 @@ sphero.factory('game', function () {
         d3.select(circle)
         .transition()
         .delay( i * 250 )
-        .each('start', animate)
+        .each('start', animate);
 
-      })
+      });
   };
 
   var indicatorOscillate = function () {
