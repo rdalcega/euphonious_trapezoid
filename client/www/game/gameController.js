@@ -10,7 +10,7 @@ sphero.controller('gameController', ['$scope', '$state', 'game', 'socket', 'play
   
   console.log('game.playerInfo.playerNum: ', game.playerInfo.playerNum);
 
-  game.init(element, 16);
+  game.init(element, 12);
   var gameEnded = false;
 
   var eventQueue = [];

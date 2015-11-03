@@ -202,19 +202,19 @@ input[type='text'] {
     left: -50%;
 }
 
-#nav .nav-buttons li {
+.nav-buttons li, .launch-buttons li {
     display: inline-block;
 }
 
-#nav .nav-buttons button {
+.nav-buttons button {
     font-family: Vermin;
     font-size: 12px;
     display: inline-block;
-    height: 75px;
-    width: 75px;
+    height: 7em;
+    width: 7em;
     border-radius: 50px;
     border: 1px solid #000;
-    margin-right: 5px;
+    margin-right: 6px;
     vertical-align: center;
 }
 
@@ -252,8 +252,37 @@ input[type='text'] {
     margin-bottom: 30px;
 }
 
+
+
 #launch {
-    background-image: url("../img/launch.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-color: black;
 }
+
+.launch-buttons button {
+    font-family: Vermin;
+    font-size: 2em;
+    font-weight: bold;
+    display: inline-block;
+    color: #787b8c;
+    margin-right: 15px;
+    vertical-align: center;
+    line-height: inherit;
+    background-color: transparent;
+    border: 0;
+}
+
+#bottom-button {
+    font-family: Vermin;
+    font-size: 1em;
+    font-weight: bold;
+    width: 100%;
+    text-align: left;
+    display: block;
+    color: #787b8c;
+    line-height: inherit;
+    background-color: transparent;
+    border: 0;
+}
+
+
+
