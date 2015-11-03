@@ -292,6 +292,21 @@ input[type='text'] {
     border: 0;
 }
 
+.user {
+    font-family: Vermin;
+    font-size: 2vw;
+    font-weight: bold;
+    text-align: center;
+    color: #787b8c;
+}
+
+#public {
+    font-family: Vermin;
+    font-size: 3.5vw;
+    font-weight: bold;
+    text-align: center;
+    color: #787b8c;
+}
 
 .loader {
   font-size: 4vw;
