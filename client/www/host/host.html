@@ -1,6 +1,8 @@
 <ion-view title="host" id="host">
 	<ion-content padding="true" class="has-header">
-		<button class="button button-stable button-clear button-block " ng-click="host()">Start Game</button>
-		<div class="user" ng-repeat="user in activeUsers" ng-click="invite()"> {{ user.name }}</div>
+		<button class="button button-stable button-clear button-block " ng-click="public()" id="public">Host a Public Game</button>
+    <ul class="user-list">
+		  <li class="user" ng-repeat="user in activeUsers" ng-click="invite(user.name)"> {{ user.name }}</li>
+    </ul>
 	</ion-content>
 </ion-view>

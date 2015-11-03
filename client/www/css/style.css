@@ -75,6 +75,14 @@
     text-align: center;
 }
 
+#host {
+    background-color: black;
+}
+
+#loading {
+    background-color: black;
+}
+
 #spacer-wrapper {
     display: block;
     width: 100%;
@@ -284,5 +292,88 @@ input[type='text'] {
     border: 0;
 }
 
+.user {
+    font-family: Vermin;
+    font-size: 2vw;
+    font-weight: bold;
+    text-align: center;
+    color: #787b8c;
+}
 
+#public {
+    font-family: Vermin;
+    font-size: 3.5vw;
+    font-weight: bold;
+    text-align: center;
+    color: #787b8c;
+}
 
+.loader {
+  font-size: 4vw;
+  margin: 20vw auto;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  position: relative;
+  text-indent: -9999em;
+  -webkit-animation: load4 1.3s infinite linear;
+  animation: load4 1.3s infinite linear;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+@-webkit-keyframes load4 {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em #00a8db, 2em -2em 0 0em #00a8db, 3em 0 0 -1em #00a8db, 2em 2em 0 -1em #00a8db, 0 3em 0 -1em #00a8db, -2em 2em 0 -1em #00a8db, -3em 0 0 -1em #00a8db, -2em -2em 0 0 #00a8db;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0 #00a8db, 2em -2em 0 0.2em #00a8db, 3em 0 0 0 #00a8db, 2em 2em 0 -1em #00a8db, 0 3em 0 -1em #00a8db, -2em 2em 0 -1em #00a8db, -3em 0 0 -1em #00a8db, -2em -2em 0 -1em #00a8db;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em #787b8c, 2em -2em 0 0 #787b8c, 3em 0 0 0.2em #787b8c, 2em 2em 0 0 #787b8c, 0 3em 0 -1em #787b8c, -2em 2em 0 -1em #787b8c, -3em 0 0 -1em #787b8c, -2em -2em 0 -1em #787b8c;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em #787b8c, 2em -2em 0 -1em #787b8c, 3em 0em 0 0 #787b8c, 2em 2em 0 0.2em #787b8c, 0 3em 0 0em #787b8c, -2em 2em 0 -1em #787b8c, -3em 0em 0 -1em #787b8c, -2em -2em 0 -1em #787b8c;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em #97d9a1, 2em -2em 0 -1em #97d9a1, 3em 0 0 -1em #97d9a1, 2em 2em 0 0em #97d9a1, 0 3em 0 0.2em #97d9a1, -2em 2em 0 0 #97d9a1, -3em 0em 0 -1em #97d9a1, -2em -2em 0 -1em #97d9a1;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em #97d9a1, 2em -2em 0 -1em #97d9a1, 3em 0 0 -1em #97d9a1, 2em 2em 0 -1em #97d9a1, 0 3em 0 0 #97d9a1, -2em 2em 0 0.2em #97d9a1, -3em 0 0 0 #97d9a1, -2em -2em 0 -1em #97d9a1;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em #fc9bcb, 2em -2em 0 -1em #fc9bcb, 3em 0em 0 -1em #fc9bcb, 2em 2em 0 -1em #fc9bcb, 0 3em 0 -1em #fc9bcb, -2em 2em 0 0 #fc9bcb, -3em 0em 0 0.2em #fc9bcb, -2em -2em 0 0 #fc9bcb;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0 #fc9bcb, 2em -2em 0 -1em #fc9bcb, 3em 0 0 -1em #fc9bcb, 2em 2em 0 -1em #fc9bcb, 0 3em 0 -1em #fc9bcb, -2em 2em 0 0 #fc9bcb, -3em 0em 0 0 #fc9bcb, -2em -2em 0 0.2em #fc9bcb;
+  }
+}
+@keyframes load4 {
+  0%,
+  100% {
+    box-shadow: 0 -3em 0 0.2em #00a8db, 2em -2em 0 0em #00a8db, 3em 0 0 -1em #00a8db, 2em 2em 0 -1em #00a8db, 0 3em 0 -1em #00a8db, -2em 2em 0 -1em #00a8db, -3em 0 0 -1em #00a8db, -2em -2em 0 0 #00a8db;
+  }
+  12.5% {
+    box-shadow: 0 -3em 0 0 #00a8db, 2em -2em 0 0.2em #00a8db, 3em 0 0 0 #00a8db, 2em 2em 0 -1em #00a8db, 0 3em 0 -1em #00a8db, -2em 2em 0 -1em #00a8db, -3em 0 0 -1em #00a8db, -2em -2em 0 -1em #00a8db;
+  }
+  25% {
+    box-shadow: 0 -3em 0 -0.5em #787b8c, 2em -2em 0 0 #787b8c, 3em 0 0 0.2em #787b8c, 2em 2em 0 0 #787b8c, 0 3em 0 -1em #787b8c, -2em 2em 0 -1em #787b8c, -3em 0 0 -1em #787b8c, -2em -2em 0 -1em #787b8c;
+  }
+  37.5% {
+    box-shadow: 0 -3em 0 -1em #787b8c, 2em -2em 0 -1em #787b8c, 3em 0em 0 0 #787b8c, 2em 2em 0 0.2em #787b8c, 0 3em 0 0em #787b8c, -2em 2em 0 -1em #787b8c, -3em 0em 0 -1em #787b8c, -2em -2em 0 -1em #787b8c;
+  }
+  50% {
+    box-shadow: 0 -3em 0 -1em #97d9a1, 2em -2em 0 -1em #97d9a1, 3em 0 0 -1em #97d9a1, 2em 2em 0 0em #97d9a1, 0 3em 0 0.2em #97d9a1, -2em 2em 0 0 #97d9a1, -3em 0em 0 -1em #97d9a1, -2em -2em 0 -1em #97d9a1;
+  }
+  62.5% {
+    box-shadow: 0 -3em 0 -1em #97d9a1, 2em -2em 0 -1em #97d9a1, 3em 0 0 -1em #97d9a1, 2em 2em 0 -1em #97d9a1, 0 3em 0 0 #97d9a1, -2em 2em 0 0.2em #97d9a1, -3em 0 0 0 #97d9a1, -2em -2em 0 -1em #97d9a1;
+  }
+  75% {
+    box-shadow: 0em -3em 0 -1em #fc9bcb, 2em -2em 0 -1em #fc9bcb, 3em 0em 0 -1em #fc9bcb, 2em 2em 0 -1em #fc9bcb, 0 3em 0 -1em #fc9bcb, -2em 2em 0 0 #fc9bcb, -3em 0em 0 0.2em #fc9bcb, -2em -2em 0 0 #fc9bcb;
+  }
+  87.5% {
+    box-shadow: 0em -3em 0 0 #fc9bcb, 2em -2em 0 -1em #fc9bcb, 3em 0 0 -1em #fc9bcb, 2em 2em 0 -1em #fc9bcb, 0 3em 0 -1em #fc9bcb, -2em 2em 0 0 #fc9bcb, -3em 0em 0 0 #fc9bcb, -2em -2em 0 0.2em #fc9bcb;
+  }
+}

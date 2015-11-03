@@ -1,16 +1,14 @@
-sphero.controller('loadingController', ['$scope', '$state', '$stateParams', 'socket', 'player', 
+sphero.controller('loadingController', ['$scope', '$state', '$stateParams', 'socket', 'player',
   function($scope, $state, $stateParams, socket, player) {
 
   	var action = $stateParams.action;
-
+    console.log("the action is ", action);
     if (action === 'single') {
       socket.emit('single', player.profile);
     } else if (action === 'join') {
       socket.emit('join', player.profile);
     } else if (action === 'host') {
       socket.emit('host', player.profile);
-    } else if (action === 'play') {
-      socket.emit('join', player.profile);
     }
 
     $scope.profile = player.profile;

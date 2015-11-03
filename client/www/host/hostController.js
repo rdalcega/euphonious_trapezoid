@@ -1,21 +1,20 @@
-sphero.controller('hostController', ['$scope', '$state', 'socket', 'player', 
+sphero.controller('hostController', ['$scope', '$state', 'socket', 'player',
 	function($scope, $state, socket, player) {
 
-	$scope.activeUsers = [];
+	$scope.activeUsers = {};
 	$scope.activeGame = null;
 
-	$scope.host = function() {
+	$scope.public = function() {
 
-		socket.emit('host', player.profile);
+    $state.go('profile.loading', { action: 'host' });
 
 	};
 
 	$scope.invite = function(username) {
-    for (var i = 0; i < $scope.activeUsers.length; i++) {
-      if ($scope.activeUsers[i].name === username) {
-        socket.emit('invite', $scope.activeUsers[i].socketID);
-        break;
-      }
+    if ($scope.activeUsers[username]) {
+      console.log("what about now? ", username, " ", $scope.activeUsers[username].socketID);
+      console.log("my active game is at ", $scope.activeGame);
+      socket.emit('invite', { socketID: $scope.activeUsers[username].socketID, gameID: $scope.activeGame });
     }
 	};
 
@@ -25,23 +24,29 @@ sphero.controller('hostController', ['$scope', '$state', 'socket', 'player',
   });
 
   socket.on('hosting', function(data) {
-
   	$scope.activeGame = data;
-  	console.log($scope.activeGame);
+  	console.log("did i receive this event? ", $scope.activeGame);
   });
 
   socket.on('updateUsers', function(data) {
-    $scope.activeUsers = [];
+    $scope.activeUsers = {};
   	for (var socket in data) {
-      if (data[socket].profile) {
-        $scope.activeUsers.push({name: data[socket].profile.userName, joined: data[socket].joined, socketID: socket });
+      if (data[socket].profile && data[socket].profile.userName !== 'anonymous') {
+        $scope.activeUsers[data[socket].profile.userName] = {
+          name: data[socket].profile.userName,
+          joined: data[socket].joined,
+          socketID: socket
+        };
       }
-    };
+    }
     console.log($scope.activeUsers);
   });
 
   $scope.init = function() {
     socket.emit('checkForUsers');
+    socket.emit('privateGame', player.profile);
   };
+
+  $scope.init();
 
 }]);

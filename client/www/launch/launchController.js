@@ -1,10 +1,8 @@
-sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', function($scope, $state, socket, player) {
+sphero.controller('launchController', ['$scope', '$state', 'player', 'socket', function($scope, $state, player, socket) {
 
-  $scope.join = function() {
+	$scope.join = function() {
 
-    $state.go('loading', {
-      action: 'join'
-    });
+		$state.go('profile.loading', { action: 'join' });
 
   };
 
@@ -25,6 +23,7 @@ sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', f
 
   };
 
+
   $scope.init = function() {
 
     socket.emit('grabProfile', player.profile);
@@ -34,3 +33,4 @@ sphero.controller('launchController', ['$scope', '$state', 'socket', 'player', f
   $scope.init();
 
 }]);
+
