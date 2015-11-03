@@ -33,12 +33,6 @@ window.AudioContext.prototype.createEnvelope =
         ) {
           throw "If target is defined, target must reference a number.";
         } else if(
-          attack.target !== undefined &&
-          envelope.sustain !== undefined &&
-          attack.target < envelope.sustain
-        ) {
-          throw "The attack's target must be greater than the envelope's sustain.";
-        } else if(
           attack.target === undefined &&
           envelope.sustain !== undefined &&
           envelope.sustain > 1
@@ -197,7 +191,8 @@ window.AudioContext.prototype.createEnvelope =
       console.error( "Envelope is not connected to any audio param. Use envelope.connect." );
       return;
     }
-    // Cancel a
+    // Cancel all schedules values on the envelope's param
+    envelope.param.cancelScheduledValues( when );
     // If when is not defined, then the envelope
     // triggers immediately.
     when = when || context.currentTime;
@@ -207,6 +202,7 @@ window.AudioContext.prototype.createEnvelope =
       when = context.currentTime;
     }
     // Schedule attack phase.
+    envelope.param.value = envelope.attack.initial;
     if( envelope.attack.curve ) {
       envelope.param.setValueCurveAtTime(
         envelope.attack.curve,

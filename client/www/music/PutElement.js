@@ -1,162 +1,97 @@
-window.AudioContext.prototype.createDroneElement = function( midiNote, valence ) {
-  /*
-    GRAPH:
-    element.sub --> *
-                    |
-                    V
-             element.sub.gain
-                    |
-                    v
-    element.carrier * --> element.carrier.gain --> element.master --> destination
-           ^                             ^
-           |                             |
-           .frequency                    .gain
-           ^                              ^
-           |                              |
-           |                              * <-- element.carrier.gain.envelope
-           |
-           |
-           * <-- element.carrier.modulator.gain <-- element.carrier.modulator
-                                          ^
-                                          |
-                                          .gain
-                                          ^
-                                          |
-                                          * <-- element.carrier.modulator.gain.envelope
-  */
+window.AudioContext.prototype.createPutElement = function( ) {
   var context = this;
-  // midiNote is randomized very slightly
-  midiNote = midiNote + Math.random() * 0.1 - 0.05;
-  var element = context.createSynthesizer();
   var ms = Math.pow( 10, -3 );
-  // The elements sustain time depends on the
-  // element's valence
-  var sustain =  100 * ms; // ms
-  element.setSustain( sustain );
-  element.setMasterGain( 1 );
-  // Create and configure element.carrier
-  element.carrier = context.createOscillator();
-  element.carrier.type = 'sine';
-  element.carrier.frequency.value = 3 * 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
-  element.carrier.start( context.currentTime );
-  // Create and configure the element.carrier.gain
-  element.carrier.gain = context.createGain( );
-  element.carrier.gain.gain.value = 0;
-  /*
-    element.carrier --> element.carrier.gain
-  */
-  element.carrier.connect( element.carrier.gain );
-  // Create and configure element.sub
-  element.sub = context.createOscillator();
-  element.sub.type = 'sine';
-  element.sub.frequency.value = 0.5 * 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
-  element.sub.start( context.currentTime );
-  // Create and configure the element.sub.gain
-  element.sub.gain = context.createGain( );
-  element.sub.gain.gain.value = 0;
-  /*
-    element.sub --> element.sub.gain
-  */
-  console.dir( element.sub );
-  console.dir( element.sub.gain );
-  element.sub.connect( element.sub.gain );
-  /*
-    element.sub.gain --> element.carrier.gain
-  */
-  element.sub.gain.connect( element.carrier.gain );
-  /*
-    element.carrier.gain --> element.master
-  */
-  element.carrier.gain.connect( element.master.input );
-  // Create and configure element.carrier.gain.envelope
-  element.carrier.gain.envelope = {};
-  // Attack time is proportional to valence
-  // Attack target proptional to valence
-  element.carrier.gain.envelope.attack = {
-    time: ( 500 + 1000 * valence / 8 + Math.random( ) * 100 )* ms,
-    target: 1 * valence / 8,
-    initial: 0
+  var element = {};
+  element.master = context.createGain( );
+  element.master.gain.value = 0.25;
+  element.connect = function( destination ) {
+    if( destination.hasOwnProperty( 'input' ) ) {
+      element.master.connect( destination.input );
+    } else {
+      element.master.connect( destination );
+    }
   };
-  // Decay time is direct proportional to valence
-  element.carrier.gain.envelope.decay = ( 500 + 1000 * valence / 8 + Math.random( ) * 100 )* ms;
-  // Sustain target is inversely proportional to valence
-  element.carrier.gain.envelope.sustain = 0.25 * valence / 8;
-  // Release target is always 0
-  // Release time is directly proportional to valence
-  element.carrier.gain.envelope.release = {
-    time: ( 500 + 1000 * valence / 8 + Math.random( ) * 100 )*ms,//( valence * 25 + Math.random( ) * 25 ) * ms ,
-    target: 0
+  element.disconnect = function( ) {
+    element.master.disconnect( );
   };
-  element.carrier.gain.envelope = context.createEnvelope(
-    element.carrier.gain.envelope.attack,
-    element.carrier.gain.envelope.decay,
-    element.carrier.gain.envelope.sustain,
-    element.carrier.gain.envelope.release
-  );
-  element.envelopes.push( element.carrier.gain.envelope );
-  /*
-    element.carrier.gain
-                   ^
-                   |
-                   .gain
-                   ^
-                   |
-                   * <-- element.carrier.gain.envelope
-  */
-  element.carrier.gain.envelope.connect( element.carrier.gain.gain );
-  // Create and configure element.carrier.modulator
-  element.carrier.modulator = context.createOscillator();
-  element.carrier.modulator.type = 'sine';
-  element.carrier.modulator.frequency.value = 1 + 20 * valence / 8 + Math.random( );
-  element.carrier.modulator.start( context.currentTime );
-  // Create and configure element.carrier.modulator.gain
-  element.carrier.modulator.gain = context.createGain( );
-  element.carrier.modulator.gain.gain.value = 0;
-  /*
-    element.carrier
-           ^
-           |
-           .frequency
-           ^
-           |
-           * <-- element.carrier.modulator.gain
-  */
-  element.carrier.modulator.gain.connect( element.carrier.frequency );
-  /*
-    element.carrier.modulator.gain <-- element.carrier.modulator
-  */
-  element.carrier.modulator.connect( element.carrier.modulator.gain );
-  // Create and congifure element.carrier.modulator.gain.envelope
-  element.carrier.modulator.gain.envelope = {};
-  // The attack target is directly proportional to the valence
-  element.carrier.modulator.gain.envelope.attack = {
-    target: element.carrier.modulator.gain.gain.value  + 20 * Math.pow( valence, 2 ) / 64 * Math.random( ),
-    time: element.carrier.gain.envelope.attack.time + element.carrier.gain.envelope.decay.time,
-    initial: element.carrier.modulator.gain.gain.value
+  element.start = function( when, midiNote, valence ) {
+    while( midiNote < 24 ) {
+      midiNote += 12;
+    }
+    var voice = {};
+    voice.envelopes = [];
+    voice.saw = context.createOscillator( );
+    voice.saw.frequency.value = 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
+    voice.saw.type = 'sawtooth';
+    voice.saw.start( context. currentTime );
+    voice.sawFilter = context.createBiquadFilter( );
+    voice.sawFilter.frequency.value = 0;
+    voice.sawFilter.type = 'lowpass';
+    voice.sawFilter.gain.value = 0;
+    voice.sawFilter.Q.value = 1;
+    voice.saw.connect( voice.sawFilter );
+    voice.sawFilter.connect( element.master );
+    voice.sawFilterGainEnvelope = {};
+    voice.sawFilterGainEnvelope.attack = {
+      time: ( 1 + 14 * valence / 8) * ms,
+      target: 1,
+      initial: 0
+    };
+    voice.sawFilterGainEnvelope.decay = 0;
+    voice.sawFilterGainEnvelope.sustain = 1;
+    voice.sawFilterGainEnvelope.release = {
+      time: 125 * ms,
+      target: 0.1
+    };
+    voice.sawFilterGainEnvelope = context.createEnvelope(
+      voice.sawFilterGainEnvelope.attack,
+      voice.sawFilterGainEnvelope.decay,
+      voice.sawFilterGainEnvelope.sustain,
+      voice.sawFilterGainEnvelope.release
+    );
+    voice.envelopes.push( voice.sawFilterGainEnvelope );
+    voice.sawFilterGainEnvelope.connect( voice.sawFilter.gain );
+    voice.sawFilterFrequencyEnvelope = {};
+    voice.sawFilterFrequencyEnvelope.attack = {
+      time: voice.sawFilterGainEnvelope.attack.time,
+      target: ( 1 + valence * 15 / 8 ) * 440 * Math.pow( 2, ( midiNote - 69 ) / 12 ),
+      initial: 0
+    };
+    voice.sawFilterFrequencyEnvelope.decay = voice.sawFilterGainEnvelope.release.time;
+    voice.sawFilterFrequencyEnvelope.sustain = 0.1;
+    voice.sawFilterFrequencyEnvelope.release = {
+      time: 10 * ms,
+      target: 0
+    };
+    voice.sawFilterFrequencyEnvelope = context.createEnvelope(
+      voice.sawFilterFrequencyEnvelope.attack,
+      voice.sawFilterFrequencyEnvelope.decay,
+      voice.sawFilterFrequencyEnvelope.sustain,
+      voice.sawFilterFrequencyEnvelope.release
+    );
+    voice.envelopes.push( voice.sawFilterFrequencyEnvelope );
+    voice.sawFilterFrequencyEnvelope.connect( voice.sawFilter.frequency );
+    voice.sustain = 10 * ms;
+    voice.envelopes.forEach( function( envelope ) {
+      envelope.on( when, voice.sustain );
+    });
+    setTimeout( function( ) { // Disconnect everything in one second
+      for( var key in voice ) {
+        var node = voice[ key ];
+        if( node instanceof AudioNode ) {
+          node.disconnect( );
+        }
+        if( node instanceof OscillatorNode ) {
+          node.stop( context.currentTime );
+        } else if( typeof node.stop === 'function' ) {
+          node.stop( context.currentTime );
+        }
+      }
+    }, ( when - context.currentTime +
+         voice.envelopes[ 0 ].attack.time +
+         voice.envelopes[ 0 ].decay.time +
+         voice.sustain +
+         voice.envelopes[ 0 ].release.time ) * 1000 );
   };
-  element.carrier.modulator.gain.envelope.decay = 0;
-
-  element.carrier.modulator.gain.envelope.sustain = element.carrier.modulator.gain.envelope.attack.target;
-  element.carrier.modulator.gain.envelope.release = {
-    time: element.carrier.gain.envelope.release.time,
-    target: element.carrier.modulator.gain.gain.value
-  };
-  element.carrier.modulator.gain.envelope = context.createEnvelope(
-    element.carrier.modulator.gain.envelope.attack,
-    element.carrier.modulator.gain.envelope.decay,
-    element.carrier.modulator.gain.envelope.sustain,
-    element.carrier.modulator.gain.envelope.release
-  );
-  element.envelopes.push( element.carrier.modulator.gain.envelope );
-  /*
-    element.carrier.modulator.gain
-                             ^
-                             |
-                             .gain
-                             ^
-                             |
-                             * <-- element.carrier.modulator.gain.envelope
-  */
-  element.carrier.modulator.gain.envelope.connect( element.carrier.modulator.gain.gain );
   return element;
 };
