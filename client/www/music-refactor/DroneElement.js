@@ -33,7 +33,7 @@ window.AudioContext.prototype.createDroneElement = function( midiNote ) {
   element.rotate = function( midiNote, when ) {
     fundamental = 440 * Math.pow( 2, ( midiNote - 69 ) / 12 );
     for( var i = 1; i <= 3; i++ ) {
-      element[ 'osc' + i ].frequency.setTargetAtTime( fundamental, when, 0.75 );
+      element[ 'osc' + i ].frequency.setTargetAtTime( fundamental, when, 0.25 );
       element[ 'filter' + i ].frequency.value = fundamental * 1.5;
     }
   };
@@ -46,7 +46,7 @@ window.AudioContext.prototype.createDroneElement = function( midiNote ) {
   };
   element.start = function( when ) {
     // Just come in slowly
-    element.master.gain.setTargetAtTime( 1, when, 25 );
+    element.master.gain.setTargetAtTime( 0.35, when, 25 );
     // And then schedule changes on every parameter
     // but the oscillator frequencies every second
     element.playing = true;
